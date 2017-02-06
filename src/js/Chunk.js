@@ -21,7 +21,8 @@ function prepareChunkRender()
         scene.remove(this.mesh);
     }
 
-    var geometry = new THREE.CubeGeometry(1, 1, 1);
+    //Old version
+    /*var geometry = new THREE.CubeGeometry(1, 1, 1);
     for(var x = 0; x < 16; x++)
     {
         for(var y = 0; y < chunkHeight; y++)
@@ -40,7 +41,31 @@ function prepareChunkRender()
                 }
             }
         }
+    }*/
+
+    //New version
+    var geometry = new THREE.Geometry(1, 1, 1);
+    var material = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors});
+
+    for(var x = 0; x < 16; x++)
+    {
+        for(var y = 0; y < chunkHeight; y++)
+        {
+            for(var z = 0; z < 16; z++)
+            {
+                var tile = this.getTileAt(x, y, z);
+                if(tile != 0)
+                {
+                    //TODO Add vertices & colors
+                }
+            }
+        }
     }
+
+    this.mesh = new THREE.Mesh(geometry, material);
+    this.mesh.position.x = this.x * 16;
+    this.mesh.position.z = this.z * 16;
+    scene.add(this.mesh);
 }
 
 function getIndexForCoords(x, y, z)
