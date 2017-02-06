@@ -24,7 +24,7 @@ function prepareMapRender()
 
     scene.add(camera);
 
-    
+
     //var material = new THREE.MeshBasicMaterial({color: Math.random() * 0xFFFFFF});
 
     /*for(var x = 0; x < mapWidth; x++)
