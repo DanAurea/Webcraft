@@ -31,3 +31,29 @@ function downloadGameResources(readyCallback, updateCallback, errorCallback)
         }).fail(errorCallback);
     }
 }
+
+/*
+ * Convert downloaded image to
+ * Return : Texture array
+ */
+function initTextures()
+{
+    var textures = Array();
+    var resourceAmount = resources.length;
+
+    for(var i = 0; i < resourceAmount; i++)
+    {
+        if(resources[i].endsWith(".png"))
+        {
+            var name = resources[i].substr(4);
+            name = name.substr(0, name.length - 4);
+
+            var tex = new THREE.TextureLoader().load(resources[i]);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            textures[name] = tex;
+        }
+    }
+
+    return textures;
+}

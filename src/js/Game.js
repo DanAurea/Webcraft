@@ -1,43 +1,84 @@
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
-//Timing
-var lastTime = null;
-var currentFps = 0;
-var totalFps = 0;
-var fps = 0;
+//Constants
+var FOV = 45;
 
-//Canvas
-var jqCanvas;
-var canvas;
-var width = 640;
-var height = 480;
+//Properties
+var width;
+var height;
+var textures;
+
+//Three.js
+var renderer;
+var scene;
+var camera;
+var mesh;
+
+var stats;
 
 function initGame()
 {
-    jqCanvas = $("#gameCanvas");
-    canvas = jqCanvas[0];
+    stats = new Stats();
+    stats.showPanel(0);
+    $("body").append(stats.dom);
 
-    canvas.width = width;
-    canvas.height = height;
+    //Init Properties
+    width = window.innerWidth;
+    height = window.innerHeight;
 
+
+    initFPSCamera();
+    textures = initTextures();
+
+    //Init renderer
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(width, height);
+    $("#gameContainer").append(renderer.domElement);
+
+    //Init scene
+    scene = new THREE.Scene();
+
+    //Create camera (FOV, ratio, near, far)
+    camera = new THREE.PerspectiveCamera(FOV, width / height, 1, 100000);
+    camera.rotation.order = 'YXZ';
+    camera.position.set(5, 3, 8);
+
+    window.addEventListener( 'resize', onWindowResize, false );
+
+    initMap();
+    prepareMapRender();
+
+    // on effectue le rendu de la scène
     requestAnimationFrame(loopGame);
 }
 
 function loopGame(time)
 {
-    var delta = lastTime == null ? 0 : time - lastTime;
-    currentFps += delta;
-    totalFps++;
-    if(currentFps >= 1000)
-    {
-        fps = totalFps;
-        totalFps = 0;
-        currentFps = 0;
+    stats.begin();
 
-        console.log(fps + " FPS");
-    }
+    calculateTime(time);
 
-    requestAnimationFrame(loopGame);
+    camera.rotation.set(0, 0, 0);
+
+    camera.rotation.x = toRadians(cameraPitch);
+    camera.rotation.y = toRadians(cameraYaw);
+
+    renderer.render(scene, camera);
+
+    stats.end();
+
     lastTime = time;
+    requestAnimationFrame(loopGame);
+}
+
+function onWindowResize()
+{
+    width = window.innerWidth;
+    height = window.innerHeight;
+
+	camera.aspect = width / height;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize(width, height);
 }
