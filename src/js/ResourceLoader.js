@@ -1,59 +1,66 @@
-var resources = ["img/apple.png"];
-
-/*
- * Download all game assets required by the game in order to lauch
- * /!\ In case of an error, readyCallback will not be called
- * Params :
- *  readyCallback  : Callback(duration(ms)) used if all resources loaded successfully
- *  updateCallback : Callback(amountDownloaded, totalAmountToDownload) used on one file finished downloading
- *  errorCallback  : Callback(error) used if an error happen during download,
- */
-function downloadGameResources(readyCallback, updateCallback, errorCallback)
+function ResourceLoader()
 {
-    var resourceDownloaded = 0;
-    var resourceAmount = resources.length;
-    var beginTime = new Date().getTime();
+    var resources = ["img/apple.png"];
 
-    for(var i = 0; i < resourceAmount; i++)
+    /*
+    * Download all game assets required by the game in order to lauch
+    * /!\ In case of an error, readyCallback will not be called
+    * Params :
+    *  readyCallback  : Callback(duration(ms)) used if all resources loaded successfully
+    *  updateCallback : Callback(amountDownloaded, totalAmountToDownload) used on one file finished downloading
+    *  errorCallback  : Callback(error) used if an error happen during download,
+    */
+    this.downloadGameResources =
+    function downloadGameResources(readyCallback, updateCallback, errorCallback)
     {
-        var url = resources[i];
-        $.get(url, function()
-        {
-            //Download finished
-            updateCallback(++resourceDownloaded, resourceAmount);
+        var resourceDownloaded = 0;
+        var resourceAmount = resources.length;
+        var beginTime = new Date().getTime();
 
-            //All resources downloaded ?
-            if(resourceDownloaded >= resourceAmount)
+        for(var i = 0; i < resourceAmount; i++)
+        {
+            var url = resources[i];
+            $.get(url, function()
             {
-                var duration = new Date().getTime() - beginTime;
-                readyCallback(duration);
-            }
-        }).fail(errorCallback);
-    }
-}
+                //Download finished
+                updateCallback(++resourceDownloaded, resourceAmount);
 
-/*
- * Convert downloaded image to
- * Return : Texture array
- */
-function initTextures()
-{
-    var textures = Array();
-    var resourceAmount = resources.length;
-
-    for(var i = 0; i < resourceAmount; i++)
-    {
-        if(resources[i].endsWith(".png"))
-        {
-            var name = resources[i].substr(4);
-            name = name.substr(0, name.length - 4);
-
-            var tex = new THREE.TextureLoader().load(resources[i]);
-            tex.wrapS = THREE.RepeatWrapping;
-            tex.wrapT = THREE.RepeatWrapping;
-            textures[name] = tex;
+                //All resources downloaded ?
+                if(resourceDownloaded >= resourceAmount)
+                {
+                    var duration = new Date().getTime() - beginTime;
+                    readyCallback(duration);
+                }
+            }).fail(errorCallback);
         }
     }
 
-    return textures;
+    /*
+    * Convert downloaded image to
+    * Return : Texture array
+    */
+    this.initTextures =
+    function initTextures()
+    {
+        var textures = Array();
+        var resourceAmount = resources.length;
+
+        for(var i = 0; i < resourceAmount; i++)
+        {
+            if(resources[i].endsWith(".png"))
+            {
+                var name = resources[i].substr(4);
+                name = name.substr(0, name.length - 4);
+
+                var tex = new THREE.TextureLoader().load(resources[i]);
+                tex.wrapS = THREE.RepeatWrapping;
+                tex.wrapT = THREE.RepeatWrapping;
+                textures[name] = tex;
+            }
+        }
+
+        return textures;
+    }
 }
+
+var ResourceLoader = new ResourceLoader();

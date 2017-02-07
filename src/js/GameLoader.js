@@ -2,6 +2,7 @@ function onDownloadFinished(duration)
 {
     console.log("Finished download in: " + duration + "ms");
     initGame();
+    initDebugger();
 }
 
 /*
@@ -31,5 +32,5 @@ $(function()
 {
     console.log("Game Starting...");
     console.log("Download game resources...");
-    downloadGameResources(onDownloadFinished, onDownloadUpdate, onDownloadError);
+    ResourceLoader.downloadGameResources(onDownloadFinished, onDownloadUpdate, onDownloadError);
 });

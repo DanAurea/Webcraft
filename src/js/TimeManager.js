@@ -1,21 +1,28 @@
-//Timing
-var lastTime = null;
-var currentFps = 0;
-var totalFps = 0;
-var fps = 0;
-var delta;
-
-function calculateTime(time)
+function TimeManager()
 {
-    delta = lastTime == null ? 0 : time - lastTime;
-    currentFps += delta;
-    totalFps++;
-    if(currentFps >= 1000)
-    {
-        fps = totalFps;
-        totalFps = 0;
-        currentFps = 0;
+    this.lastTime = null;
+    this.currentFps = 0;
+    this.totalFps = 0;
+    this.fps = 0;
+    this.delta;
 
-        //console.log(fps + " FPS");
+    this.calculateTime =
+    function calculateTime(time)
+    {
+        this.delta = this.lastTime == null ? 0 : time - this.lastTime;
+        this.currentFps += this.delta;
+        this.totalFps++;
+        if(this.currentFps >= 1000)
+        {
+            this.fps = this.totalFps;
+            this.totalFps = 0;
+            this.currentFps = 0;
+
+            //console.log(this.fps + " FPS");
+        }
+
+        this.lastTime = time;
     }
 }
+
+var TimeManager = new TimeManager();

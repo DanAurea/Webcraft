@@ -1,55 +1,14 @@
-var chunkHeight = 16;
-
-var cubeVertices =
-[
-    ///Z-
-    0.0, 0.0, 0.0,
-    1.0, 0.0, 0.0,
-    1.0, 1.0, 0.0,
-    0.0, 1.0, 0.0,
-
-    ///Z+
-    0.0, 0.0, 1.0,
-    1.0, 0.0, 1.0,
-    1.0, 1.0, 1.0,
-    0.0, 1.0, 1.0,
-
-    ///X-
-    0.0, 1.0, 1.0,
-    0.0, 1.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.0, 1.0,
-
-    ///X+
-    1.0, 1.0, 1.0,
-    1.0, 1.0, 0.0,
-    1.0, 0.0, 0.0,
-    1.0, 0.0, 1.0,
-
-    ///Bottom
-    0.0, 0.0, 0.0,
-    1.0, 0.0, 0.0,
-    1.0, 0.0, 1.0,
-    0.0, 0.0, 1.0,
-
-    ///Top
-    0.0, 1.0, 0.0,
-    1.0, 1.0, 0.0,
-    1.0, 1.0, 1.0,
-    0.0, 1.0, 1.0
-];
+var chunkHeight = 256;
 
 function Chunk(x, z)
 {
-    this.x = x;
-    this.z = z;
+    this.chunkX = x;
+    this.chunkZ = z;
     this.mesh = null;
-    this.map = Array(16 * chunkHeight * 16);
-    for(var i = 0; i < this.map.length; i++)
-    {
-        this.map[i] = Math.random() < 0.01 ? 1 : 0;
-    }
+    this.map = Array(256 * chunkHeight);
+    this.maxHeight = chunkHeight;
 
+    this.setTileAt =
     function setTileAt(tile, x, y, z)
     {
         if(x < 0 || y < 0 || z < 0 || x > 15 || y >= chunkHeight || z > 15)
@@ -57,12 +16,13 @@ function Chunk(x, z)
             return;
         }
 
-        this.map[getIndexForCoords(x, y, z)] = tile;
+        this.map[this.getIndexForCoords(x, y, z)] = tile;
 
         this.prepareChunkRender();
         //TODO update neighbours
     }
 
+    this.getTileAt =
     function getTileAt(x, y, z)
     {
         if(x < 0 || y < 0 || z < 0 || x > 15 || y >= chunkHeight || z > 15)
@@ -70,14 +30,44 @@ function Chunk(x, z)
             return 0;
         }
 
-        return this.map[getIndexForCoords(x, y, z)];
+        return this.map[this.getIndexForCoords(x, y, z)];
     }
 
+    this.getTileWithNeighbourChunkAt =
+    function getTileWithNeighbourChunkAt(x, y, z)
+    {
+        var chunk = this;
+        if(x < 0)
+        {
+            chunk = MapManager.getChunkAtChunkCoords(this.chunkX - 1, this.chunkZ);
+            x = 16 + x;
+        }
+        else if(x > 15)
+        {
+            chunk = MapManager.getChunkAtChunkCoords(this.chunkX + 1, this.chunkZ);
+            x = x - 16;
+        }
+        else if(z < 0)
+        {
+            chunk = MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ - 1);
+            z = 16 + z;
+        }
+        else if(z > 15)
+        {
+            chunk = MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ + 1);
+            z = z - 16;
+        }
+
+        return chunk == null ? 0 : chunk.map[chunk.getIndexForCoords(x, y, z)];
+    }
+
+    this.getIndexForCoords =
     function getIndexForCoords(x, y, z)
     {
-        return x << 8 | y << 4 | z << 0;
+        return y << 8 | x << 4 | z << 0;
     }
 
+    this.prepareChunkRender =
     function prepareChunkRender()
     {
         if(this.mesh != null)
@@ -85,120 +75,58 @@ function Chunk(x, z)
             scene.remove(this.mesh);
         }
 
-        //Old version
-        /*var geometry = new THREE.CubeGeometry(1, 1, 1);
-        for(var x = 0; x < 16; x++)
-        {
-            for(var y = 0; y < chunkHeight; y++)
-            {
-                for(var z = 0; z < 16; z++)
-                {
-                    var tile = this.getTileAt(x, y, z);
-                    if(tile != 0)
-                    {
-                        var material = new THREE.MeshBasicMaterial({color: Math.random() * 0xFFFFFF});
-                        this.mesh = new THREE.Mesh(geometry, material);
-                        this.mesh.position.x = x + this.x * 16;
-                        this.mesh.position.y = y;
-                        this.mesh.position.z = z + this.z * 16;
-                        scene.add(this.mesh);
-                    }
-                }
-            }
-        }*/
-
         //New version
         var geometry = new THREE.Geometry();
-        //var material = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors});
-        var material = new THREE.MeshBasicMaterial({color: Math.random() * 0xFFFFFF});
 
-        var vertexAmount = 0;
+        var cX = this.chunkX * 16;
+        var cZ = this.chunkZ * 16;
         for(var x = 0; x < 16; x++)
         {
-            for(var y = 0; y < chunkHeight; y++)
+            var rX = x + cX;
+            for(var z = 0; z < 16; z++)
             {
-                for(var z = 0; z < 16; z++)
+                var rZ = z + cZ;
+                for(var y = 0; y < this.maxHeight; y++)
                 {
-                    var tile = this.getTileAt(x, y, z);
-                    if(tile != 0)
+                    var tile = Tiles.getTile(this.getTileAt(x, y, z));
+                    if(tile == null)
                     {
-                        //Z-
-    					geometry.vertices.push(new THREE.Vector3(cubeVertices[0] + x, cubeVertices[1] + y, cubeVertices[2] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[3] + x, cubeVertices[4] + y, cubeVertices[5] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[6] + x, cubeVertices[7] + y, cubeVertices[8] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[9] + x, cubeVertices[10] + y, cubeVertices[11] + z));
-
-                        geometry.faces.push(new THREE.Face3(vertexAmount + 2, vertexAmount + 1, vertexAmount));
-                        geometry.faces.push(new THREE.Face3(vertexAmount, vertexAmount + 3, vertexAmount + 2));
-
-                        vertexAmount = geometry.vertices.length;
-
-                        //Z+
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[12] + x, cubeVertices[13] + y, cubeVertices[14] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[15] + x, cubeVertices[16] + y, cubeVertices[17] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[18] + x, cubeVertices[19] + y, cubeVertices[20] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[21] + x, cubeVertices[22] + y, cubeVertices[23] + z));
-
-                        geometry.faces.push(new THREE.Face3(vertexAmount, vertexAmount + 1, vertexAmount + 2));
-                        geometry.faces.push(new THREE.Face3(vertexAmount + 2, vertexAmount + 3, vertexAmount));
-
-                        vertexAmount = geometry.vertices.length;
-
-                        //X-
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[24] + x, cubeVertices[25] + y, cubeVertices[26] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[27] + x, cubeVertices[28] + y, cubeVertices[29] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[30] + x, cubeVertices[31] + y, cubeVertices[32] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[33] + x, cubeVertices[34] + y, cubeVertices[35] + z));
-
-                        geometry.faces.push(new THREE.Face3(vertexAmount, vertexAmount + 1, vertexAmount + 2));
-                        geometry.faces.push(new THREE.Face3(vertexAmount + 2, vertexAmount + 3, vertexAmount));
-
-                        vertexAmount = geometry.vertices.length;
-
-                        //X+
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[36] + x, cubeVertices[37] + y, cubeVertices[38] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[39] + x, cubeVertices[40] + y, cubeVertices[41] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[42] + x, cubeVertices[43] + y, cubeVertices[44] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[45] + x, cubeVertices[46] + y, cubeVertices[47] + z));
-
-                        geometry.faces.push(new THREE.Face3(vertexAmount + 2, vertexAmount + 1, vertexAmount));
-                        geometry.faces.push(new THREE.Face3(vertexAmount, vertexAmount + 3, vertexAmount + 2));
-
-                        vertexAmount = geometry.vertices.length;
-
-                        //Bottom
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[48] + x, cubeVertices[49] + y, cubeVertices[50] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[51] + x, cubeVertices[52] + y, cubeVertices[53] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[54] + x, cubeVertices[55] + y, cubeVertices[56] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[57] + x, cubeVertices[58] + y, cubeVertices[59] + z));
-
-                        geometry.faces.push(new THREE.Face3(vertexAmount, vertexAmount + 1, vertexAmount + 2));
-                        geometry.faces.push(new THREE.Face3(vertexAmount + 2, vertexAmount + 3, vertexAmount));
-
-                        vertexAmount = geometry.vertices.length;
-
-                        //Top
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[60] + x, cubeVertices[61] + y, cubeVertices[62] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[63] + x, cubeVertices[64] + y, cubeVertices[65] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[66] + x, cubeVertices[67] + y, cubeVertices[68] + z));
-                        geometry.vertices.push(new THREE.Vector3(cubeVertices[69] + x, cubeVertices[70] + y, cubeVertices[71] + z));
-
-                        geometry.faces.push(new THREE.Face3(vertexAmount + 2, vertexAmount + 1, vertexAmount));
-                        geometry.faces.push(new THREE.Face3(vertexAmount, vertexAmount + 3, vertexAmount + 2));
-
-                        vertexAmount = geometry.vertices.length;
+                        console.log(x, y, z);
+                    }
+                    if(tile.id != 0)
+                    {
+                        TileRenderer.renderTile(geometry, this, tile, x, y, z, rX, rZ);
                     }
                 }
             }
         }
 
-        this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.position.x = this.x * 16;
-        this.mesh.position.z = this.z * 16;
+        this.mesh = new THREE.Mesh(geometry, Materials.toonMaterial);
+        this.mesh.position.x = this.chunkX * 16;
+        this.mesh.position.z = this.chunkZ * 16;
+        this.mesh.receiveShadow = true;
+        this.mesh.castShadow = true;
         scene.add(this.mesh);
     }
 
-    this.prepareChunkRender = prepareChunkRender;
-    this.getTileAt = getTileAt;
-    this.setTileAt = setTileAt;
+    //Generate Chunk
+    var length = this.map.length
+    for(var i = 0; i < length; i++)
+    {
+        this.map[i] = 0;
+    }
+
+    for(var x = 0; x < 16; x++)
+    {
+        for(var z = 0; z < 16; z++)
+        {
+            var height = parseInt((noise.perlin2((this.chunkX * 16 + x) / 100, (this.chunkZ * 16 + z) / 100) + 1) * 10);
+            this.maxHeight = Math.max(height, this.maxHeight);
+
+            for(var y = 0; y < height; y++)
+            {
+                this.map[this.getIndexForCoords(x, y, z)] = 1;
+            }
+        }
+    }
 }

@@ -29,7 +29,7 @@ function initGame()
 
 
     initFPSCamera();
-    textures = initTextures();
+    textures = ResourceLoader.initTextures();
 
     //Init renderer
     renderer = new THREE.WebGLRenderer();
@@ -38,16 +38,19 @@ function initGame()
 
     //Init scene
     scene = new THREE.Scene();
+    SkyRenderer.init();
 
     //Create camera (FOV, ratio, near, far)
     camera = new THREE.PerspectiveCamera(FOV, width / height, 1, 100000);
     camera.rotation.order = 'YXZ';
-    camera.position.set(5, 3, 8);
+    camera.position.set(20, 30, 20);
+
+    scene.add(camera);
 
     window.addEventListener( 'resize', onWindowResize, false );
 
-    initMap();
-    prepareMapRender();
+    MapManager.initMap();
+    MapManager.prepareMapRender();
 
     // on effectue le rendu de la scène
     requestAnimationFrame(loopGame);
@@ -57,7 +60,7 @@ function loopGame(time)
 {
     stats.begin();
 
-    calculateTime(time);
+    TimeManager.calculateTime(time);
 
     camera.rotation.set(0, 0, 0);
 
@@ -67,8 +70,6 @@ function loopGame(time)
     renderer.render(scene, camera);
 
     stats.end();
-
-    lastTime = time;
     requestAnimationFrame(loopGame);
 }
 

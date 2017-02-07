@@ -1,86 +1,91 @@
-var mapWidth = 4;
-var mapLength = 4;
-var chunks;
-
-function initMap()
+function MapManager()
 {
-    chunks = Array(mapWidth * mapLength);
-    for(var x = 0; x < mapWidth; x++)
+    this.mapWidth = 8;
+    this.mapLength = 8;
+    this.totalWidth = this.mapWidth * 16;
+    this.totalLength = this.mapLength * 16;
+    this.chunks;
+
+    this.initMap =
+    function initMap()
     {
-        for(var z = 0; z < mapLength; z++)
+        console.log("Initializing map...");
+        noise.seed(Math.random());
+
+        this.chunks = Array(this.mapWidth * this.mapLength);
+        for(var x = 0; x < this.mapWidth; x++)
         {
-            chunks[x * mapWidth + z] = new Chunk(x, z);
-        }
-    }
-}
-
-function prepareMapRender()
-{
-    //Clear map
-    scene.children.forEach(function(object)
-    {
-        scene.remove(object);
-    });
-
-    scene.add(camera);
-
-
-    //var material = new THREE.MeshBasicMaterial({color: Math.random() * 0xFFFFFF});
-
-    /*for(var x = 0; x < mapWidth; x++)
-    {
-        for(var y = 0; y < mapHeight; y++)
-        {
-            for(var z = 0; z < mapWidth; z++)
+            for(var z = 0; z < this.mapLength; z++)
             {
-                mesh = new THREE.Mesh(geometry, material);
-                scene.add(mesh);
+                this.chunks[x * this.mapWidth + z] = new Chunk(x, z);
             }
         }
-    }*/
+        console.log("Initialized map...");
+    }
 
-    for(var x = 0; x < mapWidth; x++)
+    this.prepareMapRender =
+    function prepareMapRender()
     {
-        for(var z = 0; z < mapLength; z++)
+        console.log("Rendering map...");
+        
+        //Clear map
+        for(var i = 0; i < this.chunks.length; i++)
         {
-            getChunkAtChunkCoords(x, z).prepareChunkRender();
+            if(this.chunks[i].mesh != null)
+            {
+                scene.remove(this.chunks[i].mesh);
+            }
+        }
+
+        for(var x = 0; x < this.mapWidth; x++)
+        {
+            for(var z = 0; z < this.mapLength; z++)
+            {
+                this.getChunkAtChunkCoords(x, z).prepareChunkRender();
+            }
+        }
+
+        console.log("Map rendered");
+    }
+
+    this.getChunkAtChunkCoords =
+    function getChunkAtChunkCoords(x, z)
+    {
+        if(x < 0 || z < 0 || x >= this.mapWidth || z >= this.mapLength)
+        {
+            return null;
+        }
+
+        return this.chunks[x * this.mapWidth + z];
+    }
+
+    this.getChunkAt =
+    function getChunkAt(x, z)
+    {
+        return this.getChunkAtChunkCoords(x >> 4, z >> 4);
+    }
+
+    this.getTileAt =
+    function getTileAt(x, y, z)
+    {
+        var chunk = this.getChunkAt(x, z);
+        if(chunk != null)
+        {
+            return chunk.getTileAt(x % 16, y, z % 16);
+        }
+
+        return 0;
+    }
+
+    this.setTileAt =
+    function setTileAt(tile, x, y, z)
+    {
+        var chunk = this.getChunkAt(x, z);
+        if(chunk != null)
+        {
+            chunk.setTileAt(tile, x % 16, y, z % 16);
         }
     }
-
-    console.log("Map rendered");
 }
 
-function getChunkAtChunkCoords(x, z)
-{
-    if(x < 0 || z < 0 || x >= mapWidth || z >= mapLength)
-    {
-        return null;
-    }
-
-    return chunks[x * mapWidth + z];
-}
-
-function getChunkAt(x, z)
-{
-    return getChunkAtChunkCoords(x >> 4, z >> 4);
-}
-
-function getTileAt(x, y, z)
-{
-    var chunk = getChunkAt(x, z);
-    if(chunk != null)
-    {
-        return chunk.getTileAt(x % 16, y, z % 16);
-    }
-
-    return 0;
-}
-
-function setTileAt(tile, x, y, z)
-{
-    var chunk = getChunkAt(x, z);
-    if(chunk != null)
-    {
-        chunk.setTileAt(tile, x % 16, y, z % 16);
-    }
-}
+var MapManager = new MapManager();
