@@ -43,14 +43,14 @@ function prepareMapRender()
     {
         for(var z = 0; z < mapLength; z++)
         {
-            getChunkAt(x, z).prepareRender();
+            getChunkAtChunkCoords(x, z).prepareChunkRender();
         }
     }
 
     console.log("Map rendered");
 }
 
-function getChunkAt(x, z)
+function getChunkAtChunkCoords(x, z)
 {
     if(x < 0 || z < 0 || x >= mapWidth || z >= mapLength)
     {
@@ -58,4 +58,29 @@ function getChunkAt(x, z)
     }
 
     return chunks[x * mapWidth + z];
+}
+
+function getChunkAt(x, z)
+{
+    return getChunkAtChunkCoords(x >> 4, z >> 4);
+}
+
+function getTileAt(x, y, z)
+{
+    var chunk = getChunkAt(x, z);
+    if(chunk != null)
+    {
+        return chunk.getTileAt(x % 16, y, z % 16);
+    }
+
+    return 0;
+}
+
+function setTileAt(tile, x, y, z)
+{
+    var chunk = getChunkAt(x, z);
+    if(chunk != null)
+    {
+        chunk.setTileAt(tile, x % 16, y, z % 16);
+    }
 }
