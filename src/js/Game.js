@@ -3,6 +3,7 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 
 //Constants
 var FOV = 45;
+var VERSION = "0.1A";
 
 //Properties
 var width;
@@ -27,7 +28,7 @@ function initGame()
     width = window.innerWidth;
     height = window.innerHeight;
 
-
+    GUIS.init();
     initFPSCamera();
     textures = ResourceLoader.initTextures();
 
@@ -52,6 +53,8 @@ function initGame()
     MapManager.initMap();
     MapManager.prepareMapRender();
 
+    GUIS.INGAME_GUI.open();
+
     // on effectue le rendu de la scène
     requestAnimationFrame(loopGame);
 }
@@ -68,6 +71,8 @@ function loopGame(time)
     camera.rotation.y = toRadians(cameraYaw);
 
     renderer.render(scene, camera);
+
+    GUIS.updateAllGuis();
 
     stats.end();
     requestAnimationFrame(loopGame);
