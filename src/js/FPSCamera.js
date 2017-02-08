@@ -39,8 +39,11 @@ function FPSCamera()
     this.updateCamera =
     function updateCamera(e)
     {
-    	FPSCamera.cameraYaw -= e.movementX * FPSCamera.sensitivity;
-    	FPSCamera.cameraPitch -= e.movementY * FPSCamera.sensitivity;
+        var movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
+        var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+
+    	FPSCamera.cameraYaw -= movementX * FPSCamera.sensitivity;
+    	FPSCamera.cameraPitch -= movementY * FPSCamera.sensitivity;
 
     	//Clamp pitch
     	FPSCamera.cameraPitch = Math.min(Math.max(FPSCamera.cameraPitch, -90), 90);
