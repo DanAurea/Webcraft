@@ -27,17 +27,17 @@ function FPSCamera()
     	if (document.pointerLockElement === $("#gameContainer")[0])
     	{
     		FPSCamera.locked = true;
-    		document.addEventListener("mousemove", FPSCamera.updateCamera, false);
+    		document.addEventListener("mousemove", FPSCamera.onMouseMove, false);
     	}
     	else
     	{
     		FPSCamera.locked = false;
-    		document.removeEventListener("mousemove", FPSCamera.updateCamera, false);
+    		document.removeEventListener("mousemove", FPSCamera.onMouseMove, false);
     	}
     }
 
-    this.updateCamera =
-    function updateCamera(e)
+    this.onMouseMove =
+    function onMouseMove(e)
     {
         var movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
         var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
@@ -61,13 +61,21 @@ function FPSCamera()
         var forward = key == "z" ? 1 : (key == "s" ? -1 : 0);
         var strafe = key == "d" ? 1 : (key == "q" ? -1 : 0);
 
-        var motionX = ((Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe / 2) - (Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * TimeManager.delta * 0.05;
-        var motionZ = ((Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe / 2) - (Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * TimeManager.delta * 0.05;
-        var motionY = key == " " ? 1 : (key == "shift" ? -1 : 0);
+        thePlayer.inputMotX += ((Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe / 2) - (Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * TimeManager.delta * 0.05;
+        thePlayer.inputMotZ += ((Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe / 2) - (Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * TimeManager.delta * 0.05;
+        thePlayer.inputMotY += key == " " ? 1 : (key == "shift" ? -1 : 0);
+    }
 
-        camera.position.x += motionX;
-        camera.position.y += motionY;
-        camera.position.z += motionZ;
+    this.updateCamera =
+    function updateCamera()
+    {
+        camera.rotation.set(0, 0, 0);
+        camera.position.x = thePlayer.x;
+        camera.position.y = thePlayer.y;
+        camera.position.z = thePlayer.z;
+
+        camera.rotation.x = FPSCamera.toRadians(FPSCamera.cameraPitch);
+        camera.rotation.y = FPSCamera.toRadians(FPSCamera.cameraYaw);
     }
 }
 

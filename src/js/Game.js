@@ -9,6 +9,7 @@ var VERSION = "0.1A";
 var width;
 var height;
 var textures;
+var thePlayer;
 
 //Three.js
 var renderer;
@@ -56,6 +57,12 @@ function initGame()
 
     GUIS.INGAME_GUI.open();
 
+    thePlayer = new EntityPlayer();
+    thePlayer.x = 5;
+    thePlayer.y = 15;
+    thePlayer.z = 10;
+    thePlayer.spawn();
+
     // on effectue le rendu de la scène
     requestAnimationFrame(loopGame);
 }
@@ -67,10 +74,8 @@ function loopGame(time)
     TimeManager.calculateTime(time);
     Controls.update();
 
-    camera.rotation.set(0, 0, 0);
-
-    camera.rotation.x = FPSCamera.toRadians(FPSCamera.cameraPitch);
-    camera.rotation.y = FPSCamera.toRadians(FPSCamera.cameraYaw);
+    Entities.updateEntities();
+    FPSCamera.updateCamera();
 
     renderer.render(scene, camera);
 
