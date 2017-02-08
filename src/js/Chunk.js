@@ -64,7 +64,7 @@ function Chunk(x, z)
     this.getIndexForCoords =
     function getIndexForCoords(x, y, z)
     {
-        return y << 8 | x << 4 | z << 0;
+        return y << 8 | x << 4 | z;
     }
 
     this.prepareChunkRender =
