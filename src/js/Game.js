@@ -28,8 +28,9 @@ function initGame()
     width = window.innerWidth;
     height = window.innerHeight;
 
+    Controls.init();
     GUIS.init();
-    initFPSCamera();
+    FPSCamera.initFPSCamera();
     textures = ResourceLoader.initTextures();
 
     //Init renderer
@@ -64,11 +65,12 @@ function loopGame(time)
     stats.begin();
 
     TimeManager.calculateTime(time);
+    Controls.update();
 
     camera.rotation.set(0, 0, 0);
 
-    camera.rotation.x = toRadians(cameraPitch);
-    camera.rotation.y = toRadians(cameraYaw);
+    camera.rotation.x = FPSCamera.toRadians(FPSCamera.cameraPitch);
+    camera.rotation.y = FPSCamera.toRadians(FPSCamera.cameraYaw);
 
     renderer.render(scene, camera);
 

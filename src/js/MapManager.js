@@ -1,7 +1,7 @@
 function MapManager()
 {
-    this.mapWidth = 8;
-    this.mapLength = 8;
+    this.mapWidth = 16;
+    this.mapLength = 16;
     this.totalWidth = this.mapWidth * 16;
     this.totalLength = this.mapLength * 16;
     this.chunks;
@@ -27,7 +27,7 @@ function MapManager()
     function prepareMapRender()
     {
         console.log("Rendering map...");
-        
+
         //Clear map
         for(var i = 0; i < this.chunks.length; i++)
         {

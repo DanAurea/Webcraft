@@ -75,7 +75,7 @@ function TileRenderer()
         }
 
         //Z+
-        if(rZ < MapManager.totalLength && chunk.getTileWithNeighbourChunkAt(x, y, z + 1) == 0)
+        if(rZ < MapManager.totalLength - 1 && chunk.getTileWithNeighbourChunkAt(x, y, z + 1) == 0)
         {
             if(tileColor == null)
             {
@@ -113,7 +113,7 @@ function TileRenderer()
         }
 
         //X+
-        if(rX < MapManager.totalWidth && chunk.getTileWithNeighbourChunkAt(x + 1, y, z) == 0)
+        if(rX < MapManager.totalWidth - 1 && chunk.getTileWithNeighbourChunkAt(x + 1, y, z) == 0)
         {
             if(tileColor == null)
             {
