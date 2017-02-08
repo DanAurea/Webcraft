@@ -63,7 +63,7 @@ function FPSCamera()
 
         var motionX = ((Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe / 2) - (Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * TimeManager.delta * 0.05;
         var motionZ = ((Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe / 2) - (Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * TimeManager.delta * 0.05;
-        var motionY = key == " " ? 1 : (key == "Shift" ? -1 : 0);
+        var motionY = key == " " ? 1 : (key == "shift" ? -1 : 0);
 
         camera.position.x += motionX;
         camera.position.y += motionY;

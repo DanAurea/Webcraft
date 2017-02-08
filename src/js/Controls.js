@@ -7,6 +7,8 @@ function Controls()
     {
         $(document).keydown(function(e)
         {
+            e.key = e.key.toLowerCase();
+
             for (var i = 0; i < Controls.controlMap.length; i++)
             {
                 if(Controls.controlMap[i]["key"] == e.key)
@@ -26,6 +28,8 @@ function Controls()
 
         $(document).keyup(function(e)
         {
+            e.key = e.key.toLowerCase();
+
             for (var i = 0; i < Controls.controlMap.length; i++)
             {
                 if(Controls.controlMap[i]["key"] == e.key)
@@ -72,4 +76,4 @@ Controls.register("s", FPSCamera.move, "hold");
 Controls.register("q", FPSCamera.move, "hold");
 Controls.register("d", FPSCamera.move, "hold");
 Controls.register(" ", FPSCamera.move, "hold");
-Controls.register("Shift", FPSCamera.move, "hold");
+Controls.register("shift", FPSCamera.move, "hold");
