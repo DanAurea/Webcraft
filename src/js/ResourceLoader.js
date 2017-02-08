@@ -61,6 +61,12 @@ function ResourceLoader()
 
         return textures;
     }
+
+    this.ajaxGet =
+    function ajaxGet(url, success, error)
+    {
+        $.get(url, success).fail(error);
+    }
 }
 
 var ResourceLoader = new ResourceLoader();
