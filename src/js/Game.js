@@ -50,7 +50,7 @@ function initGame()
 
     scene.add(camera);
 
-    window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener('resize', onWindowResize, false);
 
     MapManager.initMap();
     MapManager.prepareMapRender();
