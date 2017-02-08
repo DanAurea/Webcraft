@@ -6,7 +6,7 @@ function GUI(domId, openCallback, updateCallback, closeCallback)
     this.openCallback = openCallback;
     this.updateCallback = updateCallback;
     this.closeCallback = closeCallback;
-    this.open = false;
+    this.opened = false;
 
     this.open =
     function open()
@@ -18,7 +18,7 @@ function GUI(domId, openCallback, updateCallback, closeCallback)
         {
             this.openCallback(gui);
         }
-        this.open = true;
+        this.opened = true;
     }
 
     this.close =
@@ -31,7 +31,7 @@ function GUI(domId, openCallback, updateCallback, closeCallback)
         {
             this.closeCallback(gui);
         }
-        this.open = false;
+        this.opened = false;
     }
 }
 
@@ -50,7 +50,7 @@ function GUIS()
     {
         for(var i = 0, guiAmount = this.guiList.length; i < guiAmount; i++)
         {
-            if(this.guiList[i].open)
+            if(this.guiList[i].opened)
             {
                 if(this.guiList[i].updateCallback != null)
                 {
