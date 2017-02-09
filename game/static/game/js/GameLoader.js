@@ -33,6 +33,4 @@ $(function()
     console.log("Game Starting...");
     console.log("Download game resources...");
     ResourceLoader.downloadGameResources(onDownloadFinished, onDownloadUpdate, onDownloadError);
-    initGame();
-    initDebugger();
 });
