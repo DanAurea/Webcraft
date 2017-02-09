@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Django-RPG</title>
+        <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
+    </head>
+    <body>
+        
+        <div id="gameContainer"></div>
+        <div id="gameOverlay">
+            <div class="gui" id="ingameGui">
+                <div class="gui_bottom gui_left">
+                    <span id="ingame_gui_version">V: </span>
+                </div>
+            </div>
+        </div>
+        
+        <script src="{% static 'game/lib/jquery.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/three.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/stats.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/dat.gui.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/perlin.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Gui/GuiDebugger.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/ResourceLoader.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/TimeManager.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/MapManager.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Chunk.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/TileRenderer.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/SkyRenderer.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Game.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Tiles.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/FPSCamera.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Materials.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Gui/Gui.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Gui/IngameGui.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/GameLoader.js' %}" charset="utf-8"></script>
+    </body>
+</html>

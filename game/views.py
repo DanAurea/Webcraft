@@ -3,5 +3,4 @@ from django.shortcuts import render, redirect
 
 
 def home(request):
-    text='Test vue'
-    return HttpResponse(text)
+    return render(request, 'game/home.html', {})
