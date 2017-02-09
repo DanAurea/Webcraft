@@ -58,9 +58,7 @@ function initGame()
     GUIS.INGAME_GUI.open();
 
     thePlayer = new EntityPlayer();
-    thePlayer.x = 5;
-    thePlayer.y = 15;
-    thePlayer.z = 10;
+    thePlayer.setPosition(5, 15, 10);
     thePlayer.spawn();
 
     // on effectue le rendu de la scène
