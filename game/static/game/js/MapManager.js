@@ -49,7 +49,7 @@ function MapManager()
     this.getChunkAtChunkCoords =
     function getChunkAtChunkCoords(x, z)
     {
-        if(x < 0 || z < 0 || x >= this.mapWidth || z >= this.mapLength)
+        if(x < 0 || z < 0 || x >= this.totalWidth || z >= this.totalLength)
         {
             return null;
         }
