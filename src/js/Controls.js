@@ -7,20 +7,23 @@ function Controls()
     {
         $(document).keydown(function(e)
         {
-            e.key = e.key.toLowerCase();
-
-            for (var i = 0; i < Controls.controlMap.length; i++)
+            if(FPSCamera.locked)
             {
-                if(Controls.controlMap[i]["key"] == e.key)
-                {
-                    if(Controls.controlMap[i]["type"] == "press")
-                    {
-                        Controls.controlMap[i]["call"](e.key);
-                    }
+                e.key = e.key.toLowerCase();
 
-                    if(Controls.controlMap[i]["type"] != "release")
+                for (var i = 0; i < Controls.controlMap.length; i++)
+                {
+                    if(Controls.controlMap[i]["key"] == e.key)
                     {
-                        Controls.controlMap[i]["pressed"] = true;
+                        if(Controls.controlMap[i]["type"] == "press")
+                        {
+                            Controls.controlMap[i]["call"](e.key);
+                        }
+
+                        if(Controls.controlMap[i]["type"] != "release")
+                        {
+                            Controls.controlMap[i]["pressed"] = true;
+                        }
                     }
                 }
             }
@@ -28,20 +31,71 @@ function Controls()
 
         $(document).keyup(function(e)
         {
-            e.key = e.key.toLowerCase();
-
-            for (var i = 0; i < Controls.controlMap.length; i++)
+            if(FPSCamera.locked)
             {
-                if(Controls.controlMap[i]["key"] == e.key)
-                {
-                    if(Controls.controlMap[i]["type"] == "release")
-                    {
-                        Controls.controlMap[i]["call"](e.key);
-                    }
+                e.key = e.key.toLowerCase();
 
-                    if(Controls.controlMap[i]["type"] != "press")
+                for (var i = 0; i < Controls.controlMap.length; i++)
+                {
+                    if(Controls.controlMap[i]["key"] == e.key)
                     {
-                        Controls.controlMap[i]["pressed"] = false;
+                        if(Controls.controlMap[i]["type"] == "release")
+                        {
+                            Controls.controlMap[i]["call"](e.key);
+                        }
+
+                        if(Controls.controlMap[i]["type"] != "press")
+                        {
+                            Controls.controlMap[i]["pressed"] = false;
+                        }
+                    }
+                }
+            }
+        });
+
+        $(document).mousedown(function(e)
+        {
+            if(FPSCamera.locked)
+            {
+                var key = "mouse-" + e.button;
+
+                for (var i = 0; i < Controls.controlMap.length; i++)
+                {
+                    if(Controls.controlMap[i]["key"] == key)
+                    {
+                        if(Controls.controlMap[i]["type"] == "press")
+                        {
+                            Controls.controlMap[i]["call"](key);
+                        }
+
+                        if(Controls.controlMap[i]["type"] != "release")
+                        {
+                            Controls.controlMap[i]["pressed"] = true;
+                        }
+                    }
+                }
+            }
+        });
+
+        $(document).mouseup(function(e)
+        {
+            if(FPSCamera.locked)
+            {
+                var key = "mouse-" + e.button;
+
+                for (var i = 0; i < Controls.controlMap.length; i++)
+                {
+                    if(Controls.controlMap[i]["key"] == key)
+                    {
+                        if(Controls.controlMap[i]["type"] == "release")
+                        {
+                            Controls.controlMap[i]["call"](key);
+                        }
+
+                        if(Controls.controlMap[i]["type"] != "press")
+                        {
+                            Controls.controlMap[i]["pressed"] = true;
+                        }
                     }
                 }
             }
@@ -51,13 +105,16 @@ function Controls()
     this.update =
     function update()
     {
-        for (var i = 0; i < this.controlMap.length; i++)
+        if(FPSCamera.locked)
         {
-            if(this.controlMap[i]["pressed"])
+            for (var i = 0; i < this.controlMap.length; i++)
             {
-                if(this.controlMap[i]["type"] == "hold")
+                if(this.controlMap[i]["pressed"])
                 {
-                    this.controlMap[i]["call"](this.controlMap[i]["key"]);
+                    if(this.controlMap[i]["type"] == "hold")
+                    {
+                        this.controlMap[i]["call"](this.controlMap[i]["key"]);
+                    }
                 }
             }
         }
@@ -77,3 +134,5 @@ Controls.register("q", FPSCamera.move, "hold");
 Controls.register("d", FPSCamera.move, "hold");
 Controls.register(" ", FPSCamera.move, "hold");
 Controls.register("shift", FPSCamera.move, "hold");
+Controls.register("mouse-0", FPSCamera.placeTile, "press");
+Controls.register("mouse-2", FPSCamera.placeTile, "press");

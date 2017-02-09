@@ -31,7 +31,6 @@ function initGame()
 
     Controls.init();
     GUIS.init();
-    FPSCamera.initFPSCamera();
     textures = ResourceLoader.initTextures();
 
     //Init renderer
@@ -41,10 +40,11 @@ function initGame()
 
     //Init scene
     scene = new THREE.Scene();
+    FPSCamera.initFPSCamera();
     SkyRenderer.init();
 
     //Create camera (FOV, ratio, near, far)
-    camera = new THREE.PerspectiveCamera(FOV, width / height, 1, 100000);
+    camera = new THREE.PerspectiveCamera(FOV, width / height, 0.01, 100000);
     camera.rotation.order = 'YXZ';
     camera.position.set(20, 30, 20);
 

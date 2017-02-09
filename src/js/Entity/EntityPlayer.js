@@ -17,14 +17,6 @@ function EntityPlayer()
         this.inputMotY = 0;
         this.inputMotZ = 0;
     }
-
-    this.handleCollision =
-    function handleCollision()
-    {
-        this.x += this.totalMotionX;
-        this.y += this.totalMotionY;
-        this.z += this.totalMotionZ;
-    }
 }
 
 //Inheritance

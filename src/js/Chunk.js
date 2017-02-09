@@ -19,7 +19,37 @@ function Chunk(x, z)
         this.map[this.getIndexForCoords(x, y, z)] = tile;
 
         this.prepareChunkRender();
-        //TODO update neighbours
+
+        //Update neighbours chunks
+        var neighbours = [];
+        if(x == 0)
+        {
+            neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX - 1, this.chunkZ));
+        }
+        else if(x == 15)
+        {
+            neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX + 1, this.chunkZ));
+        }
+
+        if(z == 0)
+        {
+            neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ - 1));
+        }
+        else if(z == 15)
+        {
+            neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ + 1));
+        }
+
+        if(neighbours.length > 0)
+        {
+            for(var i = 0, neighbourAmount = neighbours.length; i < neighbourAmount; i++)
+            {
+                if(neighbours[i] != null)
+                {
+                    neighbours[i].prepareChunkRender();
+                }
+            }
+        }
     }
 
     this.getTileAt =
@@ -70,10 +100,7 @@ function Chunk(x, z)
     this.prepareChunkRender =
     function prepareChunkRender()
     {
-        if(this.mesh != null)
-        {
-            scene.remove(this.mesh);
-        }
+        var oldMesh = this.mesh;
 
         //New version
         var geometry = new THREE.Geometry();
@@ -107,6 +134,11 @@ function Chunk(x, z)
         this.mesh.receiveShadow = true;
         this.mesh.castShadow = true;
         scene.add(this.mesh);
+
+        if(oldMesh != null)
+        {
+            scene.remove(oldMesh);
+        }
     }
 
     //Generate Chunk
