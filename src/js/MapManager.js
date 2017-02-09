@@ -37,15 +37,13 @@ function MapManager()
             }
         }
 
-        for(var x = 0; x < this.mapWidth; x++)
+        var begin = new Date().getTime();
+        for(var i = 0, chunkAmount = this.chunks.length; i < chunkAmount; i++)
         {
-            for(var z = 0; z < this.mapLength; z++)
-            {
-                this.getChunkAtChunkCoords(x, z).prepareChunkRender();
-            }
+            this.chunks[i].prepareChunkRender();
         }
 
-        console.log("Map rendered");
+        console.log("Map rendered in " + (new Date().getTime() - begin) + "ms");
     }
 
     this.getChunkAtChunkCoords =

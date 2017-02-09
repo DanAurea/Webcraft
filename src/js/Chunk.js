@@ -55,11 +55,6 @@ function Chunk(x, z)
     this.getTileAt =
     function getTileAt(x, y, z)
     {
-        if(x < 0 || y < 0 || z < 0 || x > 15 || y >= chunkHeight || z > 15)
-        {
-            return 0;
-        }
-
         return this.map[this.getIndexForCoords(x, y, z)];
     }
 
@@ -102,20 +97,22 @@ function Chunk(x, z)
     {
         var oldMesh = this.mesh;
 
-        //New version
         var geometry = new THREE.Geometry();
 
         var cX = this.chunkX * 16;
         var cZ = this.chunkZ * 16;
-        for(var x = 0; x < 16; x++)
+        var rX, rZ;
+        var x, y, z;
+        var tile;
+        for(x = 0; x < 16; x++)
         {
-            var rX = x + cX;
-            for(var z = 0; z < 16; z++)
+            rX = x + cX;
+            for(z = 0; z < 16; z++)
             {
-                var rZ = z + cZ;
-                for(var y = 0; y < this.maxHeight; y++)
+                rZ = z + cZ;
+                for(y = 0; y < this.maxHeight; y++)
                 {
-                    var tile = Tiles.getTile(this.getTileAt(x, y, z));
+                    tile = Tiles.getTile(this.getTileAt(x, y, z));
                     if(tile != Tiles.AIR)
                     {
                         TileRenderer.renderTile(geometry, this, tile, x, y, z, rX, rZ);
@@ -125,8 +122,8 @@ function Chunk(x, z)
         }
 
         this.mesh = new THREE.Mesh(geometry, Materials.toonMaterial);
-        this.mesh.position.x = this.chunkX * 16;
-        this.mesh.position.z = this.chunkZ * 16;
+        this.mesh.position.x = cX;
+        this.mesh.position.z = cZ;
         this.mesh.receiveShadow = true;
         this.mesh.castShadow = true;
         scene.add(this.mesh);
@@ -137,7 +134,7 @@ function Chunk(x, z)
         }
     }
 
-    //Generate Chunk
+    //Generate Chunk - TEMP
     var length = this.map.length
     for(var i = 0; i < length; i++)
     {
