@@ -116,11 +116,7 @@ function Chunk(x, z)
                 for(var y = 0; y < this.maxHeight; y++)
                 {
                     var tile = Tiles.getTile(this.getTileAt(x, y, z));
-                    if(tile == null)
-                    {
-                        console.log(x, y, z);
-                    }
-                    if(tile.id != 0)
+                    if(tile != Tiles.AIR)
                     {
                         TileRenderer.renderTile(geometry, this, tile, x, y, z, rX, rZ);
                     }
