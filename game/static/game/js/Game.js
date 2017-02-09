@@ -9,6 +9,7 @@ var VERSION = "0.1A";
 var width;
 var height;
 var textures;
+var thePlayer;
 
 //Three.js
 var renderer;
@@ -28,8 +29,8 @@ function initGame()
     width = window.innerWidth;
     height = window.innerHeight;
 
+    Controls.init();
     GUIS.init();
-    initFPSCamera();
     textures = ResourceLoader.initTextures();
 
     //Init renderer
@@ -39,21 +40,28 @@ function initGame()
 
     //Init scene
     scene = new THREE.Scene();
+    FPSCamera.initFPSCamera();
     SkyRenderer.init();
 
     //Create camera (FOV, ratio, near, far)
-    camera = new THREE.PerspectiveCamera(FOV, width / height, 1, 100000);
+    camera = new THREE.PerspectiveCamera(FOV, width / height, 0.01, 100000);
     camera.rotation.order = 'YXZ';
     camera.position.set(20, 30, 20);
 
     scene.add(camera);
 
-    window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener('resize', onWindowResize, false);
 
     MapManager.initMap();
     MapManager.prepareMapRender();
 
     GUIS.INGAME_GUI.open();
+
+    thePlayer = new EntityPlayer();
+    thePlayer.x = 5;
+    thePlayer.y = 15;
+    thePlayer.z = 10;
+    thePlayer.spawn();
 
     // on effectue le rendu de la scène
     requestAnimationFrame(loopGame);
@@ -64,11 +72,10 @@ function loopGame(time)
     stats.begin();
 
     TimeManager.calculateTime(time);
+    Controls.update();
 
-    camera.rotation.set(0, 0, 0);
-
-    camera.rotation.x = toRadians(cameraPitch);
-    camera.rotation.y = toRadians(cameraYaw);
+    Entities.updateEntities();
+    FPSCamera.updateCamera();
 
     renderer.render(scene, camera);
 

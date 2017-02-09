@@ -18,7 +18,7 @@ function Tiles()
     {
         //Register tiles
         this.AIR = new Tile(0, 0xFFFFFF, false);
-        this.GRASS = new Tile(1, 0x16712D, true, 0.1, 0.15, 0.1);
+        this.GRASS = new Tile(1, 0x16712D, true, 0.15, 0.15, 0.1);
         this.DIRT = new Tile(2, 0x543E28, false);
     }
 

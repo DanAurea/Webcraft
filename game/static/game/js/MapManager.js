@@ -1,7 +1,7 @@
 function MapManager()
 {
-    this.mapWidth = 8;
-    this.mapLength = 8;
+    this.mapWidth = 16;
+    this.mapLength = 16;
     this.totalWidth = this.mapWidth * 16;
     this.totalLength = this.mapLength * 16;
     this.chunks;
@@ -27,7 +27,7 @@ function MapManager()
     function prepareMapRender()
     {
         console.log("Rendering map...");
-        
+
         //Clear map
         for(var i = 0; i < this.chunks.length; i++)
         {
@@ -37,15 +37,13 @@ function MapManager()
             }
         }
 
-        for(var x = 0; x < this.mapWidth; x++)
+        var begin = new Date().getTime();
+        for(var i = 0, chunkAmount = this.chunks.length; i < chunkAmount; i++)
         {
-            for(var z = 0; z < this.mapLength; z++)
-            {
-                this.getChunkAtChunkCoords(x, z).prepareChunkRender();
-            }
+            this.chunks[i].prepareChunkRender();
         }
 
-        console.log("Map rendered");
+        console.log("Map rendered in " + (new Date().getTime() - begin) + "ms");
     }
 
     this.getChunkAtChunkCoords =
