@@ -72,7 +72,10 @@ function loopGame(time)
     TimeManager.calculateTime(time);
     Controls.update();
 
-    Entities.updateEntities();
+    while(TimeManager.shallTick())
+    {
+        Entities.updateEntities();
+    }
     FPSCamera.updateCamera();
 
     renderer.render(scene, camera);

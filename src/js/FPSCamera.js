@@ -6,6 +6,8 @@ function FPSCamera()
     this.sensitivity = 0.1;
     this.targetTile = null;
     this.hoverMesh = null;
+    this.mousePos = new THREE.Vector2(0, 0);
+    this.rayCast = new THREE.Raycaster();
 
     this.initFPSCamera =
     function initFPSCamera()
@@ -65,13 +67,13 @@ function FPSCamera()
     this.updateCamera =
     function updateCamera()
     {
-        camera.rotation.set(0, 0, 0);
-        camera.position.x = thePlayer.x;
-        camera.position.y = thePlayer.y + 1.75;
-        camera.position.z = thePlayer.z;
+        camera.position.x = TimeManager.interpolate(thePlayer.prevX, thePlayer.x);
+        camera.position.y = TimeManager.interpolate(thePlayer.prevY, thePlayer.y) + 1.75;
+        camera.position.z = TimeManager.interpolate(thePlayer.prevZ, thePlayer.z);
 
         camera.rotation.x = FPSCamera.toRadians(FPSCamera.cameraPitch);
         camera.rotation.y = FPSCamera.toRadians(FPSCamera.cameraYaw);
+        camera.rotation.z = 0;
 
         this.targetTile = this.getTileLookingAt();
         if(this.targetTile != null)
@@ -89,18 +91,18 @@ function FPSCamera()
     function getTileLookingAt()
     {
         var obstacles = [];
-        for(var i = 0; i < MapManager.chunks.length; i++)
+        var mesh;
+        for(var i = 0, chunkAmount = MapManager.chunks.length; i < chunkAmount; i++)
         {
-            if(MapManager.chunks[i].mesh != null)
+            mesh = MapManager.chunks[i].mesh;
+            if(mesh != null)
             {
-                obstacles.push(MapManager.chunks[i].mesh);
+                obstacles.push(mesh);
             }
         }
 
-        var rayCast = new THREE.Raycaster();
-        var mousePos = new THREE.Vector2(0, 0);
-        rayCast.setFromCamera(mousePos, camera);
-        var collisions = rayCast.intersectObjects(obstacles);
+        this.rayCast.setFromCamera(this.mousePos, camera);
+        var collisions = this.rayCast.intersectObjects(obstacles);
         if (collisions.length >= 1 && collisions[0].distance <= 10)
         {
             var normal = collisions[0].face.normal;
@@ -119,9 +121,17 @@ function FPSCamera()
         var forward = key == "z" ? 1 : (key == "s" ? -1 : 0);
         var strafe = key == "d" ? 1 : (key == "q" ? -1 : 0);
 
-        thePlayer.inputMotX += ((Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * TimeManager.delta * 0.02;
-        thePlayer.inputMotZ += ((Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * TimeManager.delta * 0.02;
-        thePlayer.inputMotY += key == " " ? 1 : (key == "shift" ? -1 : 0);
+        thePlayer.inputMotX += ((Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * 0.15;
+        thePlayer.inputMotZ += ((Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * 0.15;
+
+        if(thePlayer.fly)
+        {
+            thePlayer.inputMotY += (key == " " ? 1 : (key == "shift" ? -1 : 0)) * 0.3;
+        }
+        else if(key == " ")
+        {
+            thePlayer.jump();
+        }
     }
 
     this.placeTile =
