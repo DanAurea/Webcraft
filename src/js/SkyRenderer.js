@@ -1,6 +1,7 @@
 var topSkyColor = new THREE.Color(0x2299FF);
 var bottomSkyColor = new THREE.Color(0xDDDDFF);
 var blackSkyColor = new THREE.Color(0x000000);
+var orangeSkyColor = new THREE.Color(0xFFB046);
 
 function SkyRenderer()
 {
@@ -28,7 +29,7 @@ function SkyRenderer()
 
         scene.fog = new THREE.FogExp2(this.fogColor.toInt(), 0.000055);
 
-        scene.add(new THREE.AmbientLight(0x222222));
+        scene.add(new THREE.AmbientLight(0x020202));
 
         this.sunLight = new THREE.DirectionalLight(0xFFFFFF, 1);
 		this.sunLight.color.setHSL(0.1, 1, 0.95);
@@ -65,11 +66,30 @@ function SkyRenderer()
     function update()
     {
         var time = (MapManager.time % dayDuration) / dayDuration;
-        var lightAmount = Math.min((Math.cos(time * Math.PI - Math.PI) + 1), 1);
-        console.log(time, lightAmount);
+        var lightAmount = Math.max(Math.min((Math.cos(time * Math.PI * 2 - Math.PI) + 0.5), 1), 0);
+        console.log(lightAmount);
 
-        this.uniforms.topColor.value = blackSkyColor.lerpRGB(topSkyColor, time);
-        this.uniforms.bottomColor.value = blackSkyColor.lerpRGB(bottomSkyColor, time);
+        this.sunLight.intensity = lightAmount;
+        this.uniforms.topColor.value = blackSkyColor.lerpRGB(topSkyColor, lightAmount);
+
+        if(lightAmount <= 0.10)
+        {
+            this.uniforms.bottomColor.value = blackSkyColor.lerpRGB(orangeSkyColor, lightAmount * 10);
+        }
+        else if(lightAmount <= 0.25)
+        {
+            this.uniforms.bottomColor.value = orangeSkyColor.lerpRGB(bottomSkyColor, lightAmount * 4);
+        }
+        else
+        {
+            this.uniforms.bottomColor.value = this.uniforms.bottomColor.value.lerpRGB(bottomSkyColor, lightAmount);
+        }
+    }
+
+    this.lerp =
+    function lerp(x1, x2, f)
+    {
+        return (x2 - x1) * f + x1;
     }
 }
 

@@ -1,4 +1,4 @@
-var dayDuration = 200;
+var dayDuration = 1000;
 
 function MapManager()
 {
