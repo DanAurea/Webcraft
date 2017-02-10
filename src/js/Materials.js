@@ -5,7 +5,7 @@ function Materials()
 		color: new THREE.Color(0xFFFFFF),
 		specular: new THREE.Color(0xFFFFFF),
 		shininess: 1,
-		shading: THREE.SmoothShading,
+		shading: THREE.FlatShading,
         vertexColors: THREE.VertexColors
 	});
 }

@@ -34,8 +34,10 @@ function initGame()
     textures = ResourceLoader.initTextures();
 
     //Init renderer
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer({alpha: true});
     renderer.setSize(width, height);
+    renderer.gammaInput = true;
+	renderer.gammaOutput = true;
     $("#gameContainer").append(renderer.domElement);
 
     //Init scene
@@ -74,10 +76,12 @@ function loopGame(time)
 
     while(TimeManager.shallTick())
     {
+        MapManager.update();
         Entities.updateEntities();
     }
     FPSCamera.updateCamera();
 
+    SkyRenderer.update();
     renderer.render(scene, camera);
 
     GUIS.updateAllGuis();

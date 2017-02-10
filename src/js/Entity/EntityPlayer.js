@@ -26,7 +26,7 @@ function EntityPlayer()
             this.motionY += 1.2;
         }
 
-        this._beginUpdate.call(this);
+        this._beginUpdate();
 
         this.totalMotionX += this.inputMotX;
         this.totalMotionY += this.inputMotY;

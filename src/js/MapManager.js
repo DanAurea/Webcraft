@@ -1,3 +1,5 @@
+var dayDuration = 200;
+
 function MapManager()
 {
     this.mapWidth = 8;
@@ -5,6 +7,13 @@ function MapManager()
     this.totalWidth = this.mapWidth * 32;
     this.totalLength = this.mapLength * 32;
     this.chunks;
+    this.time = 0;
+
+    this.update =
+    function update()
+    {
+        this.time++;
+    }
 
     this.initMap =
     function initMap()

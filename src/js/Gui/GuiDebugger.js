@@ -20,6 +20,5 @@ function initDebugger()
 
     var skyFolder = gui.addFolder("Sky");
     var fogFolder = skyFolder.addFolder("Fog");
-    fogFolder.add(scene.fog, "near", 0, 5);
-    fogFolder.add(scene.fog, "far", 0, 5000);
+    fogFolder.add(scene.fog, "density", 0, 0.1);
 }
