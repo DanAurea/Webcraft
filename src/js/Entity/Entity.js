@@ -14,7 +14,7 @@ function Entity()
     this.motionY = 0;
     this.motionZ = 0;
     this.rotation = 0;
-    this.collision = new AABB(0, 0, 0, 0.75, 1.75, 0.75);
+    this.collision = new AABB(0, 0, 0, 0.75, 1.80, 0.75);
 
     this.spawn =
     function spawn()

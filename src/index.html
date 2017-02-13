@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <script type="x-shader/x-vertex" id="vertexShader">
+        <script type="x-shader/x-vertex" id="skydome_vs">
 			varying vec3 vWorldPosition;
 			void main() {
 				vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
@@ -24,7 +24,7 @@
 			}
 		</script>
 
-		<script type="x-shader/x-fragment" id="fragmentShader">
+		<script type="x-shader/x-fragment" id="skydome_fs">
 			uniform vec3 topColor;
 			uniform vec3 bottomColor;
 			uniform float offset;
@@ -41,6 +41,13 @@
         <script src="./lib/stats.min.js" charset="utf-8"></script>
         <script src="./lib/dat.gui.min.js" charset="utf-8"></script>
         <script src="./lib/perlin.js" charset="utf-8"></script>
+        <script src="./js/Shaders/CopyShader.js" charset="utf-8"></script>
+        <script src="./js/Shaders/EffectComposer.js" charset="utf-8"></script>
+        <script src="./js/Shaders/MaskPass.js" charset="utf-8"></script>
+        <script src="./js/Shaders/RenderPass.js" charset="utf-8"></script>
+        <script src="./js/Shaders/ShaderPass.js" charset="utf-8"></script>
+        <script src="./js/Shaders/SSAOShader.js" charset="utf-8"></script>
+        <script src="./js/Shaders/SkyDome.js" charset="utf-8"></script>
         <script src="./js/Gui/GuiDebugger.js" charset="utf-8"></script>
         <script src="./js/ResourceLoader.js" charset="utf-8"></script>
         <script src="./js/TimeManager.js" charset="utf-8"></script>
@@ -49,6 +56,7 @@
         <script src="./js/Entity/AABB.js" charset="utf-8"></script>
         <script src="./js/Entity/Entity.js" charset="utf-8"></script>
         <script src="./js/Entity/EntityPlayer.js" charset="utf-8"></script>
+        <script src="./js/GameRenderer.js" charset="utf-8"></script>
         <script src="./js/TileRenderer.js" charset="utf-8"></script>
         <script src="./js/SkyRenderer.js" charset="utf-8"></script>
         <script src="./js/Game.js" charset="utf-8"></script>

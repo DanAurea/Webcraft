@@ -1,6 +1,6 @@
 function ResourceLoader()
 {
-    var resources = ["img/apple.png"];
+    var resources = ["img/palette.png", "models/Flower.obj"];
 
     /*
     * Download all game assets required by the game in order to lauch

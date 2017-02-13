@@ -1,7 +1,3 @@
-var topSkyColor = new THREE.Color(0x2299FF);
-var bottomSkyColor = new THREE.Color(0xDDDDFF);
-var blackSkyColor = new THREE.Color(0x000000);
-var orangeSkyColor = new THREE.Color(0xFFB046);
 var starCycleDuration = 3;
 
 function SkyRenderer()
@@ -11,7 +7,6 @@ function SkyRenderer()
     this.fogColor = new THREE.Color(150, 92, 208);
     this.skyDome = null;
     this.starFields =  [];
-    this.uniforms = null;
 
     this.init =
     function init()
@@ -27,20 +22,28 @@ function SkyRenderer()
 
         scene.fog = new THREE.FogExp2(this.fogColor.toInt(), 0.000055);
 
+        //Hemisphere light
+        this.hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFF, 1);
+        this.hemiLight.color.setHSL(0.6, 0.75, 0.8);
+        this.hemiLight.groundColor.setHSL(0.095, 0.5, 0.8);
+        this.hemiLight.position.set(0, 500, 0);
+        scene.add(this.hemiLight);
+
+
         //World light
-        scene.add(new THREE.AmbientLight(0x020202));
+        scene.add(new THREE.AmbientLight(0x111111));
         this.sunLight = new THREE.DirectionalLight(0xFFFFFF, 1);
 		this.sunLight.color.setHSL(0.1, 1, 0.95);
-		this.sunLight.position.set(-2, 500, 2);
-		this.sunLight.position.multiplyScalar(50);
+		this.sunLight.position.set(0, 300, 0);
+		this.sunLight.position.multiplyScalar(1);
 		scene.add(this.sunLight);
 
+
         //SkyDome
-        var vertexShader = document.getElementById("vertexShader").textContent;
-        var fragmentShader = document.getElementById("fragmentShader").textContent;
-        this.uniforms = {topColor: {type: "c", value: topSkyColor}, bottomColor: {type: "c", value: bottomSkyColor}, offset: {type: "f", value: 0}, exponent: {type: "f", value: 0.8}};
+        var vertexShader = document.getElementById("skydome_vs").textContent;
+        var fragmentShader = document.getElementById("skydome_fs").textContent;
         var skyGeo = new THREE.SphereGeometry(4000, 32, 15);
-        var skyMat = new THREE.ShaderMaterial({uniforms: this.uniforms, vertexShader: vertexShader, fragmentShader: fragmentShader, side: THREE.BackSide});
+        var skyMat = new THREE.ShaderMaterial({uniforms: SkyDomeShader.uniforms, vertexShader: SkyDomeShader.vertexShader, fragmentShader: SkyDomeShader.fragmentShader, side: THREE.BackSide});
         this.skyDome = new THREE.Mesh(skyGeo, skyMat);
         scene.add(this.skyDome);
 
@@ -56,19 +59,20 @@ function SkyRenderer()
         //Sky gradient
         this.skyDome.position.set(camera.position.x, camera.position.y, camera.position.z);
         this.sunLight.intensity = lightAmount;
-        this.uniforms.topColor.value = blackSkyColor.lerpRGB(topSkyColor, lightAmount);
+        this.hemiLight.intensity = lightAmount;
+        SkyDomeShader.uniforms.topColor.value = blackSkyColor.lerpRGB(topSkyColor, lightAmount);
 
         if(lightAmount <= 0.10)
         {
-            this.uniforms.bottomColor.value = blackSkyColor.lerpRGB(orangeSkyColor, lightAmount * 10);
+            SkyDomeShader.uniforms.bottomColor.value = blackSkyColor.lerpRGB(orangeSkyColor, lightAmount * 10);
         }
         else if(lightAmount <= 0.25)
         {
-            this.uniforms.bottomColor.value = orangeSkyColor.lerpRGB(bottomSkyColor, lightAmount * 4);
+            SkyDomeShader.uniforms.bottomColor.value = orangeSkyColor.lerpRGB(bottomSkyColor, lightAmount * 4);
         }
         else
         {
-            this.uniforms.bottomColor.value = this.uniforms.bottomColor.value.lerpRGB(bottomSkyColor, lightAmount);
+            SkyDomeShader.uniforms.bottomColor.value = SkyDomeShader.uniforms.bottomColor.value.lerpRGB(bottomSkyColor, lightAmount);
         }
 
         //Stars

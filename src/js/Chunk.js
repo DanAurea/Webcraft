@@ -124,8 +124,6 @@ function Chunk(x, z)
         this.mesh = new THREE.Mesh(geometry, Materials.toonMaterial);
         this.mesh.position.x = cX;
         this.mesh.position.z = cZ;
-        this.mesh.receiveShadow = true;
-        this.mesh.castShadow = true;
         scene.add(this.mesh);
 
         if(oldMesh != null)

@@ -1,4 +1,4 @@
-function Tile(id, color, colorChange, redVariant, greenVariant, blueVariant)
+function Tile(id, color, colorChange, redVariant, greenVariant, blueVariant, isScenery)
 {
     Tiles.tiles[id] = this;
     this.id = id;
@@ -7,6 +7,7 @@ function Tile(id, color, colorChange, redVariant, greenVariant, blueVariant)
     this.redVariant = (typeof redVariant === "undefined") ? 0.1 : redVariant;
     this.greenVariant = (typeof greenVariant === "undefined") ? 0.1 : greenVariant;
     this.blueVariant = (typeof blueVariant === "undefined") ? 0.1 : blueVariant;
+    this.isScenery = (typeof isScenery === "undefined") ? false : isScenery;
 }
 
 function Tiles()

@@ -1,10 +1,9 @@
 function Materials()
 {
-    this.toonMaterial = new THREE.MeshToonMaterial(
+    this.toonMaterial = new THREE.MeshStandardMaterial(
     {
 		color: new THREE.Color(0xFFFFFF),
-		specular: new THREE.Color(0xFFFFFF),
-		shininess: 1,
+        roughness: 1,
 		shading: THREE.FlatShading,
         vertexColors: THREE.VertexColors
 	});
