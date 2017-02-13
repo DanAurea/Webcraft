@@ -8,6 +8,7 @@ function FPSCamera()
     this.hoverMesh = null;
     this.mousePos = new THREE.Vector2(0, 0);
     this.rayCast = new THREE.Raycaster();
+    this.tileId = 2;
 
     this.initFPSCamera =
     function initFPSCamera()
@@ -91,13 +92,19 @@ function FPSCamera()
     function getTileLookingAt()
     {
         var obstacles = [];
-        var mesh;
+        var group;
         for(var i = 0, chunkAmount = MapManager.chunks.length; i < chunkAmount; i++)
         {
-            mesh = MapManager.chunks[i].mesh;
-            if(mesh != null)
+            group = MapManager.chunks[i].group;
+            if(group != null)
             {
-                obstacles.push(mesh);
+                group.traverse(function(child)
+                {
+    				if(child instanceof THREE.Mesh)
+                    {
+    					obstacles.push(child);
+    				}
+    			});
             }
         }
 
@@ -134,6 +141,12 @@ function FPSCamera()
         }
     }
 
+    this.chooseTile =
+    function chooseTile(key)
+    {
+        FPSCamera.tileId = Math.max(0, FPSCamera.tileId + (key == "arrowup" ? 1 : -1));
+    }
+
     this.placeTile =
     function placeTile(key)
     {
@@ -152,7 +165,7 @@ function FPSCamera()
                 tZ += FPSCamera.targetTile.normal.z;
             }
 
-            MapManager.setTileAt(place ? 2 : 0, tX, tY, tZ);
+            MapManager.setTileAt(place ? FPSCamera.tileId : 0, tX, tY, tZ);
         }
     }
 }

@@ -34,6 +34,8 @@ function initGame()
     Controls.init();
     GUIS.init();
     textures = ResourceLoader.initTextures();
+    ResourceLoader.initModels();
+    Materials.init();
 
     GameRenderer.init();
 

@@ -1,6 +1,6 @@
 function ResourceLoader()
 {
-    var resources = ["img/palette.png", "models/Flower.obj"];
+    var resources = ["img/palette.png", "models/flower.obj"];
 
     /*
     * Download all game assets required by the game in order to lauch
@@ -61,6 +61,21 @@ function ResourceLoader()
 
         return textures;
     }
+
+    this.initModels =
+    function initModels()
+    {
+        var resourceAmount = resources.length;
+        for(var i = 0; i < resourceAmount; i++)
+        {
+            if(resources[i].endsWith(".obj"))
+            {
+                ModelLoader.loadModel(resources[i]);
+            }
+        }
+
+    }
+
 
     this.ajaxGet =
     function ajaxGet(url, success, error)

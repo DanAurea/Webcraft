@@ -4,7 +4,7 @@ function Chunk(x, z)
 {
     this.chunkX = x;
     this.chunkZ = z;
-    this.mesh = null;
+    this.group = null;
     this.map = Array(1024 * chunkHeight);
     this.maxHeight = chunkHeight;
 
@@ -95,8 +95,9 @@ function Chunk(x, z)
     this.prepareChunkRender =
     function prepareChunkRender()
     {
-        var oldMesh = this.mesh;
+        var oldMesh = this.group;
 
+        this.group = new THREE.Object3D();
         var geometry = new THREE.Geometry();
 
         var cX = this.chunkX * 32;
@@ -113,18 +114,30 @@ function Chunk(x, z)
                 for(y = 0; y < this.maxHeight; y++)
                 {
                     tile = Tiles.getTile(this.getTileAt(x, y, z));
-                    if(tile != Tiles.AIR)
+                    if(tile.isVisible())
                     {
-                        TileRenderer.renderTile(geometry, this, tile, x, y, z, rX, rZ);
+                        if(tile.isSimpleCube())
+                        {
+                            TileRenderer.renderTile(geometry, this, tile, x, y, z, rX, rZ);
+                        }
+                        else
+                        {
+                            var model = ModelLoader.models[tile.model].clone();
+                            model.position.x += x;
+                            model.position.y += y;
+                            model.position.z += z;
+                            this.group.add(model);
+                        }
                     }
                 }
             }
         }
 
-        this.mesh = new THREE.Mesh(geometry, Materials.toonMaterial);
-        this.mesh.position.x = cX;
-        this.mesh.position.z = cZ;
-        scene.add(this.mesh);
+        mesh = new THREE.Mesh(geometry, Materials.tileMaterial);
+        this.group.position.x = cX;
+        this.group.position.z = cZ;
+        this.group.add(mesh);
+        scene.add(this.group);
 
         if(oldMesh != null)
         {
