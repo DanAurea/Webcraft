@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'communication',
     'game',
+    'channels',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +135,10 @@ STATICFILES_DIRS = (
 FIXTURE_DIRS = (
    os.path.join(BASE_DIR, "fixtures"),
 )
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'asgiref.inmemory.ChannelLayer',
+        'ROUTING': 'chat.routing.channel_routing',
+    },
+}

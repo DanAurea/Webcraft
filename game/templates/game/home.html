@@ -8,13 +8,8 @@
     </head>
     <body>
         
-        <div id="gameContainer"></div>
-        <div id="gameOverlay">
-            <div class="gui" id="ingameGui">
-                <div class="gui_bottom gui_left">
-                    <span id="ingame_gui_version">V: </span>
-                </div>
-            </div>
+        <div id="gameContainer">
+            {% include "chat/window.html" %}
         </div>
         
          <script type="x-shader/x-vertex" id="skydome_vs">
@@ -71,5 +66,7 @@
         <script src="{% static 'game/js/Gui/IngameGui.js' %}" charset="utf-8"></script>
         <script src="{% static 'game/js/Controls.js' %}" charset="utf-8"></script>
         <script src="{% static 'game/js/GameLoader.js' %}" charset="utf-8"></script>
+        <script src="{% static 'chat/js/Messaging.js' %}" charset="utf-8"></script>
+
     </body>
 </html>

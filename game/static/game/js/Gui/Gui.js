@@ -42,7 +42,7 @@ function GUIS()
     function init()
     {
         //Register All GUI
-        this.INGAME_GUI = new GUI("#ingameGui", ingameGui.onIngameGuiOpen, ingameGui.onIngameGuiUpdate, null);
+        this.INGAME_GUI = new GUI("#guiChat", ingameGui.onIngameGuiOpen, ingameGui.onIngameGuiUpdate, null);
     }
 
     this.updateAllGuis =
