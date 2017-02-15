@@ -56,7 +56,7 @@ function TileRenderer()
         var tileColor = null;
 
         //Z-
-        if(rZ > 0 && chunk.getTileWithNeighbourChunkAt(x, y, z - 1) == 0)
+        if(rZ > 0 && tile.isSideVisible(Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x, y, z - 1))))
         {
             if(tileColor == null)
             {
@@ -75,7 +75,7 @@ function TileRenderer()
         }
 
         //Z+
-        if(rZ < MapManager.totalLength - 1 && chunk.getTileWithNeighbourChunkAt(x, y, z + 1) == 0)
+        if(rZ < MapManager.totalLength - 1 && tile.isSideVisible(Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x, y, z + 1))))
         {
             if(tileColor == null)
             {
@@ -94,7 +94,7 @@ function TileRenderer()
         }
 
         //X-
-        if(rX > 0 && chunk.getTileWithNeighbourChunkAt(x - 1, y, z) == 0)
+        if(rX > 0 && tile.isSideVisible(Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x - 1, y, z))))
         {
             if(tileColor == null)
             {
@@ -113,7 +113,7 @@ function TileRenderer()
         }
 
         //X+
-        if(rX < MapManager.totalWidth - 1 && chunk.getTileWithNeighbourChunkAt(x + 1, y, z) == 0)
+        if(rX < MapManager.totalWidth - 1 && tile.isSideVisible(Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x + 1, y, z))))
         {
             if(tileColor == null)
             {
@@ -132,7 +132,7 @@ function TileRenderer()
         }
 
         //Bottom
-        if(y > 0 && chunk.getTileAt(x, y - 1, z) == 0)
+        if(y > 0 && tile.isSideVisible(Tiles.getTile(chunk.getTileAt(x, y - 1, z))))
         {
             if(tileColor == null)
             {
@@ -151,7 +151,7 @@ function TileRenderer()
         }
 
         //Top
-        if(chunk.getTileAt(x, y + 1, z) == 0)
+        if(tile.isSideVisible(Tiles.getTile(chunk.getTileAt(x, y + 1, z))))
         {
             if(tileColor == null)
             {

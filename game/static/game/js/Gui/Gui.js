@@ -42,7 +42,7 @@ function GUIS()
     function init()
     {
         //Register All GUI
-        this.INGAME_GUI = new GUI("#ingameGui", ingameGui.onIngameGuiOpen, null, null);
+        this.INGAME_GUI = new GUI("#ingameGui", ingameGui.onIngameGuiOpen, ingameGui.onIngameGuiUpdate, null);
     }
 
     this.updateAllGuis =
@@ -54,7 +54,7 @@ function GUIS()
             {
                 if(this.guiList[i].updateCallback != null)
                 {
-                    this.guiList[i].updateCallback(this.guiList[i]);
+                    this.guiList[i].updateCallback($(this.guiList[i].domId));
                 }
             }
         }

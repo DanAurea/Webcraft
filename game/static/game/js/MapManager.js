@@ -1,10 +1,19 @@
+var dayDuration = 1000;
+
 function MapManager()
 {
-    this.mapWidth = 16;
-    this.mapLength = 16;
-    this.totalWidth = this.mapWidth * 16;
-    this.totalLength = this.mapLength * 16;
+    this.mapWidth = 8;
+    this.mapLength = 8;
+    this.totalWidth = this.mapWidth * 32;
+    this.totalLength = this.mapLength * 32;
     this.chunks;
+    this.time = 0;
+
+    this.update =
+    function update()
+    {
+        this.time++;
+    }
 
     this.initMap =
     function initMap()
@@ -60,7 +69,7 @@ function MapManager()
     this.getChunkAt =
     function getChunkAt(x, z)
     {
-        return this.getChunkAtChunkCoords(x >> 4, z >> 4);
+        return this.getChunkAtChunkCoords(x >> 5, z >> 5);
     }
 
     this.getTileAt =
@@ -69,7 +78,10 @@ function MapManager()
         var chunk = this.getChunkAt(x, z);
         if(chunk != null)
         {
-            return chunk.getTileAt(x % 16, y, z % 16);
+            if(y >= 0 && y < chunkHeight)
+            {
+                return chunk.getTileAt(x % 32, y, z % 32);
+            }
         }
 
         return 0;
@@ -81,7 +93,7 @@ function MapManager()
         var chunk = this.getChunkAt(x, z);
         if(chunk != null)
         {
-            chunk.setTileAt(tile, x % 16, y, z % 16);
+            chunk.setTileAt(tile, x % 32, y, z % 32);
         }
     }
 }
