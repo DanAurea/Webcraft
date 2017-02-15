@@ -104,7 +104,11 @@ function AABB(x, y, z, x2, y2, z2)
                     tile = MapManager.getTileAt(x, y, z);
                     if(tile != 0)
                     {
-                        tiles.push(new AABB(x, y, z, x + 1, y + 1, z + 1));
+                        var aabb = Tiles.getTile(tile).getAABB(x, y, z);
+                        if(aabb != null)
+                        {
+                            tiles.push(aabb);
+                        }
                     }
                 }
             }

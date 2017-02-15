@@ -1,13 +1,16 @@
 function Materials()
 {
-    this.toonMaterial = new THREE.MeshToonMaterial(
+    this.init =
+    function init()
     {
-		color: new THREE.Color(0xFFFFFF),
-		specular: new THREE.Color(0xFFFFFF),
-		shininess: 1,
-		shading: THREE.SmoothShading,
-        vertexColors: THREE.VertexColors
-	});
+        this.tileMaterial = new THREE.MeshStandardMaterial(
+        {
+    		color: new THREE.Color(0xFFFFFF),
+            roughness: 1,
+    		shading: THREE.FlatShading,
+            vertexColors: THREE.VertexColors
+    	});
+    }
 }
 
 var Materials = new Materials();

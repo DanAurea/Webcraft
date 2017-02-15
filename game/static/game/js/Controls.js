@@ -133,6 +133,8 @@ Controls.register("s", FPSCamera.move, "hold");
 Controls.register("q", FPSCamera.move, "hold");
 Controls.register("d", FPSCamera.move, "hold");
 Controls.register(" ", FPSCamera.move, "hold");
+Controls.register("arrowup", FPSCamera.chooseTile, "press");
+Controls.register("arrowdown", FPSCamera.chooseTile, "press");
 Controls.register("shift", FPSCamera.move, "hold");
 Controls.register("mouse-0", FPSCamera.placeTile, "press");
 Controls.register("mouse-2", FPSCamera.placeTile, "press");

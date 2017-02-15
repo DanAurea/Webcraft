@@ -21,6 +21,8 @@ var stats;
 
 function initGame()
 {
+    window.addEventListener('resize', onWindowResize, false);
+
     stats = new Stats();
     stats.showPanel(0);
     $("body").append(stats.dom);
@@ -32,25 +34,10 @@ function initGame()
     Controls.init();
     GUIS.init();
     textures = ResourceLoader.initTextures();
+    ResourceLoader.initModels();
+    Materials.init();
 
-    //Init renderer
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(width, height);
-    $("#gameContainer").append(renderer.domElement);
-
-    //Init scene
-    scene = new THREE.Scene();
-    FPSCamera.initFPSCamera();
-    SkyRenderer.init();
-
-    //Create camera (FOV, ratio, near, far)
-    camera = new THREE.PerspectiveCamera(FOV, width / height, 0.01, 100000);
-    camera.rotation.order = 'YXZ';
-    camera.position.set(20, 30, 20);
-
-    scene.add(camera);
-
-    window.addEventListener('resize', onWindowResize, false);
+    GameRenderer.init();
 
     MapManager.initMap();
     MapManager.prepareMapRender();
@@ -72,10 +59,12 @@ function loopGame(time)
     TimeManager.calculateTime(time);
     Controls.update();
 
-    Entities.updateEntities();
-    FPSCamera.updateCamera();
-
-    renderer.render(scene, camera);
+    while(TimeManager.shallTick())
+    {
+        MapManager.update();
+        Entities.updateEntities();
+    }
+    GameRenderer.update();
 
     GUIS.updateAllGuis();
 
@@ -92,4 +81,6 @@ function onWindowResize()
 	camera.updateProjectionMatrix();
 
 	renderer.setSize(width, height);
+
+    GameRenderer.onResize();
 }
