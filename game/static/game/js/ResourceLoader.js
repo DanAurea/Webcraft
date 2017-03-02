@@ -1,6 +1,12 @@
+var gameFolder = "/static/game/";
+
 function ResourceLoader()
 {
-    var resources = ["/static/game/img/palette.png", "/static/game/models/Flower.obj"];
+    var resources = ["img/palette.png", "models/Flower.obj"];
+    for(var i = 0; i < resources.length; i++)
+    {
+        resources[i] = gameFolder + resources[i];
+    }
 
     /*
     * Download all game assets required by the game in order to lauch
@@ -49,7 +55,8 @@ function ResourceLoader()
         {
             if(resources[i].endsWith(".png"))
             {
-                var name = resources[i].substr(4);
+                var nameScheme = resources[i].split("/");
+                var name = nameScheme[nameScheme.length - 1];
                 name = name.substr(0, name.length - 4);
 
                 var tex = new THREE.TextureLoader().load(resources[i]);

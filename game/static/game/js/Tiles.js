@@ -7,7 +7,8 @@ function Tile(id, color, colorChange, redVariant, greenVariant, blueVariant, mod
     this.redVariant = (typeof redVariant === "undefined") ? 0.1 : redVariant;
     this.greenVariant = (typeof greenVariant === "undefined") ? 0.1 : greenVariant;
     this.blueVariant = (typeof blueVariant === "undefined") ? 0.1 : blueVariant;
-    this.model = (typeof model === "undefined") ? null : model;
+    this.model = (typeof model === "undefined") ? null : (gameFolder + model);
+    console.log(gameFolder);
 
     this.isVisible =
     function isVisible()
@@ -49,7 +50,7 @@ function Tiles()
         this.SAND = new Tile(4, 0xFFFCAC, false);
         this.LOG = new Tile(5, 0x2e1b0d, false);
         this.LEAVES = new Tile(6, 0x0c5b16, false);
-        this.FLOWER_RED = new Tile(7, 0x0c5b16, false, 0, 0, 0, "models/flower.obj");
+        this.FLOWER_RED = new Tile(7, 0x0c5b16, false, 0, 0, 0, "models/Flower.obj");
     }
 
     this.getTile =
