@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import re
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -138,7 +139,14 @@ FIXTURE_DIRS = (
 
 CHANNEL_LAYERS = {
      "default": {
-        "BACKEND": "asgi_ipc.IPCChannelLayer",
-        'ROUTING': 'chat.routing.channel_routing',
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "ROUTING": 'chat.routing.channel_routing',
+        "CONFIG": {
+        	"hosts": [("localhost", 6379)],
+        	"channel_capacity": {
+        		"http.request" : 200,
+        		"http.response": 10,
+        	}
+        }
     },
 }
