@@ -41,6 +41,7 @@ function GUIS()
     this.init =
     function init()
     {
+        initDebugger();
         //Register All GUI
         this.INGAME_GUI = new GUI("#guiChat", ingameGui.onIngameGuiOpen, ingameGui.onIngameGuiUpdate, null);
     }

@@ -37,7 +37,7 @@ function Tile(id, color, colorChange, redVariant, greenVariant, blueVariant, mod
 
 function Tiles()
 {
-    this.tiles = Array(20);
+    this.tiles = Array();
 
     this.init =
     function init()
@@ -50,7 +50,10 @@ function Tiles()
         this.SAND = new Tile(4, 0xFFFCAC, false);
         this.LOG = new Tile(5, 0x2e1b0d, false);
         this.LEAVES = new Tile(6, 0x0c5b16, false);
-        this.FLOWER_RED = new Tile(7, 0x0c5b16, false, 0, 0, 0, "models/Flower.obj");
+        this.SNOW = new Tile(7, 0x0c5b16, false);
+        this.FLOWER_RED = new Tile(8, 0x000000, false, 0, 0, 0, "models/flower_red.obj");
+        this.FLOWER_BLUE = new Tile(9, 0x000000, false, 0, 0, 0, "models/flower_blue.obj");
+        this.GRASS_TALL = new Tile(10, 0x000000, false, 0, 0, 0, "models/grass.obj");
     }
 
     this.getTile =
