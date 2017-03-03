@@ -12,7 +12,7 @@ function GUI(domId, openCallback, updateCallback, closeCallback)
     function open()
     {
         var gui = $(this.domId);
-        gui.fadeIn();
+        gui.show();
 
         if(this.openCallback != null)
         {
@@ -25,7 +25,7 @@ function GUI(domId, openCallback, updateCallback, closeCallback)
     function close()
     {
         var gui = $(this.domId);
-        gui.fadeOut();
+        gui.hide();
 
         if(this.closeCallback != null)
         {
@@ -43,7 +43,7 @@ function GUIS()
     {
         initDebugger();
         //Register All GUI
-        this.INGAME_GUI = new GUI("#guiChat", ingameGui.onIngameGuiOpen, ingameGui.onIngameGuiUpdate, null);
+        this.INGAME_GUI = new GUI("#ingameGui", ingameGui.onIngameGuiOpen, ingameGui.onIngameGuiUpdate, null);
     }
 
     this.updateAllGuis =
