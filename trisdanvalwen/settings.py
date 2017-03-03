@@ -25,7 +25,7 @@ SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["192.168.1.4", "192.168.1.101"]
 
 
 # Application definition
@@ -137,8 +137,8 @@ FIXTURE_DIRS = (
 )
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'asgiref.inmemory.ChannelLayer',
+     "default": {
+        "BACKEND": "asgi_ipc.IPCChannelLayer",
         'ROUTING': 'chat.routing.channel_routing',
     },
 }
