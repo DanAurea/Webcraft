@@ -7,6 +7,7 @@ function PacketChat(message)
     function handler()
     {
         console.log("Message recu : " + this.message + " size : " + this.messageSize);
+        console.log(this);
     }
 
     this._encode = PacketChat.prototype.encode;
@@ -15,8 +16,8 @@ function PacketChat(message)
     {
         dv = this._encode();
 
-        dv.setInt32(48, this.messageSize);
-        PacketsUtil.encodeString(dv, 52, this.message);
+        dv.setInt32(52, this.messageSize);
+        PacketsUtil.encodeString(dv, 56, this.message);
 
         return dv;
     }
@@ -28,8 +29,8 @@ function PacketChat(message)
         dv = this._decode(data);
 
         //48 data begin index
-        this.messageSize = dv.getInt32(48);
-        this.message = PacketsUtil.decodeString(dv, 52, this.messageSize);
+        this.messageSize = dv.getInt32(52);
+        this.message = PacketsUtil.decodeString(dv, 56, this.messageSize);
 
         return dv;
     }
@@ -39,6 +40,12 @@ function PacketChat(message)
     function getEncodePacketSize()
     {
         return this._getEncodePacketSize() + this.messageSize * 2 + 4;
+    }
+
+    this.getPacketId =
+    function getPacketId()
+    {
+        return 1;
     }
 }
 

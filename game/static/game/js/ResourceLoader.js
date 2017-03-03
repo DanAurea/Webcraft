@@ -1,5 +1,11 @@
 var gameFolder = "/static/game/";
 
+//Debug mode
+if(window.location.pathname.endsWith("debug.html"))
+{
+    gameFolder = "";
+}
+
 function ResourceLoader()
 {
     var resources = ["img/palette.png", "models/Flower.obj"];
