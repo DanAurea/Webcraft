@@ -43,6 +43,7 @@ function GUIS()
     {
         //Register All GUI
         this.INGAME_GUI = new GUI("#ingameGui", ingameGui.onIngameGuiOpen, null, null);
+        this.MAIN_MENU= new GUI("#mainMenu", null, null, null);
     }
 
     this.updateAllGuis =
