@@ -2,6 +2,10 @@ import logging
 
 from channels import Group
 from channels.sessions import channel_session
+from communication.ComAPI.packet import Packet
+
+## Initliaze packet management class
+packet = Packet()
 
 # Consumer for chat connection using
 # session for keeping token and
@@ -24,9 +28,11 @@ def ws_connect(message):
 @channel_session
 def ws_receive(message):
 
+	packet.encode(message.content["bytes"])
+
 	## Just a way to see how daphne / Django handle binary data
 	## in purpose to make a python API for binary websocket communication.
-	print(message.content["bytes"])
+	#print(message.content["bytes"])
 
 	## Received binary datas from channel
 	if(message.content["bytes"]):
