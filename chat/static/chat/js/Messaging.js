@@ -1,10 +1,14 @@
 // Create a new WebSocket
 var ws = new WebSocket((window.location.protocol == 'http') ? 'ws://' : 'ws://' +  window.location.host + '/')
+Packets.init();
 
-// Make it show an alert when a message is received
 ws.onmessage = function(message) {
 
 	var pseudo = 'Mon pseudo:';
+	
+	var messagePacket = new PacketChat().initServerPacket();
+	// incomingChatPacket.decode(message);
+	// incomingChatPacket.handler();
 
 	$('#messagesList').append(
 		 '<li><span class=\'pseudo\'>' + pseudo + '</span>'
@@ -14,9 +18,11 @@ ws.onmessage = function(message) {
 };
 
 $('#messageInput').on('submit', function(event) {
-	var message = $("#id_message");
+
+	var messagePacket = new PacketChat($("#id_message").val()).initClientPacket();
+    var messageEncoded = messagePacket.encode().buffer;
+
+    ws.send(messageEncoded);
     
-    ws.send(message.val());
-   	message.val("");
     return false;
 });

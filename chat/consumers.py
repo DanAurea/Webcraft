@@ -23,8 +23,15 @@ def ws_connect(message):
 # Currently it just send back what it receive
 @channel_session
 def ws_receive(message):
-	Group('chat').send({
-		'text': message.content['text'],
+
+	## Just a way to see how daphne / Django handle binary data
+	## in purpose to make a python API for binary websocket communication.
+	print(message.content["bytes"])
+
+	## Received binary datas from channel
+	if(message.content["bytes"]):
+		Group('chat').send({
+			'bytes': message.content["bytes"],
 	})
 
 # Consumer for chat disconnection using
@@ -32,4 +39,4 @@ def ws_receive(message):
 # using group for broadcast purpose
 @channel_session
 def ws_disconnect(message):
-	pass
+	 Group('chat').discard(message.reply_channel)
