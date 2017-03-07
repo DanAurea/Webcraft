@@ -1,0 +1,58 @@
+[
+{
+    "model": "game.player",
+    "pk": 1,
+    "fields": {
+        "login": "Tristanboulet",
+        "password": "test"
+    }
+},
+{
+    "model": "game.player",
+    "pk": 2,
+    "fields": {
+        "login": "Valent-un",
+        "password": "testeuh"
+    }
+},
+{
+    "model": "game.avatar",
+    "pk": 1,
+    "fields": {
+        "id_player": 2,
+        "avatar_name": "NopNopNop",
+        "sex": 0
+    }
+},
+{
+    "model": "game.avatar",
+    "pk": 2,
+    "fields": {
+        "id_player": 1,
+        "avatar_name": "Taboulet",
+        "sex": 0
+    }
+},
+{
+    "model": "game.avatarstyle",
+    "pk": 1,
+    "fields": {
+        "id_avatar": 2,
+        "hair": 0,
+        "hair_color": 0,
+        "eyes": 0,
+        "skin_color": 0
+    }
+},
+{
+    "model": "game.avatarstyle",
+    "pk": 2,
+    "fields": {
+        "id_avatar": 1,
+        "hair": 1,
+        "hair_color": 0,
+        "eyes": 1,
+        "skin_color": 1
+    }
+}
+]
