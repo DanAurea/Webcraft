@@ -4,4 +4,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^connexion$', views.connexion),
+    url(r'^register$', views.register),
 ]
