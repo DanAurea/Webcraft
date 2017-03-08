@@ -1,10 +1,24 @@
 /** Basic style */
+@font-face
+{
+    font-family: 'fippsregular';
+    src: url('../font/fipps-regular-webfont.eot');
+    src: url('../font/fipps-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/fipps-regular-webfont.woff') format('woff'),
+         url('../font/fipps-regular-webfont.ttf') format('truetype'),
+         url('../font/fipps-regular-webfont.svg#fippsregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 
 html, body
 {
     margin: 0px;
     padding: 0px;
     overflow: hidden;
+    font-family: 'fippsregular';
+    font-size: 8px;
+    color: white;
 }
 
 body,ul,ol,textarea,figure,label,form,form ol, form ol li{
@@ -75,12 +89,13 @@ input{
 /** Chat style */
 
 .chat{
+    font-family:"Helvetica";
     left: 20px;
     bottom: 20px;
     background-color: rgba(30, 30 , 55, 0.25);
     width: 30%;
     height: 300px;
-    border: 1px solid rgb(10, 10, 10); 
+    border: 1px solid rgb(10, 10, 10);
 }
 
 #messagesContainer{

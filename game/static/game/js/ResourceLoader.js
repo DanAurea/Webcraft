@@ -8,7 +8,7 @@ if(window.location.pathname.endsWith("debug.html"))
 
 function ResourceLoader()
 {
-    var resources = ["img/palette.png", "models/Flower.obj"];
+    var resources = ["img/palette.png", "models/flower_red.obj", "models/flower_blue.obj", "models/grass.obj"];
     for(var i = 0; i < resources.length; i++)
     {
         resources[i] = gameFolder + resources[i];
@@ -76,14 +76,34 @@ function ResourceLoader()
     }
 
     this.initModels =
-    function initModels()
+    function initModels(finishCallback)
     {
         var resourceAmount = resources.length;
+        var modelAmount = 0;
+        var loadedModelAmount = 0;
+
+        //Count models
         for(var i = 0; i < resourceAmount; i++)
         {
             if(resources[i].endsWith(".obj"))
             {
-                ModelLoader.loadModel(resources[i]);
+                modelAmount++;
+            }
+        }
+
+        for(var i = 0; i < resourceAmount; i++)
+        {
+            if(resources[i].endsWith(".obj"))
+            {
+                ModelLoader.loadModel(resources[i], function()
+                {
+                    loadedModelAmount++;
+
+                    if(loadedModelAmount >= modelAmount)
+                    {
+                        finishCallback();
+                    }
+                });
             }
         }
 

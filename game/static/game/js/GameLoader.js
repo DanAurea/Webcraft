@@ -2,7 +2,6 @@ function onDownloadFinished(duration)
 {
     console.log("Finished download in: " + duration + "ms");
     initGame();
-    initDebugger();
 }
 
 /*
