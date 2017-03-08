@@ -28,7 +28,9 @@ def ws_connect(message):
 @channel_session
 def ws_receive(message):
 
-	packet.encode(message.content["bytes"])
+	## Debug purpose
+	print(message.content["bytes"])
+	packet.encode("Ceci est un test", 0)
 
 	## Just a way to see how daphne / Django handle binary data
 	## in purpose to make a python API for binary websocket communication.

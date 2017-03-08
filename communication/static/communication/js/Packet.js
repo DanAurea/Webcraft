@@ -1,10 +1,11 @@
 function Packet()
 {
     this.isServerPacket = false;
-    this.uniqueToken = "";
-    this.timestamp = 0;
-    this.dataSize = 0;
-    this.packetId = 0;
+    this.uniqueToken    = "";
+    this.timestamp      = 0;
+    this.dataSize       = 0;
+    this.packetId       = 0;
+    this.offset         = 0;
 
     this.handle = null;
 
@@ -12,13 +13,22 @@ function Packet()
     function encode()
     {
         var buffer = new ArrayBuffer(this.getEncodePacketSize());
-        dv = new DataView(buffer);
+        var dv = new DataView(buffer);
 
-        PacketsUtil.encodeString(dv, 0, "DRPG");
-        PacketsUtil.encodeString(dv, 4, this.uniqueToken);
-        dv.setInt32(36, this.packetId);
+        // Encode header ID in packet
+        PacketsUtil.encodeString(dv, this.offset, headerID);
+        this.offset += headerID.length * 2;
+
+        // Encode client token
+        PacketsUtil.encodeString(dv, this.offset, this.uniqueToken);
+        this.offset += this.uniqueToken.length * 2;
+
+        // Encode packet type ID
+        dv.setInt32(this.offset, this.packetId);
+        this.offset += 4
+
         this.dataSize = this.getEncodePacketSize();
-        dv.setInt32(48, this.dataSize);
+        dv.setInt32(this.offset, this.dataSize);
 
         return dv;
     }
@@ -59,7 +69,7 @@ function Packet()
     this.getEncodePacketSize =
     function getEncodePacketSize()
     {
-        return 52;
+        return 88;
     }
 
     this.getPacketId =
