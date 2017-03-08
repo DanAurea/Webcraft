@@ -1,11 +1,11 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
-from user.forms import ConnexionForm
+from user.forms import LoginForm
 from django.contrib.auth import authenticate, login
 
-def connexion(request):
+def login(request):
 
-    form = ConnexionForm(request.POST or None)
+    form = LoginForm(request.POST or None)
 
     if form.is_valid():
         account = form.cleaned_data['account']
@@ -14,4 +14,4 @@ def connexion(request):
     
 
 
-    return render(request, 'user/connexion.html', locals())
+    return render(request, 'user/login.html', locals())

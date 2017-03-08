@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <script src="./Packets.js" charset="utf-8"></script>
+    <script src="./PacketsUtil.js" charset="utf-8"></script>
+    <script src="./Packet.js" charset="utf-8"></script>
+    <script src="./PacketChat.js" charset="utf-8"></script>
+
+    <script>
+        (function(){
+            console.log("PACKET API TEST");
+            Packets.init();
+
+            console.log("Encoding packet");
+            outChatMessage = new PacketChat("Hello world").initClientPacket();
+            buffer = outChatMessage.encode().buffer;
+
+            console.log("Decoding encoded packet");
+            incomingChatPacket = new PacketChat().initServerPacket();
+            incomingChatPacket.decode(buffer);
+            incomingChatPacket.handler();
+        })();
+    </script>
+</body>
+</html>

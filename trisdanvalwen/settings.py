@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import re
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -25,7 +26,7 @@ SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1"]
 
 
 # Application definition
@@ -39,6 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'communication',
     'game',
+    'channels',
+    'chat',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -81,7 +85,7 @@ DATABASES = {
         'NAME': 'djangorpg',
 	'USER': 'danval',
 	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.2',
+	'HOST': '172.17.0.8',
 	'PORT': '',
     }
 }
@@ -124,3 +128,26 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
+
+# Define fixtures directory
+FIXTURE_DIRS = (
+   os.path.join(BASE_DIR, "fixtures"),
+)
+
+CHANNEL_LAYERS = {
+     "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "ROUTING": 'chat.routing.channel_routing',
+        "CONFIG": {
+        	"hosts": [("localhost", 6379)],
+        	"channel_capacity": {
+        		"http.request" : 200,
+        		"http.response": 10,
+        	}
+        }
+    },
+}

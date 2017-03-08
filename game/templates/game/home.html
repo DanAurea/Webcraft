@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Django-RPG</title>
+        <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
+    </head>
+    <body>
+        
+        <div id="gameContainer">
+            {% include "chat/window.html" %}
+        </div>
+        
+         <script type="x-shader/x-vertex" id="skydome_vs">
+            varying vec3 vWorldPosition;
+            void main() {
+                vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
+                vWorldPosition = worldPosition.xyz;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            }
+        </script>
+
+        <script type="x-shader/x-fragment" id="skydome_fs">
+            uniform vec3 topColor;
+            uniform vec3 bottomColor;
+            uniform float offset;
+            uniform float exponent;
+            varying vec3 vWorldPosition;
+            void main() {
+                float h = normalize( vWorldPosition + offset ).y;
+                gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( max( h, 0.0 ), exponent ), 0.0 ) ), 1.0 );
+            }
+        </script>
+
+        <script src="{% static 'game/lib/jquery.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'communication/js/Packet.js' %}" charset="utf-8"></script>
+        <script src="{% static 'communication/js/Packets.js' %}" charset="utf-8"></script>
+        <script src="{% static 'communication/js/PacketsUtil.js' %}" charset="utf-8"></script>
+        <script src="{% static 'communication/js/PacketChat.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/three.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/stats.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/dat.gui.min.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/perlin.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/lib/OBJLoader.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Shaders/CopyShader.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Shaders/EffectComposer.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Shaders/MaskPass.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Shaders/RenderPass.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Shaders/ShaderPass.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Shaders/SSAOShader.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Shaders/SkyDome.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Gui/GuiDebugger.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/ResourceLoader.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/TimeManager.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/MapManager.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Chunk.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Entity/AABB.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Entity/Entity.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Entity/EntityPlayer.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/GameRenderer.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/TileRenderer.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/SkyRenderer.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Game.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Tiles.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/ModelLoader.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/FPSCamera.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Materials.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Gui/Gui.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Gui/IngameGui.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/Controls.js' %}" charset="utf-8"></script>
+        <script src="{% static 'game/js/GameLoader.js' %}" charset="utf-8"></script>
+        <script src="{% static 'chat/js/Messaging.js' %}" charset="utf-8"></script>
+
+    </body>
+</html>
