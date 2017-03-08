@@ -5,7 +5,7 @@ function ModelLoader()
     var loader = new THREE.OBJLoader();
 
     this.loadModel =
-    function loadModel(path)
+    function loadModel(path, finishCallback)
     {
         loader.load(path, function(object)
         {
@@ -24,6 +24,7 @@ function ModelLoader()
 			});
 
             ModelLoader.models[path] = object;
+            finishCallback();
         });
     }
 }

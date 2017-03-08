@@ -114,6 +114,22 @@ function AABB(x, y, z, x2, y2, z2)
             }
         }
 
+        //Add boundaries
+        mapWidth = MapManager.totalWidth;
+        mapLength = MapManager.totalLength;
+
+        //Floor & Ceiling
+        tiles.push(new AABB(0, -100, 0, mapWidth, 0, mapLength));
+        tiles.push(new AABB(0, 500, 0, mapWidth, 501, mapLength));
+
+        //X Axis
+        tiles.push(new AABB(0, 0, -1, mapWidth, 501, 0));
+        tiles.push(new AABB(0, 0, mapLength, mapWidth, 501, mapLength + 1));
+
+        //Z Axis
+        tiles.push(new AABB(-1, 0, 0, 0, 501, mapLength));
+        tiles.push(new AABB(mapWidth, 0, 0, mapWidth + 1, 501, mapLength));
+
         return tiles;
     }
 

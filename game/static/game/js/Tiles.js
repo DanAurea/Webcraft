@@ -1,7 +1,8 @@
-function Tile(id, color, colorChange, redVariant, greenVariant, blueVariant, model)
+function Tile(id, name, color, colorChange, redVariant, greenVariant, blueVariant, model)
 {
     Tiles.tiles[id] = this;
     this.id = id;
+    this.name = name;
     this.color = color;
     this.colorChange = colorChange;
     this.redVariant = (typeof redVariant === "undefined") ? 0.1 : redVariant;
@@ -37,20 +38,23 @@ function Tile(id, color, colorChange, redVariant, greenVariant, blueVariant, mod
 
 function Tiles()
 {
-    this.tiles = Array(20);
+    this.tiles = Array();
 
     this.init =
     function init()
     {
         //Register tiles
-        this.AIR = new Tile(0, 0xFFFFFF, false);
-        this.GRASS = new Tile(1, 0x16712D, true, 0.15, 0.15, 0.1);
-        this.DIRT = new Tile(2, 0x543E28, false);
-        this.STONE = new Tile(3, 0x787878, false);
-        this.SAND = new Tile(4, 0xFFFCAC, false);
-        this.LOG = new Tile(5, 0x2e1b0d, false);
-        this.LEAVES = new Tile(6, 0x0c5b16, false);
-        this.FLOWER_RED = new Tile(7, 0x0c5b16, false, 0, 0, 0, "models/Flower.obj");
+        this.AIR = new Tile(0, "Air", 0xFFFFFF, false);
+        this.GRASS = new Tile(1, "Grass", 0x16712D, true, 0.15, 0.15, 0.1);
+        this.DIRT = new Tile(2, "Dirt", 0x543E28, false);
+        this.STONE = new Tile(3, "Stone", 0x787878, false);
+        this.SAND = new Tile(4, "Sand", 0xFFFCAC, false);
+        this.LOG = new Tile(5, "Wood Log", 0x2e1b0d, false);
+        this.LEAVES = new Tile(6, "Leaves", 0x0c5b16, false);
+        this.SNOW = new Tile(7, "Snow", 0xe7fafc, false);
+        this.FLOWER_RED = new Tile(8, "Red flower", 0x000000, false, 0, 0, 0, "models/flower_red.obj");
+        this.FLOWER_BLUE = new Tile(9, "Blue flower", 0x000000, false, 0, 0, 0, "models/flower_blue.obj");
+        this.GRASS_TALL = new Tile(10, "Tall grass", 0x000000, false, 0, 0, 0, "models/grass.obj");
     }
 
     this.getTile =
