@@ -81,12 +81,8 @@ WSGI_APPLICATION = 'trisdanvalwen.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'djangorpg',
-	'USER': 'danval',
-	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.8',
-	'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'devDB',
     }
 }
 
@@ -137,17 +133,3 @@ STATICFILES_DIRS = (
 FIXTURE_DIRS = (
    os.path.join(BASE_DIR, "fixtures"),
 )
-
-CHANNEL_LAYERS = {
-     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
-        "ROUTING": 'chat.routing.channel_routing',
-        "CONFIG": {
-        	"hosts": [("localhost", 6379)],
-        	"channel_capacity": {
-        		"http.request" : 200,
-        		"http.response": 10,
-        	}
-        }
-    },
-}
