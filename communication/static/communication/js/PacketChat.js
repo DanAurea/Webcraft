@@ -1,7 +1,8 @@
 function PacketChat(message)
 {
-    this.message = PacketsUtil.defval(message, "-");
+    this.message     = PacketsUtil.defval(message, "-");
     this.messageSize = this.message.length;
+    this.offset      = 0;
 
     this.handler =
     function handler()
@@ -16,9 +17,13 @@ function PacketChat(message)
     {
         dv = this._encode();
 
-        dv.setInt32(52, this.messageSize);
-        PacketsUtil.encodeString(dv, 56, this.message);
+        this.offset = this._getEncodePacketSize();
 
+        dv.setInt32(this.offset, this.messageSize);
+        this.offset += 4;
+
+        PacketsUtil.encodeString(dv, this.offset, this.message);
+        console.log(dv.buffer);
         return dv;
     }
 

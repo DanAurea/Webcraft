@@ -34,6 +34,8 @@ function FPSCamera()
     this.lockChange =
     function lockChange()
     {
+        document.pointerLockElement = document.pointerLockElement || document.mozPointerLockElement;
+        ;
     	if (document.pointerLockElement === $("#gameContainer")[0])
     	{
     		FPSCamera.locked = true;
