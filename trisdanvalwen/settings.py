@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import re
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -25,7 +26,7 @@ SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1", "mordor"]
 
 
 # Application definition
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'communication',
     'game',
+    'chat',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -77,12 +80,8 @@ WSGI_APPLICATION = 'trisdanvalwen.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'djangorpg',
-	'USER': 'danval',
-	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.2',
-	'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'devDB',
     }
 }
 
@@ -124,3 +123,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
+
+# Define fixtures directory
+FIXTURE_DIRS = (
+   os.path.join(BASE_DIR, "fixtures"),
+)
