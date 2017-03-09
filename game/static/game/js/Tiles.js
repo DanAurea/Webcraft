@@ -10,7 +10,6 @@ function Tile(id, name, color, colorChange, redVariant, greenVariant, blueVarian
     this.blueVariant = (typeof blueVariant === "undefined") ? 0.1 : blueVariant;
 	this.height = (typeof height === "undefined") ? 1 : height;
     this.model = (typeof model === "undefined") ? null : (gameFolder + model);
-    console.log(gameFolder);
 
     this.isVisible =
     function isVisible()

@@ -183,6 +183,35 @@ function TileRenderer()
 
         return tileColor;
     }
+
+    this.renderModel =
+    function renderModel(positions, normals, uvs, chunk, tile, x, y, z, rX, rZ)
+    {
+        var model = ModelLoader.models[tile.model].children[0].geometry.attributes;
+        var vertices = model.position.array;
+        var modelNormals = model.normal.array;
+        var modelUVs = model.uv.array;
+
+        //Vertices
+        for(var i = 0, length = vertices.length; i < length; i+=3)
+        {
+            positions.push(vertices[i] + x);
+            positions.push(vertices[i + 1] + y);
+            positions.push(vertices[i + 2] + z);
+        }
+
+        //Normals
+        for(var i = 0, length = modelNormals.length; i < length; i++)
+        {
+            normals.push(modelNormals[i]);
+        }
+
+        //UV
+        for(var i = 0, length = modelUVs.length; i < length; i++)
+        {
+            uvs.push(modelUVs[i]);
+        }
+    }
 }
 
 var TileRenderer = new TileRenderer();

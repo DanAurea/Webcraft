@@ -4,7 +4,8 @@ function Chunk(x, z)
 {
     this.chunkX = x;
     this.chunkZ = z;
-    this.group = null;
+    this.tilesGeometry = null;
+    this.modelsGeometry = null;
     this.map = Array(1024 * chunkHeight);
     this.maxHeight = chunkHeight;
 
@@ -95,10 +96,13 @@ function Chunk(x, z)
     this.prepareChunkRender =
     function prepareChunkRender()
     {
-        var oldMesh = this.group;
+        var oldTilesMesh = this.tilesGeometry;
+        var oldModelsMesh = this.modelsGeometry;
 
-        this.group = new THREE.Object3D();
-        var geometry = new THREE.Geometry();
+        var tilesGeometry = new THREE.Geometry();
+        var modelPositions = [];
+        var modelNormals = [];
+        var modelUVs = [];
 
         var cX = this.chunkX * 32;
         var cZ = this.chunkZ * 32;
@@ -118,30 +122,43 @@ function Chunk(x, z)
                     {
                         if(tile.isSimpleCube())
                         {
-                            TileRenderer.renderTile(geometry, this, tile, x, y, z, rX, rZ);
+                            TileRenderer.renderTile(tilesGeometry, this, tile, x, y, z, rX, rZ);
                         }
                         else
                         {
-                            var model = ModelLoader.models[tile.model].clone();
+                            TileRenderer.renderModel(modelPositions, modelNormals, modelUVs, this, tile, x, y, z, rX, rZ);
+                            /*var model = ModelLoader.models[tile.model].clone();
                             model.position.x += x;
                             model.position.y += y;
                             model.position.z += z;
-                            this.group.add(model);
+                            this.group.add(model);*/
                         }
                     }
                 }
             }
         }
 
-        mesh = new THREE.Mesh(geometry, Materials.tileMaterial);
-        this.group.position.x = cX;
-        this.group.position.z = cZ;
-        this.group.add(mesh);
-        scene.add(this.group);
+        var modelsGeometry = new THREE.BufferGeometry();
+        modelsGeometry.addAttribute("position", new THREE.Float32BufferAttribute(modelPositions, 3));
+        modelsGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(modelNormals, 3));
+        modelsGeometry.addAttribute("uv", new THREE.Float32BufferAttribute(modelUVs, 2));
 
-        if(oldMesh != null)
+        this.tilesMesh = new THREE.Mesh(tilesGeometry, Materials.tileMaterial);
+        this.modelsMesh = new THREE.Mesh(modelsGeometry, Materials.modelMaterial);
+        this.tilesMesh.position.x = cX;
+        this.tilesMesh.position.z = cZ;
+
+        this.modelsMesh.position.x = cX + 0.5;
+        this.modelsMesh.position.z = cZ + 0.5;
+
+        scene.add(this.tilesMesh);
+        scene.add(this.modelsMesh);
+        //scene.add()
+
+        if(oldTilesMesh != null)
         {
-            scene.remove(oldMesh);
+            scene.remove(oldTilesMesh);
+            scene.remove(oldModelsMesh);
         }
     }
 
