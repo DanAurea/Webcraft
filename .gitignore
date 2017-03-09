@@ -91,3 +91,6 @@ ENV/
 
 # Requirements
 requirements.txt
+
+# Database
+devDB
