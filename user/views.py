@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from user.forms import RegisterForm
 from user.forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
+from django.db import IntegrityError
 
 def login(request):
 
@@ -20,8 +21,7 @@ def login(request):
         		print ("L'utilisateur est banni")
         else:
         	print ("L'utilisateur n'existe pas")
-    
-
+        	registerLink = "<a href=\"register\" >Inscrivez-vous</a>"
 
     return render(request, 'user/baseForm.html', locals())
 
@@ -33,6 +33,15 @@ def register(request):
         account = form.cleaned_data['account']
         password = form.cleaned_data['password']
         email = form.cleaned_data['email']
+
+        #verifier si utilisateur n'existe pas déjà dans la bdd
+        try:
+            new_user = User.objects.create_user(username, email, password)
+        except IntegrityError:
+            print("utilisateur déjà existant")
+        else:
+            print("utilisateur créé")
+
         print(account, password, email)
     
     return render(request, 'user/baseForm.html', locals())
