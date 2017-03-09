@@ -81,8 +81,10 @@ function FPSCamera()
         this.targetTile = this.getTileLookingAt();
         if(this.targetTile != null)
         {
+			var tile = Tiles.getTile(MapManager.getTileAt(this.targetTile.x, this.targetTile.y, this.targetTile.z));
             this.hoverMesh.visible = true;
-            this.hoverMesh.position.set(this.targetTile.x + 0.5, this.targetTile.y + 0.5, this.targetTile.z + 0.5);
+			this.hoverMesh.scale.y = tile.height;
+            this.hoverMesh.position.set(this.targetTile.x + 0.5, this.targetTile.y + tile.height / 2, this.targetTile.z + 0.5);
         }
         else
         {
