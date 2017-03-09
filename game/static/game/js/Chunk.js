@@ -146,28 +146,31 @@ function Chunk(x, z)
     }
 
     //Generate Chunk - TEMP
-    var length = this.map.length
-    for(var i = 0; i < length; i++)
+    if(offlineMode)
     {
-        this.map[i] = 0;
-    }
-
-    for(var x = 0; x < 32; x++)
-    {
-        for(var z = 0; z < 32; z++)
+        var length = this.map.length
+        for(var i = 0; i < length; i++)
         {
-            var height = parseInt((noise.perlin2((this.chunkX * 32 + x) / 100, (this.chunkZ * 32 + z) / 100) + 1) * 10);
-            this.maxHeight = Math.max(height, this.maxHeight);
+            this.map[i] = 0;
+        }
 
-            for(var y = 0; y < height; y++)
+        for(var x = 0; x < 32; x++)
+        {
+            for(var z = 0; z < 32; z++)
             {
-                this.map[this.getIndexForCoords(x, y, z)] = Tiles.GRASS.id;
-            }
+                var height = parseInt((noise.perlin2((this.chunkX * 32 + x) / 100, (this.chunkZ * 32 + z) / 100) + 1) * 10);
+                this.maxHeight = Math.max(height, this.maxHeight);
 
-            if(Math.random() < 0.1)
-            {
-                var veg = Math.floor(Math.random() * 3);
-                this.map[this.getIndexForCoords(x, height, z)] = veg == 0 ? Tiles.GRASS_TALL.id : veg == 1 ? Tiles.FLOWER_RED.id : Tiles.FLOWER_BLUE.id;
+                for(var y = 0; y < height; y++)
+                {
+                    this.map[this.getIndexForCoords(x, y, z)] = Tiles.GRASS.id;
+                }
+
+                if(Math.random() < 0.1)
+                {
+                    var veg = Math.floor(Math.random() * 3);
+                    this.map[this.getIndexForCoords(x, height, z)] = veg == 0 ? Tiles.GRASS_TALL.id : veg == 1 ? Tiles.FLOWER_RED.id : Tiles.FLOWER_BLUE.id;
+                }
             }
         }
     }

@@ -1,4 +1,5 @@
 var dayDuration = 1000;
+var offlineMode = true;
 
 function MapManager()
 {

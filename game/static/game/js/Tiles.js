@@ -35,8 +35,8 @@ function Tile(id, name, color, colorChange, redVariant, greenVariant, blueVarian
     {
         return this.isSimpleCube() ? new AABB(x, y, z, x + 1, y + this.height, z + 1) : null;
     }
-	
-	this.getRenderAABB = 
+
+	this.getRenderAABB =
 	function getRenderAABB(x,y,z)
 	{
 		return new AABB(x,y,z,x+1,y+this.height,z+1);
@@ -69,7 +69,7 @@ function Tiles()
 		this.RED_MUSH = new Tile(15,"Red Mushroom", 0x000000, false, 0, 0, 0,0.3,"models/red_mush.obj");
 		this.BROWN_MUSH = new Tile(16,"Brown Mushroom", 0x000000, false, 0, 0, 0,0.3,"models/brown_mush.obj");
 		this.JACO_BROWNIE = new Tile(17,"JacoBrownie",0x000000,false,0,0,0,0.5,"models/Jacobrownie.obj");
-		this.PENGUINS = new Tile(18,"Penguins",0x000000,false,0,0,0,1,"models/penguins.obj");
+		this.PENGUIN = new Tile(18,"Penguin",0x000000,false,0,0,0,1,"models/penguin.obj");
 		this.SNOW_TILE = new Tile(19,"Snow Tile",0xe7fafc,true,0,0,0.1,0.1);
 		this.DEADBUSH = new Tile(20,"Deadbush",0x000000,false,0,0,0,1,"models/deadbush.obj");
     }

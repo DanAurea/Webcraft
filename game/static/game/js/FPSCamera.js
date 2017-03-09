@@ -26,7 +26,7 @@ function FPSCamera()
     	};
 
         var geometry = new THREE.CubeGeometry(1.01, 1.01, 1.01);
-        var material = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
+        var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, transparent: true, opacity: 0.05});
         this.hoverMesh = new THREE.Mesh(geometry, material);
         scene.add(this.hoverMesh);
     }
@@ -35,7 +35,7 @@ function FPSCamera()
     function lockChange()
     {
         document.pointerLockElement = document.pointerLockElement || document.mozPointerLockElement;
-        ;
+
     	if (document.pointerLockElement === $("#gameContainer")[0])
     	{
     		FPSCamera.locked = true;
@@ -117,9 +117,10 @@ function FPSCamera()
         if (collisions.length >= 1 && collisions[0].distance <= 10)
         {
             var normal = collisions[0].face.normal;
-            var xFix = normal.x == 1 ? -1 : 0;
-            var yFix = normal.y == 1 ? -1 : 0;
-            var zFix = normal.z == 1 ? -1 : 0;
+            var xFix = normal.x == 1 && collisions[0].point.x % 1 == 0 ? -1 : 0;
+            var yFix = normal.y == 1 && collisions[0].point.y % 1 == 0 ? -1 : 0;
+            var zFix = normal.z == 1 && collisions[0].point.z % 1 == 0 ? -1 : 0;
+
             return {"x": parseInt(collisions[0].point.x + xFix), "y": parseInt(collisions[0].point.y + yFix), "z": parseInt(collisions[0].point.z + zFix), "normal": normal};
         }
 
