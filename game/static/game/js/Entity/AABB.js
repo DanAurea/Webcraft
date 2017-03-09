@@ -10,7 +10,7 @@ function AABB(x, y, z, x2, y2, z2)
     this.intersect =
     function intersect(other)
     {
-        return (this.x < other.x2 && this.x2 > other.x) && (this.y < other.y2 && this.y2 > other.y) && (this.z < other.z2 && this.z2 > other.z);
+        return other != null && (this.x < other.x2 && this.x2 > other.x) && (this.y < other.y2 && this.y2 > other.y) && (this.z < other.z2 && this.z2 > other.z);
     }
 
     this.updatePos =
