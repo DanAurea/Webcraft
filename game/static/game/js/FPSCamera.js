@@ -168,10 +168,21 @@ function FPSCamera()
                 tX += FPSCamera.targetTile.normal.x;
                 tY += FPSCamera.targetTile.normal.y;
                 tZ += FPSCamera.targetTile.normal.z;
+
                 var tileAABB = Tiles.getTile(FPSCamera.tileId).getAABB(tX, tY, tZ);
 
-                //Check player collision
-                if(!thePlayer.collision.intersect(tileAABB))
+                //Check players collision
+                var collided = false;
+                for(var i = 0, length = Entities.entityList.length; i < length; i++)
+                {
+                    if(Entities.entityList[i].collision.intersect(tileAABB))
+                    {
+                        collided = true;
+                        break;
+                    }
+                }
+                
+                if(!collided)
                 {
                     MapManager.setTileAt(FPSCamera.tileId, tX, tY, tZ);
                 }
