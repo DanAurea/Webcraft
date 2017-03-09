@@ -132,3 +132,11 @@ STATICFILES_DIRS = (
 FIXTURE_DIRS = (
    os.path.join(BASE_DIR, "fixtures"),
 )
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'my@gmail.com'
+EMAIL_HOST_PASSWORD = 'my_emails_password'

@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.models import Permission
 from django.db import IntegrityError
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 def login(request):
 
@@ -33,9 +35,9 @@ def login(request):
     return render(request, 'user/baseForm.html', locals())
 
 def register(request):
-
-    form = RegisterForm(request.POST or None)
+    form        = RegisterForm(request.POST or None)
     valueButton = "S'inscrire"
+    error       = None
     if form.is_valid():
         account = form.cleaned_data['account']
         password = form.cleaned_data['password']
@@ -43,11 +45,11 @@ def register(request):
 
         #verifier si utilisateur n'existe pas déjà dans la bdd
         try:
-            new_user = User.objects.create_user(username, email, password)
+            new_user = User.objects.create_user(account, email, password)
         except IntegrityError:
-            print("utilisateur déjà existant")
+            error="L'utilisateur existe déjà"
         else:
-            print("utilisateur créé")
+            send_mail('BIENVENUE TOI', 'Bienvenue sur notre super jeu', 'from@example.com', [email], fail_silently=False)
 
         print(account, password, email)
     
