@@ -168,9 +168,19 @@ function FPSCamera()
                 tX += FPSCamera.targetTile.normal.x;
                 tY += FPSCamera.targetTile.normal.y;
                 tZ += FPSCamera.targetTile.normal.z;
-            }
+                var tileAABB = Tiles.getTile(FPSCamera.tileId).getAABB(tX, tY, tZ);
 
-            MapManager.setTileAt(place ? FPSCamera.tileId : 0, tX, tY, tZ);
+                //Check player collision
+                if(!thePlayer.collision.intersect(tileAABB))
+                {
+                    MapManager.setTileAt(FPSCamera.tileId, tX, tY, tZ);
+                }
+            }
+            else
+            {
+                //Break
+                MapManager.setTileAt(0, tX, tY, tZ);
+            }
         }
     }
 }
