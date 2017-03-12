@@ -2,8 +2,8 @@ var dayDuration = 1000;
 
 function MapManager()
 {
-    this.mapWidth = 8;
-    this.mapLength = 8;
+    this.mapWidth = 2;
+    this.mapLength = 2;
     this.totalWidth = this.mapWidth * 32;
     this.totalLength = this.mapLength * 32;
     this.chunks;

@@ -161,7 +161,13 @@ function Chunk(x, z)
 
             for(var y = 0; y < height; y++)
             {
-                this.map[this.getIndexForCoords(x, y, z)] = 1;
+                this.map[this.getIndexForCoords(x, y, z)] = Tiles.GRASS.id;
+            }
+
+            if(Math.random() < 0.1)
+            {
+                var veg = Math.floor(Math.random() * 3);
+                this.map[this.getIndexForCoords(x, height, z)] = veg == 0 ? Tiles.GRASS_TALL.id : veg == 1 ? Tiles.FLOWER_RED.id : Tiles.FLOWER_BLUE.id;
             }
         }
     }
