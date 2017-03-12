@@ -7,13 +7,13 @@ ws.onmessage = function(message) {
 
 	var pseudo = 'Mon pseudo:';
 	
-	var messagePacket = new PacketChat().initServerPacket();
-	// incomingChatPacket.decode(message);
-	// incomingChatPacket.handler();
+	var messagePacket = new PacketChat().initClientPacket();
+	messagePacket.decode(message.data);
+	messagePacket.handler();
 
 	$('#messagesList').append(
 		 '<li><span class=\'pseudo\'>' + pseudo + '</span>'
-		+ '<span class=\'message\'>' + message.data + '</span>'
+		+ '<span class=\'message\'>' + messagePacket.message + '</span>'
 		+ '</li>'
 	);
 };

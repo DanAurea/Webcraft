@@ -1,11 +1,9 @@
 function Packet()
 {
     this.isServerPacket = false;
-    this.uniqueToken    = "";
-    this.timestamp      = 0;
-    this.dataSize       = 0;
-    this.packetId       = 0;
-    this.offset         = 0;
+    this.uniqueToken    = ""; // Authenticate whose send message
+    this.packetId       = 0; // Packet ID for interpreting purpose
+    this.offset         = 0; // Represent bytes position in packet
 
     this.handle = null;
 
@@ -17,18 +15,15 @@ function Packet()
 
         // Encode header ID in packet
         PacketsUtil.encodeString(dv, this.offset, headerID);
-        this.offset += headerID.length * 2;
+        this.offset += headerID.length;
 
         // Encode client token
         PacketsUtil.encodeString(dv, this.offset, this.uniqueToken);
-        this.offset += this.uniqueToken.length * 2;
+        this.offset += this.uniqueToken.length;
 
-        // Encode packet type ID
-        dv.setInt32(this.offset, this.packetId);
+        // Encode packet type ID on 1 byte (256 ID possible)
+        dv.setUint8(this.offset, this.packetId);
         this.offset += 4
-
-        this.dataSize = this.getEncodePacketSize();
-        dv.setInt32(this.offset, this.dataSize);
 
         return dv;
     }
@@ -38,10 +33,8 @@ function Packet()
     {
         dv = new DataView(data);
 
-        this.packetId = dv.getInt32(36);
-        //36 = 4bytes "DRPG" + Token
-        this.timestamp = dv.getInt32(40) << 32 | dv.getInt32(44) & 0xFFFFFFFF;
-        this.dataSize = dv.getInt32(48);
+        this.offset      = headerID.length;
+        this.packetId    = dv.getUint8(this.offset);
 
         return dv;
     }
@@ -50,17 +43,6 @@ function Packet()
     function initClientPacket()
     {
         this.uniqueToken = TOKEN;
-        this.timestamp = new Date().getTime();
-        this.packetId = this.getPacketId();
-
-        return this;
-    }
-
-    this.initServerPacket =
-    function initServerPacket()
-    {
-        this.uniqueToken = "server";
-        this.isServerPacket = true;
         this.packetId = this.getPacketId();
 
         return this;
@@ -68,8 +50,16 @@ function Packet()
 
     this.getEncodePacketSize =
     function getEncodePacketSize()
-    {
-        return 88;
+    {   
+        // Size of header packet (Header ID + Client token + packet ID)
+        return headerID.length + TOKEN.length + 1;
+    }
+
+    this.getDecodePacketSize =
+    function getDecodePacketSize()
+    {   
+        // Size of header packet (Header ID + Client token + packet ID)
+        return headerID.length + 1;
     }
 
     this.getPacketId =
