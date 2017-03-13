@@ -1,3 +1,12 @@
+
+// Add zero before numbers
+function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+}
+
 function PacketChat(message)
 {
     this.message     = PacketsUtil.defval(message, "-");
@@ -43,7 +52,7 @@ function PacketChat(message)
 
         // Convert timestamp to human readable format
         d = new Date(this.timestamp * 1000);
-        this.time = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
+        this.time = addZero(d.getHours()) + ':' + addZero(d.getMinutes()) + ':' + addZero(d.getSeconds());
         
         usernameSize     = dv.getUint8(this.offset);
         this.offset      += 1;

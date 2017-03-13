@@ -17,11 +17,10 @@ class PacketChat(Packet):
 	def __init__(self):
 		super().__init__()
 
-		## Define token in apps.py
-		self.timestamp = "DRPG"
+		self.timestamp = super().getTimestamp()
 		self.packetID  = 1
 	
-	def encode(self, message, username):
+	def encode(self, message, username, getTimestamp = True):
 		"""
 			Encode a message with API format
 			DRPG + PacketID + Timestamp
@@ -31,8 +30,11 @@ class PacketChat(Packet):
 		bContainer = super().encode()
 
 		## TODO: Be aware of byte order for portable version
-		timestamp  = super().encodeTimestamp64(super().getTimestamp())
-		bContainer = bContainer.__add__(timestamp)
+		if(getTimestamp is True):
+			self.timestamp = super().getTimestamp()
+
+		timestamp64  = super().encodeTimestamp64(self.timestamp)
+		bContainer 		= bContainer.__add__(timestamp64)
 
 		## Add username size to bytes and encode it
 		## TODO: Be aware of byte order from client for portable version
