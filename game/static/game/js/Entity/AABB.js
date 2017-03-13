@@ -13,6 +13,93 @@ function AABB(x, y, z, x2, y2, z2)
         return other != null && (this.x < other.x2 && this.x2 > other.x) && (this.y < other.y2 && this.y2 > other.y) && (this.z < other.z2 && this.z2 > other.z);
     }
 
+    this.intersectLine =
+    function intersectLine(startVec, endVector)
+    {
+        var output = {intersect: null, normal: null};
+        var clipReturn = null;
+        if(!(clipReturn = this.clipLine(this.x, this.x2, startVec.x, endVector.x, 0, 1))[0])
+        {
+            return output;
+        }
+        if(!(clipReturn = this.clipLine(this.y, this.y2, startVec.y, endVector.y, clipReturn[1], clipReturn[2]))[0])
+        {
+            return output;
+        }
+        if(!(clipReturn = this.clipLine(this.z, this.z2, startVec.z, endVector.z, clipReturn[1], clipReturn[2]))[0])
+        {
+            return output;
+        }
+
+        var sub = endVector.sub(startVec);
+        var intersect = startVec.add(sub.multiplyScalar(clipReturn[1]));
+        intersect.x = intersect.x.toFixed(6);
+        intersect.y = intersect.y.toFixed(6);
+        intersect.z = intersect.z.toFixed(6);
+
+        output.intersect = intersect;
+        if(intersect.y == this.y)
+        {
+            output.normal = [0, -1, 0];
+        }
+        else if(intersect.y == this.y2)
+        {
+            output.normal = [0, 1, 0];
+        }
+        else if(intersect.x == this.x)
+        {
+            output.normal = [-1, 0, 0];
+        }
+        else if(intersect.x == this.x2)
+        {
+            output.normal = [1, 0, 0];
+        }
+        else if(intersect.z == this.z)
+        {
+            output.normal = [0, 0, -1];
+        }
+        else if(intersect.z == this.z2)
+        {
+            output.normal = [0, 0, 1];
+        }
+
+        if(output.normal[0] == 2)
+        {
+            console.log(intersect);
+        }
+
+        return output;
+    }
+
+    this.clipLine =
+    function clipLine(x1, x2, startVecX, endVectorX, fLow, fHigh)
+    {
+        var fDimLow = (x1 - startVecX) / (endVectorX - startVecX);
+        var fDimHigh = (x2 - startVecX) / (endVectorX - startVecX);
+
+        if(fDimHigh < fDimLow)
+        {
+            var swap = fDimLow;
+            fDimLow = fDimHigh;
+            fDimHigh = swap;
+        }
+
+        if(fDimHigh < fLow || fDimLow > fHigh)
+        {
+            return [false, fLow, fHigh];
+        }
+
+        fLow = Math.max(fDimLow, fLow);
+        fHigh = Math.min(fDimHigh, fHigh);
+
+        if(fLow > fHigh)
+        {
+            return [false, fLow, fHigh];
+        }
+
+        return [true, fLow, fHigh];
+    }
+
     this.updatePos =
     function updatePos(x, y, z)
     {
@@ -90,7 +177,7 @@ function AABB(x, y, z, x2, y2, z2)
     }
 
     this.tilesInBox =
-    function tilesInBox()
+    function tilesInBox(aabbSelect)
     {
         var tiles = [];
         var x, y, z;
@@ -107,36 +194,47 @@ function AABB(x, y, z, x2, y2, z2)
             {
                 for(y = bY; y < bY2; y++)
                 {
-                    tile = MapManager.getTileAt(x, y, z);
-                    if(tile != 0)
+                    tileId = MapManager.getTileAt(x, y, z);
+                    if(tileId != 0)
                     {
-                        var aabb = Tiles.getTile(tile).getAABB(x, y, z);
-                        if(aabb != null)
+                        var tile = Tiles.getTile(tileId);
+                        if(aabbSelect)
                         {
-                            tiles.push(aabb);
+                            var aabb = tile.getAABB(x, y, z);
+                            if(aabb != null)
+                            {
+                                tiles.push(aabb);
+                            }
+                        }
+                        else
+                        {
+                            tiles.push([tile, x, y, z]);
                         }
                     }
                 }
             }
         }
 
-        //Add boundaries
+        return tiles;
+    }
+
+    this.addMapBoundaries =
+    function addMapBoundaries(aabbArray)
+    {
         mapWidth = MapManager.totalWidth;
         mapLength = MapManager.totalLength;
 
         //Floor & Ceiling
-        tiles.push(new AABB(0, -100, 0, mapWidth, 0, mapLength));
-        tiles.push(new AABB(0, 500, 0, mapWidth, 501, mapLength));
+        aabbArray.push(new AABB(0, -100, 0, mapWidth, 0, mapLength));
+        aabbArray.push(new AABB(0, 500, 0, mapWidth, 501, mapLength));
 
         //X Axis
-        tiles.push(new AABB(0, 0, -1, mapWidth, 501, 0));
-        tiles.push(new AABB(0, 0, mapLength, mapWidth, 501, mapLength + 1));
+        aabbArray.push(new AABB(0, 0, -1, mapWidth, 501, 0));
+        aabbArray.push(new AABB(0, 0, mapLength, mapWidth, 501, mapLength + 1));
 
         //Z Axis
-        tiles.push(new AABB(-1, 0, 0, 0, 501, mapLength));
-        tiles.push(new AABB(mapWidth, 0, 0, mapWidth + 1, 501, mapLength));
-
-        return tiles;
+        aabbArray.push(new AABB(-1, 0, 0, 0, 501, mapLength));
+        aabbArray.push(new AABB(mapWidth, 0, 0, mapWidth + 1, 501, mapLength));
     }
 
     this.clipX =

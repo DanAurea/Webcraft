@@ -75,6 +75,17 @@ body,ul,ol,textarea,figure,label,form,form ol, form ol li{
 {
     pointer-events: auto;
 }
+.cross
+{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background-color: red;
+    width: 5px;
+    height: 5px;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
 
 /** Form style */
 

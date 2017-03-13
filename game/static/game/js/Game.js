@@ -31,27 +31,29 @@ function initGame()
     width = window.innerWidth;
     height = window.innerHeight;
 
-    textures = ResourceLoader.initTextures();
-    ResourceLoader.initModels(function()
+    textures = ResourceLoader.initTextures(function()
     {
-        Materials.init();
-        GameRenderer.init();
-        Controls.init();
-        GUIS.init();
+        ResourceLoader.initModels(function()
+        {
+            Materials.init();
+            GameRenderer.init();
+            Controls.init();
+            GUIS.init();
 
-        MapManager.initMap();
-        MapManager.prepareMapRender();
+            MapManager.initMap();
+            MapManager.prepareMapRender();
 
-        GUIS.INGAME_GUI.open();
-        GUIS.CHAT_GUI.open();
+            GUIS.INGAME_GUI.open();
+            GUIS.CHAT_GUI.open();
 
 
-        thePlayer = new EntityPlayer();
-        thePlayer.setPosition(5, 15, 10);
-        thePlayer.spawn();
+            thePlayer = new EntityPlayer();
+            thePlayer.setPosition(5, 15, 10);
+            thePlayer.spawn();
 
-        // On effectue le rendu de la scène
-        requestAnimationFrame(loopGame);
+            // On effectue le rendu de la scène
+            requestAnimationFrame(loopGame);
+        });
     });
 }
 

@@ -6,8 +6,7 @@ function FPSCamera()
     this.sensitivity = 0.1;
     this.targetTile = null;
     this.hoverMesh = null;
-    this.mousePos = new THREE.Vector2(0, 0);
-    this.rayCast = new THREE.Raycaster();
+    this.placeDistance = 6;
     this.tileId = 2;
 
     this.initFPSCamera =
@@ -26,7 +25,7 @@ function FPSCamera()
     	};
 
         var geometry = new THREE.CubeGeometry(1.01, 1.01, 1.01);
-        var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, transparent: true, opacity: 0.05});
+        var material = new THREE.MeshBasicMaterial({color: 0xFF0000, transparent: true, opacity: 0.25});
         this.hoverMesh = new THREE.Mesh(geometry, material);
         scene.add(this.hoverMesh);
     }
@@ -92,39 +91,40 @@ function FPSCamera()
         }
     }
 
+    this.placeDebug = false;
+
     this.getTileLookingAt =
     function getTileLookingAt()
     {
-        var obstacles = [];
-        var group;
-        for(var i = 0, chunkAmount = MapManager.chunks.length; i < chunkAmount; i++)
+        //Calculate look angle
+        var lookAngleX = -Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * Math.cos(FPSCamera.toRadians(FPSCamera.cameraPitch));
+        var lookAngleY = Math.sin(FPSCamera.toRadians(FPSCamera.cameraPitch));
+        var lookAngleZ = -Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * Math.cos(FPSCamera.toRadians(FPSCamera.cameraPitch));
+
+        //Get tiles in range
+        var nearestIntersect = null;
+        var minDistance = 100000;
+        var tiles = new AABB(camera.position.x, camera.position.y, camera.position.z, camera.position.x, camera.position.y, camera.position.z).expandBox(lookAngleX * this.placeDistance, lookAngleY * this.placeDistance, lookAngleZ * this.placeDistance).tilesInBox(false);
+        for(var i = 0, length = tiles.length; i < length; i++)
         {
-            group = MapManager.chunks[i].group;
-            if(group != null)
+            var x = tiles[i][1];
+            var y = tiles[i][2];
+            var z = tiles[i][3];
+            var tile = tiles[i][0];
+            var aabb = tile.getRenderAABB(x, y, z);
+
+            var intersect = aabb.intersectLine(new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z), new THREE.Vector3(camera.position.x + lookAngleX * this.placeDistance, camera.position.y + lookAngleY * this.placeDistance, camera.position.z + lookAngleZ * this.placeDistance));
+            if(intersect.normal != null)
             {
-                group.traverse(function(child)
+                var distance = camera.position.distanceTo(intersect.intersect);
+                if(distance < minDistance)
                 {
-    				if(child instanceof THREE.Mesh)
-                    {
-    					obstacles.push(child);
-    				}
-    			});
+                    minDistance = distance;
+                    nearestIntersect = {"x": x, "y": y, "z": z, "normal": intersect.normal};
+                }
             }
         }
-
-        this.rayCast.setFromCamera(this.mousePos, camera);
-        var collisions = this.rayCast.intersectObjects(obstacles);
-        if (collisions.length >= 1 && collisions[0].distance <= 10)
-        {
-            var normal = collisions[0].face.normal;
-            var xFix = normal.x == 1 && collisions[0].point.x % 1 == 0 ? -1 : 0;
-            var yFix = normal.y == 1 && collisions[0].point.y % 1 == 0 ? -1 : 0;
-            var zFix = normal.z == 1 && collisions[0].point.z % 1 == 0 ? -1 : 0;
-
-            return {"x": parseInt(collisions[0].point.x + xFix), "y": parseInt(collisions[0].point.y + yFix), "z": parseInt(collisions[0].point.z + zFix), "normal": normal};
-        }
-
-        return null;
+        return nearestIntersect;
     }
 
     this.move =
@@ -165,9 +165,9 @@ function FPSCamera()
 
             if(place)
             {
-                tX += FPSCamera.targetTile.normal.x;
-                tY += FPSCamera.targetTile.normal.y;
-                tZ += FPSCamera.targetTile.normal.z;
+                tX += FPSCamera.targetTile.normal[0];
+                tY += FPSCamera.targetTile.normal[1];
+                tZ += FPSCamera.targetTile.normal[2];
 
                 var tileAABB = Tiles.getTile(FPSCamera.tileId).getAABB(tX, tY, tZ);
 
@@ -181,7 +181,7 @@ function FPSCamera()
                         break;
                     }
                 }
-                
+
                 if(!collided)
                 {
                     MapManager.setTileAt(FPSCamera.tileId, tX, tY, tZ);

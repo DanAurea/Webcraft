@@ -51,7 +51,8 @@ function EntityPlayer()
         if(!this.noClip)
         {
             var extandedBox = this.collision.expandBox(this.totalMotionX, this.totalMotionY, this.totalMotionZ);
-            var tiles = extandedBox.tilesInBox();
+            var tiles = extandedBox.tilesInBox(true);
+            extandedBox.addMapBoundaries(tiles);
 
             var tileAmount = tiles.length;
             if(tileAmount > 0)

@@ -4,8 +4,7 @@ function Chunk(x, z)
 {
     this.chunkX = x;
     this.chunkZ = z;
-    this.tilesGeometry = null;
-    this.modelsGeometry = null;
+    this.groupGeometry = null;
     this.map = Array(1024 * chunkHeight);
     this.maxHeight = chunkHeight;
 
@@ -96,9 +95,9 @@ function Chunk(x, z)
     this.prepareChunkRender =
     function prepareChunkRender()
     {
-        var oldTilesMesh = this.tilesGeometry;
-        var oldModelsMesh = this.modelsGeometry;
+        var oldMesh = this.groupGeometry;
 
+        this.groupGeometry = new THREE.Object3D();
         var tilesGeometry = new THREE.Geometry();
         var modelPositions = [];
         var modelNormals = [];
@@ -142,23 +141,23 @@ function Chunk(x, z)
         modelsGeometry.addAttribute("position", new THREE.Float32BufferAttribute(modelPositions, 3));
         modelsGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(modelNormals, 3));
         modelsGeometry.addAttribute("uv", new THREE.Float32BufferAttribute(modelUVs, 2));
+        modelsGeometry.computeBoundingBox();
 
-        this.tilesMesh = new THREE.Mesh(tilesGeometry, Materials.tileMaterial);
-        this.modelsMesh = new THREE.Mesh(modelsGeometry, Materials.modelMaterial);
-        this.tilesMesh.position.x = cX;
-        this.tilesMesh.position.z = cZ;
+        var tilesMesh = new THREE.Mesh(tilesGeometry, Materials.tileMaterial);
+        var modelsMesh = new THREE.Mesh(modelsGeometry, Materials.modelMaterial);
+        tilesMesh.position.x = cX;
+        tilesMesh.position.z = cZ;
 
-        this.modelsMesh.position.x = cX + 0.5;
-        this.modelsMesh.position.z = cZ + 0.5;
+        modelsMesh.position.x = cX + 0.5;
+        modelsMesh.position.z = cZ + 0.5;
 
-        scene.add(this.tilesMesh);
-        scene.add(this.modelsMesh);
-        //scene.add()
+        this.groupGeometry.add(tilesMesh);
+        this.groupGeometry.add(modelsMesh);
+        scene.add(this.groupGeometry);
 
-        if(oldTilesMesh != null)
+        if(oldMesh != null)
         {
-            scene.remove(oldTilesMesh);
-            scene.remove(oldModelsMesh);
+            scene.remove(oldMesh);
         }
     }
 
