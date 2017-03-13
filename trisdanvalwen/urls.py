@@ -20,4 +20,4 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^game/', include('game.urls', namespace='game')),
     url(r'^user/', include('user.urls', namespace='user')),
-]
+] 
