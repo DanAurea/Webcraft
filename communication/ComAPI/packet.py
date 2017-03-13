@@ -9,11 +9,14 @@ class Packet():
 	"""Class for constructing binary data based
 		on a common API between client / server."""
 
+	CLIENT_HEADER_SIZE = 37
+
 	def __init__(self):
 		## Define token in apps.py
-		self.token    = ""
-		self.headerID = "DRPG"
-		self.packetID = 0
+		self.token     = ""
+		self.headerID  = "DRPG"
+		self.packetID  = 0
+		self.secretKey = "c48w5OY0JpD&yHa"
 	
 	def encode(self):
 		"""

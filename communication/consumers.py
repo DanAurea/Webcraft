@@ -4,16 +4,19 @@ from channels import Group
 from channels.sessions import channel_session
 from channels.auth import channel_session_user, channel_session_user_from_http
 from communication.ComAPI.packetChat import PacketChat
+from game.utils import getToken
+# from .models import ChatMessage
 
-## Initliaze packet management class
+## Initliaze packet chat manager class
 packet = PacketChat()
 
 # Consumer for chat connection using
 # session for keeping token and
 # using group for broadcast purpose
 # 
-# Currently only accept connection
-# then add channel to group 'chat'
+# Copy http session from django into channel session
+# for retrieving each session key of current user
+# when communicating with server.
 @channel_session_user_from_http
 def ws_connect(message):
 	message.reply_channel.send({
@@ -21,24 +24,30 @@ def ws_connect(message):
 	})
 
 	Group('chat').add(message.reply_channel)
+	Group('game').add(message.reply_channel)
 
 # Consumer for chat message received using
 # session for keeping token and
 # using group for broadcast purpose
 # 
-# Currently it just send back what it receive
+# Filter packets and handle them
 @channel_session_user
 def ws_receive(data):
 
 	## Received binary datas from channel
-	if(data.content["bytes"]):
+	if(data.content["bytes"] and len(data.content["bytes"]) > packet.CLIENT_HEADER_SIZE ):
+
 		message = packet.decode(data.content["bytes"])
 		
-		## TODO: Add safety check, check if username is in database + password + secretkey 
-		## then check clientToken to new hashed value.
+		## Check if it's a trusted user by checking token
+		username    = data.user.username
+		hashedToken = getToken(username)
+		
+		if(hashedToken.hex() != packet.token):
+			data.reply_channel.send({"close": True})
 
 		if(packet.packetID == 1):
-			sendChat(message, data.user.username)
+			sendChat(message, username)
 
 	
 # Consumer for chat disconnection using
@@ -47,6 +56,7 @@ def ws_receive(data):
 @channel_session
 def ws_disconnect(message):
 	 Group('chat').discard(message.reply_channel)
+	 Group('game').add(message.reply_channel)
 
 def sendChat(message, username):
 

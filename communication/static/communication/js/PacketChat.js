@@ -41,8 +41,6 @@ function PacketChat(message)
         this.timestamp   = dv.getFloat64(this.offset);
         this.offset      += 8;
 
-        console.log(this.timestamp);
-
         // Convert timestamp to human readable format
         d = new Date(this.timestamp * 1000);
         this.time = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();

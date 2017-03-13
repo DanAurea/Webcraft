@@ -2,8 +2,7 @@ ws.onmessage = function(message) {
 	
 	var messagePacket = new PacketChat().initClientPacket();
 	messagePacket.decode(message.data);
-	messagePacket.handler();
-
+	
 	$('#messagesList').append(
 		'<li>'
 		+ '<span>' + messagePacket.time + ' - </span>'
