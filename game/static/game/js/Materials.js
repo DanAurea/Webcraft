@@ -16,7 +16,6 @@ function Materials()
     		color: new THREE.Color(0xFFFFFF),
             roughness: 1,
     		shading: THREE.FlatShading,
-            vertexColors: THREE.VertexColors,
             map: textures["palette"]
     	});
     }

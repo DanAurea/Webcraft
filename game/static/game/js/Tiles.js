@@ -38,7 +38,7 @@ function Tile(id, name, color, colorChange, redVariant, greenVariant, blueVarian
 	this.getRenderAABB =
 	function getRenderAABB(x,y,z)
 	{
-		return new AABB(x,y,z,x+1,y+this.height,z+1);
+		return new AABB(x, y, z, x + 1, y + this.height, z + 1);
 	}
 }
 

@@ -52,11 +52,23 @@ function ResourceLoader()
     * Return : Texture array
     */
     this.initTextures =
-    function initTextures()
+    function initTextures(finishCallback)
     {
         var textures = Array();
         var resourceAmount = resources.length;
+        var imgAmount = 0;
+        var loadedImgAmount = 0;
 
+        //Count models
+        for(var i = 0; i < resourceAmount; i++)
+        {
+            if(resources[i].endsWith(".png"))
+            {
+                imgAmount++;
+            }
+        }
+
+        var textureLoader = new THREE.TextureLoader();
         for(var i = 0; i < resourceAmount; i++)
         {
             if(resources[i].endsWith(".png"))
@@ -64,11 +76,18 @@ function ResourceLoader()
                 var nameScheme = resources[i].split("/");
                 var name = nameScheme[nameScheme.length - 1];
                 name = name.substr(0, name.length - 4);
+                textureLoader.load(resources[i], function(tex)
+                {
+                    tex.wrapS = THREE.RepeatWrapping;
+                    tex.wrapT = THREE.RepeatWrapping;
+                    textures[name] = tex;
 
-                var tex = new THREE.TextureLoader().load(resources[i]);
-                tex.wrapS = THREE.RepeatWrapping;
-                tex.wrapT = THREE.RepeatWrapping;
-                textures[name] = tex;
+                    loadedImgAmount++;
+                    if(loadedImgAmount >= imgAmount)
+                    {
+                        finishCallback();
+                    }
+                });
             }
         }
 
