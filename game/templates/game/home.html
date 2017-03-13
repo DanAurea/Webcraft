@@ -70,7 +70,15 @@
         <script src="{% static 'game/js/Gui/IngameGui.js' %}" charset="utf-8"></script>
         <script src="{% static 'game/js/Controls.js' %}" charset="utf-8"></script>
         <script src="{% static 'game/js/GameLoader.js' %}" charset="utf-8"></script>
+
+        <script>
+            var ws = new WebSocket((window.location.protocol == 'http') ? 'ws://' : 'ws://' +  window.location.host + '/')
+            ws.binaryType = "arraybuffer";
+            Packets.init();
+        </script>
+
         <script src="{% static 'chat/js/Messaging.js' %}" charset="utf-8"></script>
+
 
     </body>
 </html>

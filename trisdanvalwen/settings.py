@@ -26,7 +26,7 @@ SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1", "mordor"]
+ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1"]
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'communication',
     'game',
+    'channels',
     'chat',
     'user',
 ]
@@ -80,8 +81,12 @@ WSGI_APPLICATION = 'trisdanvalwen.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'devDB',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'djangorpg',
+	'USER': 'danval',
+	'PASSWORD': 'danval72',
+	'HOST': '172.17.0.4',
+	'PORT': '',
     }
 }
 
@@ -133,10 +138,16 @@ FIXTURE_DIRS = (
    os.path.join(BASE_DIR, "fixtures"),
 )
 
-
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_USE_TLS = True
-
-EMAIL_HOST_USER = 'my@gmail.com'
-EMAIL_HOST_PASSWORD = 'my_emails_password'
+CHANNEL_LAYERS = {
+     "default": {
+        "BACKEND": "asgi_redis.RedisChannelLayer",
+        "ROUTING": 'communication.routing.channel_routing',
+        "CONFIG": {
+        	"hosts": [("localhost", 6379)],
+        	"channel_capacity": {
+        		"http.request" : 200,
+        		"http.response": 10,
+        	}
+        }
+    },
+}

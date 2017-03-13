@@ -21,7 +21,7 @@ class PacketChat(Packet):
 		self.timestamp = "DRPG"
 		self.packetID  = 1
 	
-	def encode(self, message):
+	def encode(self, message, username):
 		"""
 			Encode a message with API format
 			DRPG + PacketID + Timestamp
@@ -34,11 +34,14 @@ class PacketChat(Packet):
 		timestamp  = super().encodeTimestamp64(super().getTimestamp())
 		bContainer = bContainer.__add__(timestamp)
 
-		## Add message size to bytes
+		## Add username size to bytes and encode it
+		## TODO: Be aware of byte order from client for portable version
+		bContainer = bContainer.__add__(pack(">B" , len(username)))
+		bContainer = bContainer.__add__(username.encode())
+
+		## Add message size to bytes and encode it
 		## TODO: Be aware of byte order from client for portable version
 		bContainer = bContainer.__add__(pack(">H" , len(message)))
-
-		## Finally encode datas to bytes
 		bContainer = bContainer.__add__(message.encode())
 		
 		return bContainer		

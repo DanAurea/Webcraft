@@ -1,11 +1,18 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from chat.forms import ChatForm
+from django.contrib.sessions.models import Session
 
 def home(request):
-    form = ChatForm(request.POST or None)
+	
+	print(request.user)
 
-    if form.is_valid():
-    	message = form.cleaned_data['message']
+	if(request.user.is_authenticated()):
+		form = ChatForm(request.POST or None)
 
-    return render(request, 'game/home.html', locals())
+		if form.is_valid():
+			message = form.cleaned_data['message']
+
+		return render(request, 'game/home.html', locals())
+	else:
+		return redirect("user:login")

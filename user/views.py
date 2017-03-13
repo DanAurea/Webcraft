@@ -22,6 +22,7 @@ def login(request):
         user = authenticate(username=account, password=password)
         if user is not None:
             auth_login(request, user)
+            return redirect(reverse("game:home"), permanent = True)
             ## Check if user wasn't banned by an all mighty admin / moderator
             ## Not working at moment, should be fixed later
         	# if user_can_authenticate():
