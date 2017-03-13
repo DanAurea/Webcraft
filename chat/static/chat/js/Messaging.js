@@ -1,5 +1,5 @@
-ws.onmessage = function(message) {
-	
+
+function handleChat(message){
 	var messagePacket = new PacketChat().initClientPacket();
 	messagePacket.decode(message.data);
 
@@ -11,6 +11,16 @@ ws.onmessage = function(message) {
 		+ 
 		'</li>'
 	);
+}
+
+ws.onmessage = function(message) {
+	
+	var headerPacket  = new Packet().initClientPacket();
+	headerPacket.decode(message.data);
+
+	if(headerPacket.packetId == 1){
+		handleChat(message);
+	}
 };
 
 $('#messageInput').on('submit', function(event) {
