@@ -26,7 +26,7 @@ function FPSCamera()
     	};
 
         var geometry = new THREE.CubeGeometry(1.01, 1.01, 1.01);
-        var material = new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true});
+        var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, transparent: true, opacity: 0.05});
         this.hoverMesh = new THREE.Mesh(geometry, material);
         scene.add(this.hoverMesh);
     }
@@ -35,7 +35,7 @@ function FPSCamera()
     function lockChange()
     {
         document.pointerLockElement = document.pointerLockElement || document.mozPointerLockElement;
-        ;
+
     	if (document.pointerLockElement === $("#gameContainer")[0])
     	{
     		FPSCamera.locked = true;
@@ -81,8 +81,10 @@ function FPSCamera()
         this.targetTile = this.getTileLookingAt();
         if(this.targetTile != null)
         {
+			var tile = Tiles.getTile(MapManager.getTileAt(this.targetTile.x, this.targetTile.y, this.targetTile.z));
             this.hoverMesh.visible = true;
-            this.hoverMesh.position.set(this.targetTile.x + 0.5, this.targetTile.y + 0.5, this.targetTile.z + 0.5);
+			this.hoverMesh.scale.y = tile.height;
+            this.hoverMesh.position.set(this.targetTile.x + 0.5, this.targetTile.y + tile.height / 2, this.targetTile.z + 0.5);
         }
         else
         {
@@ -115,9 +117,10 @@ function FPSCamera()
         if (collisions.length >= 1 && collisions[0].distance <= 10)
         {
             var normal = collisions[0].face.normal;
-            var xFix = normal.x == 1 ? -1 : 0;
-            var yFix = normal.y == 1 ? -1 : 0;
-            var zFix = normal.z == 1 ? -1 : 0;
+            var xFix = normal.x == 1 && collisions[0].point.x % 1 == 0 ? -1 : 0;
+            var yFix = normal.y == 1 && collisions[0].point.y % 1 == 0 ? -1 : 0;
+            var zFix = normal.z == 1 && collisions[0].point.z % 1 == 0 ? -1 : 0;
+
             return {"x": parseInt(collisions[0].point.x + xFix), "y": parseInt(collisions[0].point.y + yFix), "z": parseInt(collisions[0].point.z + zFix), "normal": normal};
         }
 
@@ -165,9 +168,30 @@ function FPSCamera()
                 tX += FPSCamera.targetTile.normal.x;
                 tY += FPSCamera.targetTile.normal.y;
                 tZ += FPSCamera.targetTile.normal.z;
-            }
 
-            MapManager.setTileAt(place ? FPSCamera.tileId : 0, tX, tY, tZ);
+                var tileAABB = Tiles.getTile(FPSCamera.tileId).getAABB(tX, tY, tZ);
+
+                //Check players collision
+                var collided = false;
+                for(var i = 0, length = Entities.entityList.length; i < length; i++)
+                {
+                    if(Entities.entityList[i].collision.intersect(tileAABB))
+                    {
+                        collided = true;
+                        break;
+                    }
+                }
+                
+                if(!collided)
+                {
+                    MapManager.setTileAt(FPSCamera.tileId, tX, tY, tZ);
+                }
+            }
+            else
+            {
+                //Break
+                MapManager.setTileAt(0, tX, tY, tZ);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ if(window.location.pathname.endsWith("debug.html"))
 
 function ResourceLoader()
 {
-    var resources = ["img/palette.png", "models/flower_red.obj", "models/flower_blue.obj", "models/grass.obj"];
+    var resources = ["img/palette.png", "models/flower_red.obj", "models/flower_blue.obj", "models/grass.obj","models/cactus.obj","models/cat.obj","models/apple.obj","models/brown_mush.obj","models/red_mush.obj","models/Jacobrownie.obj","models/deadbush.obj", "models/penguin.obj"];
     for(var i = 0; i < resources.length; i++)
     {
         resources[i] = gameFolder + resources[i];

@@ -7,6 +7,12 @@ function AABB(x, y, z, x2, y2, z2)
     this.y2 = y2;
     this.z2 = z2;
 
+    this.intersect =
+    function intersect(other)
+    {
+        return other != null && (this.x < other.x2 && this.x2 > other.x) && (this.y < other.y2 && this.y2 > other.y) && (this.z < other.z2 && this.z2 > other.z);
+    }
+
     this.updatePos =
     function updatePos(x, y, z)
     {

@@ -43,7 +43,7 @@ function GUIS()
     {
         initDebugger();
         //Register All GUI
-        this.INGAME_GUI = new GUI("#ingameGui", ingameGui.onIngameGuiOpen, null, null);
+        this.INGAME_GUI = new GUI("#ingameGui", ingameGui.onIngameGuiOpen, ingameGui.onIngameGuiUpdate, null);
         this.CHAT_GUI = new GUI("#guiChat", null, null, null);
         this.MAIN_MENU= new GUI("#mainMenu", null, null, null);
     }

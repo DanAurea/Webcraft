@@ -40,8 +40,8 @@ function SkyRenderer()
 
 
         //SkyDome
-        var vertexShader = document.getElementById("skydome_vs").textContent;
-        var fragmentShader = document.getElementById("skydome_fs").textContent;
+        var vertexShader = SkyDomeShader.vertexShader;
+        var fragmentShader = SkyDomeShader.fragmentShader;
         var skyGeo = new THREE.SphereGeometry(4000, 32, 15);
         var skyMat = new THREE.ShaderMaterial({uniforms: SkyDomeShader.uniforms, vertexShader: SkyDomeShader.vertexShader, fragmentShader: SkyDomeShader.fragmentShader, side: THREE.BackSide});
         this.skyDome = new THREE.Mesh(skyGeo, skyMat);

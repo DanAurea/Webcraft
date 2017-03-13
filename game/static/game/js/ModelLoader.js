@@ -1,6 +1,7 @@
 function ModelLoader()
 {
     this.models = {};
+    this.material = null;
 
     var loader = new THREE.OBJLoader();
 
@@ -11,17 +12,21 @@ function ModelLoader()
         {
             object.position.x += 0.5;
             object.position.z += 0.5;
-            object.scale.x = 0.0625;
-            object.scale.y = 0.0625;
-            object.scale.z = 0.0625;
 
             object.traverse(function(child)
             {
 				if(child instanceof THREE.Mesh)
                 {
 					child.material.map = textures["palette"];
+                    ModelLoader.material = child.material;
 				}
 			});
+
+            var vertices = object.children[0].geometry.attributes.position.array;
+            for(var i = 0, length = vertices.length; i < length; i++)
+            {
+                vertices[i] *= 0.0625;
+            }
 
             ModelLoader.models[path] = object;
             finishCallback();
