@@ -7,6 +7,8 @@
         <title>Django-RPG</title>
         {% compress css %}
             <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
+            <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
+            <link rel="stylesheet" href="{% static 'game/css/jquery.mCustomScrollbar.min.css' %}">
         {% endcompress %}
     </head>
     <body>
@@ -17,7 +19,8 @@
             <div class="gui" id="ingameGui">
                 <div class="gui_bottom gui_left">
                     <span id="ingame_gui_version">V: </span><br/>
-                    <span id="ingame_gui_block">Tile: </span>
+                    <span id="ingame_gui_block">Tile: </span><br>
+                    <span id="GPU"></span>
                 </div>
             </div>
         </div>
@@ -52,6 +55,9 @@
             <script src="{% static 'game/js/ModelLoader.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/FPSCamera.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Materials.js' %}" charset="utf-8"></script>
+
+            <script src="{% static 'game/js/scrollPane/jquery.mCustomScrollbar.concat.min.js' %}" charset="utf-8"></script>
+
             <script src="{% static 'game/js/Gui/Gui.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Gui/IngameGui.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Controls.js' %}" charset="utf-8"></script>

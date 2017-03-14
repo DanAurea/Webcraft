@@ -82,7 +82,7 @@ def handleChat(message, user):
 
 	## Delete first entry from chat message table
 	if(count == MESSAGE_NUMBER):
-		ChatMessage.objects.all()[0].delete()
+		ChatMessage.objects.all()[:MESSAGE_NUMBER][0].delete()
 
 	## Create one entry in database with new message, player id and timestamp
 	ChatMessage.objects.create(player_id = player, message = message, timestamp = packetChat.timestamp)
@@ -90,6 +90,7 @@ def handleChat(message, user):
 ## Retrieve last chat message from database
 ## with number limit set by argument.
 def getLastChatMessage():
+	## Retrieves n last messagesin reversed order
 	queries = ChatMessage.objects.all()
 
 	## Send all retrieved messages on chat

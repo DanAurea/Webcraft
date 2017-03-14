@@ -1,3 +1,4 @@
+// $("messagesContainer").mCustomScrollbar({ setHeight: 20, setTop: "50px" });
 
 function handleChat(message){
 	var messagePacket = new PacketChat().initClientPacket();
@@ -11,6 +12,9 @@ function handleChat(message){
 		+ 
 		'</li>'
 	);
+
+	$("messagesContainer").mCustomScrollbar("scrollTo","last");
+	$("#id_message").val("");
 }
 
 ws.onmessage = function(message) {
