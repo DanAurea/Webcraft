@@ -59,6 +59,10 @@ class PacketChat(Packet):
 
 		messageSize = unpack(">H", data[37:39])[0]
 
+		## Overflow, data size don't fit with client header and message size 
+		if(len(data) < super().CLIENT_HEADER_SIZE + messageSize):
+			return False
+
 		## Finally return message sent by client
 		return data[39:39 + messageSize].decode()
 

@@ -41,24 +41,35 @@ def ws_connect(message):
 # Filter packets and handle them
 @channel_session_user
 def ws_receive(data):
+	
+	binaryData = data.content["bytes"]
 
-	## Received binary datas from channel
-	if(data.content["bytes"] and len(data.content["bytes"]) > packet.CLIENT_HEADER_SIZE ):
+	## Received binary datas from channel and check if trusted 
+	## (+2 bytes because data size coded on 2 bytes + data are required )
+	if(data.content["bytes"] and len(binaryData) > packet.CLIENT_HEADER_SIZE + 2):
 
-		header = packet.decode(data.content["bytes"])
+		header = packet.decode(binaryData)
 		
 		## Check if it's a trusted user by checking token
 		user    = data.user
 		hashedToken = getToken(user.username)
 
-		## Close websocket is untrusted connection detected
+		## Close websocket if untrusted connection detected
 		if(hashedToken.hex() != packet.token):
-			data.reply_channel.send({"close": True})
+			ws_close(data)
 
 		if(packet.packetID == 1):
-			message = packetChat.decode(data.content["bytes"])
-			handleChat(message, user)
+			message = packetChat.decode(binaryData)
+			
+			## Problem with decoding, not trusted datas sent
+			if message == False:
+				ws_close(data)
 
+			chatHandler(message, user)
+
+## Send a close message to client websocket
+def ws_close(data):
+	data.reply_channel.send({"close": True})
 	
 # Consumer for chat disconnection using
 # session for keeping token and
@@ -70,7 +81,7 @@ def ws_disconnect(message):
 
 ## Handler for chat packet
 ## Data persistance enabled
-def handleChat(message, user):
+def chatHandler(message, user):
 
 	player = Player.objects.get(id_player= user.player.id_player)
 
@@ -90,7 +101,7 @@ def handleChat(message, user):
 ## Retrieve last chat message from database
 ## with number limit set by argument.
 def getLastChatMessage():
-	## Retrieves n last messagesin reversed order
+	## Retrieves n last messages
 	queries = ChatMessage.objects.all()
 
 	## Send all retrieved messages on chat

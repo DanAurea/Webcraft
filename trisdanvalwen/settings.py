@@ -31,7 +31,9 @@ COMPRESS_ENABLED = True
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
 COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
 
-ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1"]
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1", "192.168.1.248"]
 
 # Application definition
 
@@ -90,7 +92,7 @@ DATABASES = {
         'NAME': 'djangorpg',
 	'USER': 'danval',
 	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.4',
+	'HOST': '172.17.0.2',
 	'PORT': '',
     }
 }
