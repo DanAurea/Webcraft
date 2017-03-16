@@ -33,15 +33,17 @@ function FPSCamera()
     this.lockChange =
     function lockChange()
     {
-        document.pointerLockElement = document.pointerLockElement || document.mozPointerLockElement;
 
-    	if (document.pointerLockElement === $("#gameContainer")[0])
-    	{
-    		FPSCamera.locked = true;
-    		document.addEventListener("mousemove", FPSCamera.onMouseMove, false);
-    	}
-    	else
-    	{
+        if (document.pointerLockElement === $("#gameContainer")[0] ||
+            document.mozPointerLockElement === $("#gameContainer")[0] ||
+            document.webkitpointerLockElement === $("#gameContainer")[0]) 
+        {
+
+            FPSCamera.locked = true;
+            document.addEventListener("mousemove", FPSCamera.onMouseMove, false);
+        }
+        else
+        {
     		FPSCamera.locked = false;
     		document.removeEventListener("mousemove", FPSCamera.onMouseMove, false);
     	}

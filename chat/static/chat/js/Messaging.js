@@ -2,9 +2,11 @@ function activeChat(key){
 
 	if(key == "t"){
 		$("#id_message").focus();
+
 	}
 }
 
+speed = 300
 
 function handleChat(message){
 	var messagePacket = new PacketChat().initClientPacket();
@@ -35,7 +37,9 @@ function handleChat(message){
 
 // Hide chat messages when focus is lost
 $('#id_message').on('blur', function(event) {
-	$("#messagesContainer").fadeOut(300);
+	setTimeout(function() {  
+			$("#messagesContainer").fadeOut(300);
+	}, 2000);
 });
 
 // Show chat messages when focus is detected
