@@ -93,7 +93,7 @@ def chatHandler(message, user):
 
 	## Delete first entry from chat message table
 	if(count == MESSAGE_NUMBER):
-		ChatMessage.objects.all()[:MESSAGE_NUMBER][0].delete()
+		ChatMessage.objects.all().order_by("timestamp")[0].delete()
 
 	## Create one entry in database with new message, player id and timestamp
 	ChatMessage.objects.create(player_id = player, message = message, timestamp = packetChat.timestamp)
@@ -102,7 +102,7 @@ def chatHandler(message, user):
 ## with number limit set by argument.
 def getLastChatMessage():
 	## Retrieves n last messages
-	queries = ChatMessage.objects.all()
+	queries = ChatMessage.objects.all().order_by("timestamp")
 
 	## Send all retrieved messages on chat
 	for query in queries:

@@ -10,6 +10,7 @@
 }
 
 #messagesContainer{
+    display:none;
     height: 275px;
     overflow:hidden;
     overflow-y: hidden;

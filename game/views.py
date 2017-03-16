@@ -6,7 +6,6 @@ from game.utils import getToken
 
 def home(request):
 	
-
 	if(request.user.is_authenticated()):
 		
 		token = '"%s"'%getToken(request.user.username).hex()
