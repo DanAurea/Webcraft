@@ -1,5 +1,6 @@
 from opensimplex import OpenSimplex
 import math, sys, random
+from random import randint
 
 class TreeGenerator:
 	def generateAt(self,x,y,z,map):
@@ -42,7 +43,7 @@ class Biome:
 		self.id_tile = id_tile
 		
 	def generate(self,map,chunk):
-		...
+		pass
 		
 class BiomePlain (Biome):
 	def generate(self,map,chunk):
@@ -131,11 +132,12 @@ class Chunk:
 
 		
 class MapGenerator:
-	def __init__(self):
-		self.seedElev = 123456789
-		self.seedMoist = 987654321
-		self.seedTemp = 427227
-		self.mapSize = 8
+	
+	def __init__(self, size):
+		self.seedElev = randint(0, 10000000)
+		self.seedMoist = randint(0, 10000000)
+		self.seedTemp = randint(0, 10000000)
+		self.mapSize = size
 		self.genNoiseElev = OpenSimplex(self.seedElev)
 		self.genNoiseMoist = OpenSimplex(self.seedMoist)
 		self.genNoiseTemp = OpenSimplex(self.seedTemp)
@@ -231,18 +233,14 @@ class MapGenerator:
 			else:
 				return PLAIN
 
-def genEaster(map):
-	#JacoCookie
-	map.setTileAt(17,int((chunkSize*map.mapSize)/2),0,int((chunkSize*map.mapSize)/2))
+	def genEaster(self):
+		#JacoCookie
+		self.setTileAt(17,int((chunkSize*self.mapSize)/2),0,int((chunkSize*self.mapSize)/2))
 
-print("Début de la génération du relief")
-map = MapGenerator()
-map.genMap()
-print("Fin de la génération du relief")
-#map.genRiver()
-print("Début de la génération de la végétation")
-map.genVegetation()
-print("Fin de la génération de la végétation")
-#map.genVillage()
-genEaster(map)
-print (map.map[0][0].chunk)
+	def generate(self):
+		self.genMap()
+		#self.map.genRiver()
+		self.genVegetation()
+		#self.map.genVillage()
+		self.genEaster()
+		print(self.map)
