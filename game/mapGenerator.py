@@ -137,6 +137,7 @@ class MapGenerator:
 		self.seedElev = randint(0, 10000000)
 		self.seedMoist = randint(0, 10000000)
 		self.seedTemp = randint(0, 10000000)
+		self.seedColor = randint(0, 10000000)
 		self.mapSize = size
 		self.genNoiseElev = OpenSimplex(self.seedElev)
 		self.genNoiseMoist = OpenSimplex(self.seedMoist)

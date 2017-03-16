@@ -138,7 +138,7 @@ function ResourceLoader()
     this.loadMapInfo =
     function loadMapInfo(finishCallback, error)
     {
-        $.get("/game/getInfoMap", {}, finishCallback, "JSON").fail(error);
+        $.get("/game/getInfoMap", finishCallback).fail(error);
     }
 
     this.loadChunkAt =

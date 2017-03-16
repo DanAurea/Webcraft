@@ -1,15 +1,7 @@
 var offlineMode = true;
 
-function MapManager(mapWidth, mapLength, time, dayDuration, seedColor)
+function MapManager()
 {
-    this.mapWidth = mapWidth;
-    this.mapLength = mapLength;
-    this.totalWidth = this.mapWidth * 32;
-    this.totalLength = this.mapLength * 32;
-    this.chunks;
-    this.time = time;
-    this.dayDuration = dayDuration;
-
     this.update =
     function update()
     {
@@ -17,10 +9,16 @@ function MapManager(mapWidth, mapLength, time, dayDuration, seedColor)
     }
 
     this.initMap =
-    function initMap()
+    function initMap(mapWidth, mapLength, time, dayDuration, seedColor)
     {
         console.log("Initializing map...");
-        noise.seed(Math.random());
+        this.mapWidth = mapWidth;
+        this.mapLength = mapLength;
+        this.totalWidth = this.mapWidth * 32;
+        this.totalLength = this.mapLength * 32;
+        this.time = time;
+        this.dayDuration = dayDuration;
+        noise.seed(seedColor);
 
         this.chunks = Array(this.mapWidth * this.mapLength);
         for(var x = 0; x < this.mapWidth; x++)

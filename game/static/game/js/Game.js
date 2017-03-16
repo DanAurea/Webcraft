@@ -60,7 +60,7 @@ function initGame()
             {
                 alert("Erreur map ! Cf console");
                 console.error(error);
-            }
+            });
         });
     });
 }
