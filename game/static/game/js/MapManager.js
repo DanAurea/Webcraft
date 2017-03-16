@@ -1,4 +1,4 @@
-var offlineMode = true;
+var offlineMode = false;
 
 function MapManager()
 {

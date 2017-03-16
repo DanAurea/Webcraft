@@ -44,18 +44,41 @@ function initGame()
             {
                 console.log(data);
                 MapManager.initMap(data["size"], data["size"], data["timeDay"], data["durationDay"], data["seedColor"]);
-                MapManager.prepareMapRender();
+                var chunkAmount = MapManager.mapWidth * MapManager.mapLength;
+                var loadedChunk = 0;
 
-                GUIS.INGAME_GUI.open();
-                GUIS.CHAT_GUI.open();
+                for(var x = 0; x < MapManager.mapWidth; x++)
+                {
+                    for(var z = 0; z < MapManager.mapLength; z++)
+                    {
+                        ResourceLoader.loadChunkAt(function(chunkData)
+                        {
+                            MapManager.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = chunkData["tiles"];
+                            loadedChunk++;
+
+                            if(loadedChunk >= chunkAmount)
+                            {
+                                MapManager.prepareMapRender();
+
+                                GUIS.INGAME_GUI.open();
+                                GUIS.CHAT_GUI.open();
 
 
-                thePlayer = new EntityPlayer();
-                thePlayer.setPosition(5, 15, 10);
-                thePlayer.spawn();
+                                thePlayer = new EntityPlayer();
+                                thePlayer.setPosition(5, 15, 10);
+                                thePlayer.spawn();
 
-                // On effectue le rendu de la scène
-                requestAnimationFrame(loopGame);
+                                // On effectue le rendu de la scène
+                                requestAnimationFrame(loopGame);
+                            }
+                        }, function(error)
+                        {
+                            alert("Erreur map ! Cf console");
+                            console.error(error);
+                        });
+                    }
+                }
+
             }, function(error)
             {
                 alert("Erreur map ! Cf console");
