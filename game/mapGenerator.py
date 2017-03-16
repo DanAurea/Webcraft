@@ -94,6 +94,7 @@ class BiomeSnow(Biome):
 			cx = random.randint(0,31)
 			cz = random.randint(0,31)
 			radius = random.randint(2,3)
+			height = 0
 			while(radius > 0):
 				for i in range(radius*2):
 					for j in range(radius*2):
@@ -102,9 +103,9 @@ class BiomeSnow(Biome):
 				radius-=1
 	
 DESERT = BiomeDesert(0.5,4)
-SNOW = BiomeSnow(0.7,7)
-OCEAN = Biome(0.1,0)
-PLAIN = BiomePlain(0.3,1)
+SNOW   = BiomeSnow(0.7,7)
+OCEAN  = Biome(0.1,0)
+PLAIN  = BiomePlain(0.3,1)
 
 chunkSize = 32
 chunkHeight = 256
@@ -183,7 +184,7 @@ class MapGenerator:
 				rz=cz+chunk.z*chunkSize
 				sx = rx / 200
 				sz = rz / 200
-				biome = DESERT#self.genBiome(sx,sz)
+				biome = self.genBiome(sx,sz)
 				e = int((self.genNoiseElev.noise2d(sx,sz) / 2.0 + 0.5) * 30)
 				chunk.elev[cx][cz] = e
 				for y in range(e):
@@ -226,8 +227,8 @@ class MapGenerator:
 	def getBiome4MoistAndTemp(self,M,T):
 		if T>0.8 and M<0.2:
 			return DESERT
-		elif T<0.2 and M>0.7:
-			return SNOW
+		# elif T<0.2 and M>0.7:
+		# 	return SNOW
 		else:
 			if M>0.9:
 				return OCEAN
@@ -244,4 +245,5 @@ class MapGenerator:
 		self.genVegetation()
 		#self.map.genVillage()
 		self.genEaster()
-		print(self.map)
+		
+		return self.map

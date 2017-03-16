@@ -9,6 +9,9 @@ from game.mapGenerator import MapGenerator
 timeDay 	= 0
 ## Duration day based on tickstate (10 min here => 10 * 60 * 20 ticks/s)
 durationDay = 12000
+size = 24
+map = MapGenerator(size)
+m = map.generate()
 
 def getToken(username):
 	""" Generate a new token
@@ -39,15 +42,22 @@ def getInfoMap(request):
 
 	global timeDay
 	global durationDay
+	global size
 
 	data = {"timeDay": timeDay,
 			"durationDay": durationDay,
-			"size": 2,
+			"size": size,
 			"seedColor": 53482}
 	return JsonResponse(data)
 
 def getChunk(request):
 	"""Ajax request sending chunk status"""
-	
-	data = {}
+
+	x = int(request.GET.get("x", None))
+	z = int(request.GET.get("z", None))
+
+	## TODO: Exception if bad request
+	data = {"tiles" : m[x][z].chunk,
+			"x" : x,
+			"z": z}
 	return JsonResponse(data)

@@ -42,7 +42,6 @@ function initGame()
 
             ResourceLoader.loadMapInfo(function(data)
             {
-                console.log(data);
                 MapManager.initMap(data["size"], data["size"], data["timeDay"], data["durationDay"], data["seedColor"]);
                 var chunkAmount = MapManager.mapWidth * MapManager.mapLength;
                 var loadedChunk = 0;
@@ -51,8 +50,8 @@ function initGame()
                 {
                     for(var z = 0; z < MapManager.mapLength; z++)
                     {
-                        ResourceLoader.loadChunkAt(function(chunkData)
-                        {
+                        ResourceLoader.loadChunkAt(x, z, function(chunkData)
+                        {   
                             MapManager.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = chunkData["tiles"];
                             loadedChunk++;
 

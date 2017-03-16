@@ -143,7 +143,7 @@ function ResourceLoader()
 
     this.loadChunkAt =
     function loadChunkAt(x, z, finishCallback, error)
-    {
+    {   
         $.get("/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
     }
 }
