@@ -53,7 +53,7 @@ function SkyRenderer()
     this.update =
     function update()
     {
-        var time = (MapManager.time % dayDuration) / dayDuration;
+        var time = (MapManager.time % MapManager.dayDuration) / MapManager.dayDuration;
         var lightAmount = Math.max(Math.min((Math.cos(time * Math.PI * 2 - Math.PI) + 0.5), 1), 0);
 
         //Sky gradient
@@ -76,7 +76,7 @@ function SkyRenderer()
         }
 
         //Stars
-        var starFieldAngle = (MapManager.time % (dayDuration * starCycleDuration)) / (dayDuration * starCycleDuration);
+        var starFieldAngle = (MapManager.time % (MapManager.dayDuration * starCycleDuration)) / (MapManager.dayDuration * starCycleDuration);
         for(var i = 0; i < this.starFields.length; i++)
         {
             this.starFields[i].position.set(camera.position.x, camera.position.y, camera.position.z);

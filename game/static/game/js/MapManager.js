@@ -1,14 +1,14 @@
-var dayDuration = 1000;
 var offlineMode = true;
 
-function MapManager()
+function MapManager(mapWidth, mapLength, time, dayDuration, seedColor)
 {
-    this.mapWidth = 2;
-    this.mapLength = 2;
+    this.mapWidth = mapWidth;
+    this.mapLength = mapLength;
     this.totalWidth = this.mapWidth * 32;
     this.totalLength = this.mapLength * 32;
     this.chunks;
-    this.time = 0;
+    this.time = time;
+    this.dayDuration = dayDuration;
 
     this.update =
     function update()

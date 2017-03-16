@@ -40,19 +40,27 @@ function initGame()
             Controls.init();
             GUIS.init();
 
-            MapManager.initMap();
-            MapManager.prepareMapRender();
+            ResourceLoader.loadMapInfo(function(data)
+            {
+                console.log(data);
+                MapManager.initMap(data["size"], data["size"], data["timeDay"], data["durationDay"], data["seedColor"]);
+                MapManager.prepareMapRender();
 
-            GUIS.INGAME_GUI.open();
-            GUIS.CHAT_GUI.open();
+                GUIS.INGAME_GUI.open();
+                GUIS.CHAT_GUI.open();
 
 
-            thePlayer = new EntityPlayer();
-            thePlayer.setPosition(5, 15, 10);
-            thePlayer.spawn();
+                thePlayer = new EntityPlayer();
+                thePlayer.setPosition(5, 15, 10);
+                thePlayer.spawn();
 
-            // On effectue le rendu de la scène
-            requestAnimationFrame(loopGame);
+                // On effectue le rendu de la scène
+                requestAnimationFrame(loopGame);
+            }, function(error)
+            {
+                alert("Erreur map ! Cf console");
+                console.error(error);
+            }
         });
     });
 }
