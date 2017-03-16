@@ -1,6 +1,7 @@
 from hashlib import md5
 from django.contrib.auth.models import User
 from communication.ComAPI.packetChat import PacketChat
+from django.http import JsonResponse
 
 
 def getToken(username):
@@ -21,3 +22,9 @@ def getToken(username):
 	hashedToken = md5(token.encode())
 
 	return hashedToken.digest()
+
+def getInfoMap():
+	pass
+
+def getChunk():
+	pass
