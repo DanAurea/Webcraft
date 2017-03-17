@@ -1,48 +1,61 @@
 ## Documentation channels / binary
 ##https://media.readthedocs.org/pdf/channels/latest/channels.pdf
 ##http://www.devdungeon.com/content/working-binary-data-python
-## Should result in something like this from js:
-## b'\x00D\x00R\x00P\x00G\x004\x006\x00E\x002\x00A\x008\x004\x00f\x00$\x004\x001\x006\x00y\x008\x00&\x00D\x001\x008\x00c\x00_\x00S\x00e\x00V\x004\x001\x00-\x00D\x008\x00z\x00D\x009\x00Q\x00\x00\x00\x01\x00\x00\x00|\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10\x00C\x00e\x00c\x00i\x00 \x00e\x00s\x00t\x00 \x00u\x00n\x00 \x00t\x00e\x00s\x00t'
-## Should result in something like this from python:
-## 
 
 from time import time
+from struct import pack, unpack
 
-class Packet(object):
+class Packet():
 	"""Class for constructing binary data based
 		on a common API between client / server."""
 
+	CLIENT_HEADER_SIZE = 37
+
 	def __init__(self):
 		## Define token in apps.py
-		self.token = "46E2A84f$416y8&D18c_SeV41-D8zD9Q"
+		self.token     = ""
+		self.headerID  = "DRPG"
+		self.packetID  = 0
+		self.secretKey = "c48w5OY0JpD&yHa"
 	
-	def encode(self, message, packetID):
+	def encode(self):
 		"""
-			Encode a message with API format
-			DRPG + TokenServer + PacketID + Timestamp
-			+ Data size + Data 
+			Encode header with server's API format
+			DRPG + PacketID
 		"""
-		content = ["DRPG", self.token, str(packetID), str(self.getTimestamp()), str(self.getDataSize(message)), message]
-		packet = "".join(content)
+
+		## Bytes to send
+		bContainer = bytes()
+
+		## First encode headerID and clientToken to bytes
+		bContainer = bContainer.__add__("".join([self.headerID]).encode())
+
+		## Then add packet ID to bytes
+		bContainer = bContainer.__add__( bytes( [self.packetID] ) )
 		
-		packet.encode("utf-16")
+		return bContainer		
 
-	def decode(self, message):
+	def decode(self, data):
 		"""
-			Decode a message with API format
-			DRPG + TokenClient + PacketID + Timestamp
-			+ Data size + Data 
+			Decode header with client's API format
+			DRPG + TokenClient + packetID 
 		"""
 
-		print(message.decode("utf-8"))
+		## Decode token from fifth (array index) bytes
+		self.token = data[4:36].decode()
+		self.packetID = unpack(">B", data[36:37])[0]
 
-	def getDataSize(self, message):
-		return len(message)
+	def encodeTimestamp64(self, timestamp, byteOrder = "big"):
+		""" Encode timestamp in an 64 bits integer using
+			ctypes and bitshift"""
+
+		if byteOrder == "big":
+			return pack(">d", timestamp)
+		elif byteOrder == "little":
+			return pack("<d", timestamp)
 
 	def getTimestamp(self):
 		""" 
-			Get current timestamp.
+			Get current timestamp in float type.
 		"""
-		return int(time())
-
-packet = Packet()
+		return time()

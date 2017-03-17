@@ -8,7 +8,7 @@ if(window.location.pathname.endsWith("debug.html"))
 
 function ResourceLoader()
 {
-    var resources = ["img/palette.png", "models/flower_red.obj", "models/flower_blue.obj", "models/grass.obj","models/cactus.obj","models/cat.obj","models/apple.obj","models/brown_mush.obj","models/red_mush.obj","models/Jacobrownie.obj","models/deadbush.obj"];
+    var resources = ["img/palette.png", "models/flower_red.obj", "models/flower_blue.obj", "models/grass.obj","models/cactus.obj","models/apple.obj","models/brown_mush.obj","models/red_mush.obj","models/Jacobrownie.obj","models/deadbush.obj"];
     for(var i = 0; i < resources.length; i++)
     {
         resources[i] = gameFolder + resources[i];
@@ -52,11 +52,23 @@ function ResourceLoader()
     * Return : Texture array
     */
     this.initTextures =
-    function initTextures()
+    function initTextures(finishCallback)
     {
         var textures = Array();
         var resourceAmount = resources.length;
+        var imgAmount = 0;
+        var loadedImgAmount = 0;
 
+        //Count models
+        for(var i = 0; i < resourceAmount; i++)
+        {
+            if(resources[i].endsWith(".png"))
+            {
+                imgAmount++;
+            }
+        }
+
+        var textureLoader = new THREE.TextureLoader();
         for(var i = 0; i < resourceAmount; i++)
         {
             if(resources[i].endsWith(".png"))
@@ -64,11 +76,18 @@ function ResourceLoader()
                 var nameScheme = resources[i].split("/");
                 var name = nameScheme[nameScheme.length - 1];
                 name = name.substr(0, name.length - 4);
+                textureLoader.load(resources[i], function(tex)
+                {
+                    tex.wrapS = THREE.RepeatWrapping;
+                    tex.wrapT = THREE.RepeatWrapping;
+                    textures[name] = tex;
 
-                var tex = new THREE.TextureLoader().load(resources[i]);
-                tex.wrapS = THREE.RepeatWrapping;
-                tex.wrapT = THREE.RepeatWrapping;
-                textures[name] = tex;
+                    loadedImgAmount++;
+                    if(loadedImgAmount >= imgAmount)
+                    {
+                        finishCallback();
+                    }
+                });
             }
         }
 
@@ -114,6 +133,18 @@ function ResourceLoader()
     function ajaxGet(url, success, error)
     {
         $.get(url, success).fail(error);
+    }
+
+    this.loadMapInfo =
+    function loadMapInfo(finishCallback, error)
+    {
+        $.get("/game/getInfoMap", finishCallback).fail(error);
+    }
+
+    this.loadChunkAt =
+    function loadChunkAt(x, z, finishCallback, error)
+    {   
+        $.get("/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
     }
 }
 

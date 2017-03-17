@@ -26,8 +26,15 @@ SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1"]
+if(DEBUG != False):
+	# Compress static files
+	COMPRESS_ENABLED = True
+	COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
+	COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1","mordor", "192.168.1.248"]
 
 # Application definition
 
@@ -40,8 +47,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'communication',
     'game',
-    'channels',
     'chat',
+    'user',
+    "compressor",   
 ]
 
 MIDDLEWARE = [
@@ -80,12 +88,8 @@ WSGI_APPLICATION = 'trisdanvalwen.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'djangorpg',
-	'USER': 'danval',
-	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.2',
-	'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'devDB',
     }
 }
 
@@ -128,8 +132,16 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = "/var/www/Tristandanvalwen/static/"
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # Define fixtures directory
@@ -140,7 +152,7 @@ FIXTURE_DIRS = (
 CHANNEL_LAYERS = {
      "default": {
         "BACKEND": "asgi_redis.RedisChannelLayer",
-        "ROUTING": 'chat.routing.channel_routing',
+        "ROUTING": 'communication.routing.channel_routing',
         "CONFIG": {
         	"hosts": [("localhost", 6379)],
         	"channel_capacity": {

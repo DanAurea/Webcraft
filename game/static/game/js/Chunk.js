@@ -4,7 +4,7 @@ function Chunk(x, z)
 {
     this.chunkX = x;
     this.chunkZ = z;
-    this.group = null;
+    this.groupGeometry = null;
     this.map = Array(1024 * chunkHeight);
     this.maxHeight = chunkHeight;
 
@@ -95,10 +95,13 @@ function Chunk(x, z)
     this.prepareChunkRender =
     function prepareChunkRender()
     {
-        var oldMesh = this.group;
+        var oldMesh = this.groupGeometry;
 
-        this.group = new THREE.Object3D();
-        var geometry = new THREE.Geometry();
+        this.groupGeometry = new THREE.Object3D();
+        var tilesGeometry = new THREE.Geometry();
+        var modelPositions = [];
+        var modelNormals = [];
+        var modelUVs = [];
 
         var cX = this.chunkX * 32;
         var cZ = this.chunkZ * 32;
@@ -118,26 +121,39 @@ function Chunk(x, z)
                     {
                         if(tile.isSimpleCube())
                         {
-                            TileRenderer.renderTile(geometry, this, tile, x, y, z, rX, rZ);
+                            TileRenderer.renderTile(tilesGeometry, this, tile, x, y, z, rX, rZ);
                         }
                         else
                         {
-                            var model = ModelLoader.models[tile.model].clone();
+                            TileRenderer.renderModel(modelPositions, modelNormals, modelUVs, this, tile, x, y, z, rX, rZ);
+                            /*var model = ModelLoader.models[tile.model].clone();
                             model.position.x += x;
                             model.position.y += y;
                             model.position.z += z;
-                            this.group.add(model);
+                            this.group.add(model);*/
                         }
                     }
                 }
             }
         }
 
-        mesh = new THREE.Mesh(geometry, Materials.tileMaterial);
-        this.group.position.x = cX;
-        this.group.position.z = cZ;
-        this.group.add(mesh);
-        scene.add(this.group);
+        var modelsGeometry = new THREE.BufferGeometry();
+        modelsGeometry.addAttribute("position", new THREE.Float32BufferAttribute(modelPositions, 3));
+        modelsGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(modelNormals, 3));
+        modelsGeometry.addAttribute("uv", new THREE.Float32BufferAttribute(modelUVs, 2));
+        modelsGeometry.computeBoundingBox();
+
+        var tilesMesh = new THREE.Mesh(tilesGeometry, Materials.tileMaterial);
+        var modelsMesh = new THREE.Mesh(modelsGeometry, Materials.modelMaterial);
+        tilesMesh.position.x = cX;
+        tilesMesh.position.z = cZ;
+
+        modelsMesh.position.x = cX + 0.5;
+        modelsMesh.position.z = cZ + 0.5;
+
+        this.groupGeometry.add(tilesMesh);
+        this.groupGeometry.add(modelsMesh);
+        scene.add(this.groupGeometry);
 
         if(oldMesh != null)
         {
@@ -146,28 +162,31 @@ function Chunk(x, z)
     }
 
     //Generate Chunk - TEMP
-    var length = this.map.length
-    for(var i = 0; i < length; i++)
+    if(offlineMode)
     {
-        this.map[i] = 0;
-    }
-
-    for(var x = 0; x < 32; x++)
-    {
-        for(var z = 0; z < 32; z++)
+        var length = this.map.length
+        for(var i = 0; i < length; i++)
         {
-            var height = parseInt((noise.perlin2((this.chunkX * 32 + x) / 100, (this.chunkZ * 32 + z) / 100) + 1) * 10);
-            this.maxHeight = Math.max(height, this.maxHeight);
+            this.map[i] = 0;
+        }
 
-            for(var y = 0; y < height; y++)
+        for(var x = 0; x < 32; x++)
+        {
+            for(var z = 0; z < 32; z++)
             {
-                this.map[this.getIndexForCoords(x, y, z)] = Tiles.GRASS.id;
-            }
+                var height = parseInt((noise.perlin2((this.chunkX * 32 + x) / 100, (this.chunkZ * 32 + z) / 100) + 1) * 10);
+                this.maxHeight = Math.max(height, this.maxHeight);
 
-            if(Math.random() < 0.1)
-            {
-                var veg = Math.floor(Math.random() * 3);
-                this.map[this.getIndexForCoords(x, height, z)] = veg == 0 ? Tiles.GRASS_TALL.id : veg == 1 ? Tiles.FLOWER_RED.id : Tiles.FLOWER_BLUE.id;
+                for(var y = 0; y < height; y++)
+                {
+                    this.map[this.getIndexForCoords(x, y, z)] = Tiles.GRASS.id;
+                }
+
+                if(Math.random() < 0.1)
+                {
+                    var veg = Math.floor(Math.random() * 3);
+                    this.map[this.getIndexForCoords(x, height, z)] = veg == 0 ? Tiles.GRASS_TALL.id : veg == 1 ? Tiles.FLOWER_RED.id : Tiles.FLOWER_BLUE.id;
+                }
             }
         }
     }

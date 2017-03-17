@@ -10,6 +10,14 @@ function Materials()
     		shading: THREE.FlatShading,
             vertexColors: THREE.VertexColors
     	});
+
+        this.modelMaterial = new THREE.MeshStandardMaterial(
+        {
+    		color: new THREE.Color(0xFFFFFF),
+            roughness: 1,
+    		shading: THREE.FlatShading,
+            map: textures["palette"]
+    	});
     }
 }
 

@@ -1,14 +1,25 @@
+
+// Add zero before numbers
+function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+}
+
 function PacketChat(message)
 {
     this.message     = PacketsUtil.defval(message, "-");
+    this.timestamp   = 0;
+    this.time        = "";
     this.messageSize = this.message.length;
+    this.username    = "";
     this.offset      = 0;
 
     this.handler =
     function handler()
     {
-        console.log("Message recu : " + this.message + " size : " + this.messageSize);
-        console.log(this);
+        console.log("Message recu : " + this.message + " size : " + this.messageSize + " Pseudo: " + this.username + " timestamp: " + this.timestamp);
     }
 
     this._encode = PacketChat.prototype.encode;
@@ -19,11 +30,11 @@ function PacketChat(message)
 
         this.offset = this._getEncodePacketSize();
 
-        dv.setInt32(this.offset, this.messageSize);
-        this.offset += 4;
+        dv.setUint16(this.offset, this.messageSize);
+        this.offset += 2;
 
         PacketsUtil.encodeString(dv, this.offset, this.message);
-        console.log(dv.buffer);
+
         return dv;
     }
 
@@ -33,9 +44,26 @@ function PacketChat(message)
     {
         dv = this._decode(data);
 
-        //48 data begin index
-        this.messageSize = dv.getInt32(52);
-        this.message = PacketsUtil.decodeString(dv, 56, this.messageSize);
+        // Call parent method for getting current header size
+        this.offset      = this._getDecodePacketSize();
+        
+        this.timestamp   = dv.getFloat64(this.offset);
+        this.offset      += 8;
+
+        // Convert timestamp to human readable format
+        d = new Date(this.timestamp * 1000);
+        this.time = addZero(d.getHours()) + ':' + addZero(d.getMinutes()) + ':' + addZero(d.getSeconds());
+        
+        usernameSize     = dv.getUint8(this.offset);
+        this.offset      += 1;
+        
+        this.username    = PacketsUtil.decodeString(dv, this.offset, usernameSize);
+        this.offset      += usernameSize;
+        
+        this.messageSize = dv.getUint16(this.offset);
+        this.offset      += 2;
+        
+        this.message     = PacketsUtil.decodeString(dv, this.offset, this.messageSize);
 
         return dv;
     }
@@ -43,8 +71,17 @@ function PacketChat(message)
     this._getEncodePacketSize = PacketChat.prototype.getEncodePacketSize;
     this.getEncodePacketSize =
     function getEncodePacketSize()
-    {
-        return this._getEncodePacketSize() + this.messageSize * 2 + 4;
+    {   
+        // Header size + message + messageSize
+        return this._getEncodePacketSize() + this.messageSize + 2;
+    }
+
+    this._getDecodePacketSize = PacketChat.prototype.getDecodePacketSize;
+    this.getDecodePacketSize =
+    function getDecodePacketSize()
+    {   
+        // Header size + Timestamp (64 bits)
+        return this._getDecodePacketSize() + 8;
     }
 
     this.getPacketId =

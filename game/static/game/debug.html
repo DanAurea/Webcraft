@@ -9,33 +9,13 @@
         <div id="gameContainer"></div>
         <div id="gameOverlay">
             <div class="gui" id="ingameGui">
+                <div class="cross"></div>
                 <div class="gui_bottom gui_left">
                     <span id="ingame_gui_version">V: </span><br/>
                     <span id="ingame_gui_block">Tile: </span>
                 </div>
             </div>
         </div>
-
-        <script type="x-shader/x-vertex" id="skydome_vs">
-			varying vec3 vWorldPosition;
-			void main() {
-				vec4 worldPosition = modelMatrix * vec4( position, 1.0 );
-				vWorldPosition = worldPosition.xyz;
-				gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-			}
-		</script>
-
-		<script type="x-shader/x-fragment" id="skydome_fs">
-			uniform vec3 topColor;
-			uniform vec3 bottomColor;
-			uniform float offset;
-			uniform float exponent;
-			varying vec3 vWorldPosition;
-			void main() {
-				float h = normalize( vWorldPosition + offset ).y;
-				gl_FragColor = vec4( mix( bottomColor, topColor, max( pow( max( h, 0.0 ), exponent ), 0.0 ) ), 1.0 );
-			}
-		</script>
 
         <script src="./lib/jquery.min.js" charset="utf-8"></script>
         <script src="./lib/three.min.js" charset="utf-8"></script>

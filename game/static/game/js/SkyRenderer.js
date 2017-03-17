@@ -40,8 +40,8 @@ function SkyRenderer()
 
 
         //SkyDome
-        var vertexShader = document.getElementById("skydome_vs").textContent;
-        var fragmentShader = document.getElementById("skydome_fs").textContent;
+        var vertexShader = SkyDomeShader.vertexShader;
+        var fragmentShader = SkyDomeShader.fragmentShader;
         var skyGeo = new THREE.SphereGeometry(4000, 32, 15);
         var skyMat = new THREE.ShaderMaterial({uniforms: SkyDomeShader.uniforms, vertexShader: SkyDomeShader.vertexShader, fragmentShader: SkyDomeShader.fragmentShader, side: THREE.BackSide});
         this.skyDome = new THREE.Mesh(skyGeo, skyMat);
@@ -53,7 +53,7 @@ function SkyRenderer()
     this.update =
     function update()
     {
-        var time = (MapManager.time % dayDuration) / dayDuration;
+        var time = (MapManager.time % MapManager.dayDuration) / MapManager.dayDuration;
         var lightAmount = Math.max(Math.min((Math.cos(time * Math.PI * 2 - Math.PI) + 0.5), 1), 0);
 
         //Sky gradient
@@ -76,7 +76,7 @@ function SkyRenderer()
         }
 
         //Stars
-        var starFieldAngle = (MapManager.time % (dayDuration * starCycleDuration)) / (dayDuration * starCycleDuration);
+        var starFieldAngle = (MapManager.time % (MapManager.dayDuration * starCycleDuration)) / (MapManager.dayDuration * starCycleDuration);
         for(var i = 0; i < this.starFields.length; i++)
         {
             this.starFields[i].position.set(camera.position.x, camera.position.y, camera.position.z);

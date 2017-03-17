@@ -11,7 +11,7 @@ function PacketsUtil()
     {
         for(var i = 0; i < str.length; i++)
         {
-            dv.setInt16(begin + i * 2, str.charCodeAt(i));
+            dv.setUint8(begin + i, str.charCodeAt(i));
         }
     }
 
@@ -21,7 +21,7 @@ function PacketsUtil()
         var strOut = "";
         for(var i = 0; i < size; i++)
         {
-            strOut += String.fromCharCode(dv.getInt16(begin + i * 2));
+            strOut += String.fromCharCode(dv.getUint8(begin + i));
         }
         return strOut;
     }
