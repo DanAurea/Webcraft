@@ -9,7 +9,7 @@ from game.mapGenerator import MapGenerator
 timeDay 	= 0
 ## Duration day based on tickstate (10 min here => 10 * 60 * 20 ticks/s)
 durationDay = 12000
-size = 24
+size = 2
 map = MapGenerator(size)
 m = map.generate()
 
