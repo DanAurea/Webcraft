@@ -3,30 +3,37 @@ import math, sys, random
 
 class TreeGenerator:
 	def generateAt(self,x,y,z,map):
-		height = random.randint(6,9)
-		
+		height =  2+3*random.randint(1,4) if map.getBiomeAt(x,z)==SNOW else random.randint(6,9)
+		leaves = 2
 		for i in range (height):
 			#leaves
-			if(i>height-4):
-				leaves = 1 if i == height - 1 else 2;
-				for j in range(x-leaves,x+leaves+1):
-					for k in range (z-leaves,z+leaves+1):
-						map.setTileAt(6,j,y+i,k)
-						#Snow Tile in snow biomes
-						if(map.getBiomeAt(x,z)==SNOW):
-							map.setTileAt(19,j,y+i+1,k)
-						if(map.getBiomeAt(x,z)!=SNOW):
+			if(map.getBiomeAt(x,z)==SNOW):
+				if(i>=(height-(height-2))):
+					for j in range (x-leaves,x+leaves+1) :
+						for k in range (z-leaves,z+leaves+1) :
+							map.setTileAt(6,j,y+i,k)
+							if(map.getTileAt(j,y+i+1,k)==0):
+								map.setTileAt(18,j,y+i+1,k)
+					leaves-=1
+					if(leaves==-1):
+						leaves = 2
+			else:
+				if(i>height-4):
+					leaves = 1 if i == height - 1 else 2;
+					for j in range(x-leaves,x+leaves+1):
+						for k in range (z-leaves,z+leaves+1):
+							map.setTileAt(6,j,y+i,k)
 							#Apple
 							if(i==height-3 and i!=x and k!=z):
 								if(random.randint(1,10)==1):
-									map.setTileAt(14,j,y+i-1,k)
+									map.setTileAt(13,j,y+i-1,k)
 							#Mushrooms
 							if(height==6 and i!=x and k!=z):
 								a = random.randint(1,20)
 								if(a<=2):
 									chunk = map.getChunkAt(j,k)
 									if(chunk != None):
-										map.setTileAt(14+a,j,chunk.elev[j%chunkSize][k%chunkSize],k)
+										map.setTileAt(13+a,j,chunk.elev[j%chunkSize][k%chunkSize],k)
 			
 			#Wood Log
 			if(i<height-1):
@@ -76,9 +83,10 @@ class BiomeDesert(Biome):
 		for i in range(random.randint(1,2)):
 			cx = random.randint(0,31)
 			cz = random.randint(0,31)
-			map.setTileAt(20,rx+cx,chunk.elev[cx][cz],rz+cz)
+			map.setTileAt(19,rx+cx,chunk.elev[cx][cz],rz+cz)
 				
 class BiomeSnow(Biome):
+
 	def generate(self,map,chunk):
 		rx = chunk.x*chunkSize
 		rz = chunk.z*chunkSize
@@ -88,17 +96,11 @@ class BiomeSnow(Biome):
 			cz = random.randint(0,31)
 			tree = TreeGenerator()
 			tree.generateAt(rx+cx,chunk.elev[cx][cz],rz+cz,map)
-		##Igloo don't work yet
-		if(True):#if(random.randint(1,10)>=1):
-			cx = random.randint(0,31)
-			cz = random.randint(0,31)
-			radius = random.randint(2,3)
-			while(radius > 0):
-				for i in range(radius*2):
-					for j in range(radius*2):
-						map.setTileAt(7,rx+cx+i,chunk.elev[cx][cz]+height,rz+cz+j)
-				height+=1
-				radius-=1
+		#Frozen grass
+		# for i in range(random.randint(1,2)):
+			# cx = random.randint(0,31)
+			# cz = random.randint(0,31)
+			# map.setTileAt(21,rx+cx,chunk.elev[cx][cz],rz+cz)
 	
 DESERT = BiomeDesert(0.5,4)
 SNOW = BiomeSnow(0.7,7)
@@ -180,7 +182,7 @@ class MapGenerator:
 				rz=cz+chunk.z*chunkSize
 				sx = rx / 200
 				sz = rz / 200
-				biome = DESERT#self.genBiome(sx,sz)
+				biome = self.genBiome(sx,sz)
 				e = int((self.genNoiseElev.noise2d(sx,sz) / 2.0 + 0.5) * 30)
 				chunk.elev[cx][cz] = e
 				for y in range(e):
