@@ -63,14 +63,12 @@ function Tiles()
         this.GRASS_TALL = new Tile(10, "Tall grass", 0x000000, false, 0, 0, 0, 0.3, "models/grass.obj");
 		this.BEDROCK = new Tile (11, "Bedrock",0x000000,false);
 		this.CACTUS = new Tile(12, "Cactus", 0x000000, false, 0, 0, 0, 1, "models/cactus.obj");
-		this.CAT = new Tile(13,"Ninja Cat",0x000000,false,0,0,0, 1,"models/cat.obj");
-		this.APPLE = new Tile(14,"Apple",0x000000,false,0,0,0,1,"models/apple.obj");
-		this.RED_MUSH = new Tile(15,"Red Mushroom", 0x000000, false, 0, 0, 0,0.3,"models/red_mush.obj");
-		this.BROWN_MUSH = new Tile(16,"Brown Mushroom", 0x000000, false, 0, 0, 0,0.3,"models/brown_mush.obj");
+		this.APPLE = new Tile(13,"Apple",0x000000,false,0,0,0,1,"models/apple.obj");
+		this.RED_MUSH = new Tile(14,"Red Mushroom", 0x000000, false, 0, 0, 0,0.3,"models/red_mush.obj");
+		this.BROWN_MUSH = new Tile(15,"Brown Mushroom", 0x000000, false, 0, 0, 0,0.3,"models/brown_mush.obj");
 		this.JACO_BROWNIE = new Tile(17,"JacoBrownie",0x000000,false,0,0,0,0.5,"models/Jacobrownie.obj");
-		this.PENGUIN = new Tile(18,"Penguin",0x000000,false,0,0,0,1,"models/penguin.obj");
-		this.SNOW_TILE = new Tile(19,"Snow Tile",0xe7fafc,true,0,0,0.1,0.1);
-		this.DEADBUSH = new Tile(20,"Deadbush",0x000000,false,0,0,0,1,"models/deadbush.obj");
+		this.SNOW_TILE = new Tile(18,"Snow Tile",0xe7fafc,true,0,0,0.1,0.1);
+		this.DEADBUSH = new Tile(19,"Deadbush",0x000000,false,0,0,0,1,"models/deadbush.obj");
     }
 
     this.getTile =
