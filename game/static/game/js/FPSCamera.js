@@ -36,7 +36,7 @@ function FPSCamera()
 
         if (document.pointerLockElement === $("#gameContainer")[0] ||
             document.mozPointerLockElement === $("#gameContainer")[0] ||
-            document.webkitpointerLockElement === $("#gameContainer")[0]) 
+            document.webkitpointerLockElement === $("#gameContainer")[0])
         {
 
             FPSCamera.locked = true;
@@ -171,22 +171,27 @@ function FPSCamera()
                 tY += FPSCamera.targetTile.normal[1];
                 tZ += FPSCamera.targetTile.normal[2];
 
-                var tileAABB = Tiles.getTile(FPSCamera.tileId).getAABB(tX, tY, tZ);
-
-                //Check players collision
-                var collided = false;
-                for(var i = 0, length = Entities.entityList.length; i < length; i++)
+                //Check block is air
+                var tileAt = MapManager.getTileAt(tX, tY, tZ);
+                if(tileAt == 0)
                 {
-                    if(Entities.entityList[i].collision.intersect(tileAABB))
+                    var tileAABB = Tiles.getTile(FPSCamera.tileId).getAABB(tX, tY, tZ);
+
+                    //Check players collision
+                    var collided = false;
+                    for(var i = 0, length = Entities.entityList.length; i < length; i++)
                     {
-                        collided = true;
-                        break;
+                        if(Entities.entityList[i].collision.intersect(tileAABB))
+                        {
+                            collided = true;
+                            break;
+                        }
                     }
-                }
 
-                if(!collided)
-                {
-                    MapManager.setTileAt(FPSCamera.tileId, tX, tY, tZ);
+                    if(!collided)
+                    {
+                        MapManager.setTileAt(FPSCamera.tileId, tX, tY, tZ);
+                    }
                 }
             }
             else
