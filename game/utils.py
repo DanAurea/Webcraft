@@ -3,15 +3,8 @@ from django.contrib.auth.models import User
 from communication.ComAPI.packetChat import PacketChat
 from django.http import JsonResponse
 from game.mapGenerator import MapGenerator
-
-
-## Tick state
-timeDay 	= 0
-## Duration day based on tickstate (10 min here => 10 * 60 * 20 ticks/s)
-durationDay = 12000
-size = 24
-map = MapGenerator(size)
-m = map.generate()
+from multiprocessing import Process
+from game.runtime import *
 
 def getToken(username):
 	""" Generate a new token
@@ -40,14 +33,10 @@ def getInfoMap(request):
 		seed color
 	"""
 
-	global timeDay
-	global durationDay
-	global size
-
-	data = {"timeDay": timeDay,
-			"durationDay": durationDay,
-			"size": size,
-			"seedColor": 53482}
+	data = {"timeDay": RT_timeDay,
+			"durationDay": RT_durationDay,
+			"size": RT_size,
+			"seedColor": RT_seedColor}
 	return JsonResponse(data)
 
 def getChunk(request):
@@ -57,7 +46,7 @@ def getChunk(request):
 	z = int(request.GET.get("z", None))
 
 	## TODO: Exception if bad request
-	data = {"tiles" : m[x][z].chunk,
+	data = {"tiles" : RT_map[x][z].chunk,
 			"x" : x,
 			"z": z}
 	return JsonResponse(data)

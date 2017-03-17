@@ -1,4 +1,4 @@
-var offlineMode = true;
+var offlineMode = false;
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
