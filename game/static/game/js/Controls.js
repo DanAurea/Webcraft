@@ -17,7 +17,7 @@ function Controls()
                     {
                         if(Controls.controlMap[i]["type"] == "press")
                         {
-                            Controls.controlMap[i]["call"](e.key);
+                            Controls.controlMap[i]["call"](e.key, e);
                         }
 
                         if(Controls.controlMap[i]["type"] != "release")
@@ -41,7 +41,7 @@ function Controls()
                     {
                         if(Controls.controlMap[i]["type"] == "release")
                         {
-                            Controls.controlMap[i]["call"](e.key);
+                            Controls.controlMap[i]["call"](e.key, e);
                         }
 
                         if(Controls.controlMap[i]["type"] != "press")
@@ -65,7 +65,7 @@ function Controls()
                     {
                         if(Controls.controlMap[i]["type"] == "press")
                         {
-                            Controls.controlMap[i]["call"](key);
+                            Controls.controlMap[i]["call"](key, e);
                         }
 
                         if(Controls.controlMap[i]["type"] != "release")
@@ -89,7 +89,7 @@ function Controls()
                     {
                         if(Controls.controlMap[i]["type"] == "release")
                         {
-                            Controls.controlMap[i]["call"](key);
+                            Controls.controlMap[i]["call"](key, e);
                         }
 
                         if(Controls.controlMap[i]["type"] != "press")

@@ -149,13 +149,13 @@ function FPSCamera()
     }
 
     this.chooseTile =
-    function chooseTile(key)
+    function chooseTile(key, ev)
     {
         FPSCamera.tileId = Math.max(1, Math.min(FPSCamera.tileId + (key == "arrowup" ? 1 : -1), Tiles.tiles.length - 1));
     }
 
     this.placeTile =
-    function placeTile(key)
+    function placeTile(key, ev)
     {
         var place = key == "mouse-0";
 
