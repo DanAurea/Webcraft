@@ -36,8 +36,8 @@ function AABB(x, y, z, x2, y2, z2)
         intersect.x = intersect.x.toFixed(6);
         intersect.y = intersect.y.toFixed(6);
         intersect.z = intersect.z.toFixed(6);
-
         output.intersect = intersect;
+        
         if(intersect.y == this.y)
         {
             output.normal = [0, -1, 0];
@@ -62,10 +62,9 @@ function AABB(x, y, z, x2, y2, z2)
         {
             output.normal = [0, 0, 1];
         }
-
-        if(output.normal[0] == 2)
+        else
         {
-            console.log(intersect);
+            output.normal = [0, 0, 0];//Inside
         }
 
         return output;

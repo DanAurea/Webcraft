@@ -138,13 +138,55 @@ function ResourceLoader()
     this.loadMapInfo =
     function loadMapInfo(finishCallback, error)
     {
-        $.get("/game/getInfoMap", finishCallback).fail(error);
+        if(!offlineMode)
+        {
+            $.get("/game/getInfoMap", finishCallback).fail(error);
+        }
+        else
+        {
+            finishCallback({"size": 2, "timeDay": 600, "durationDay": 2400, "seedColor": 40000});
+        }
     }
 
     this.loadChunkAt =
     function loadChunkAt(x, z, finishCallback, error)
-    {   
-        $.get("/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
+    {
+        if(!offlineMode)
+        {
+            $.get("/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
+        }
+        else
+        {
+            finishCallback({"x": x, "z": z, "tiles": MapManager.getChunkAtChunkCoords(x, z).map});
+        }
+    }
+
+    // Uncompress chunk sent by server
+    this.uncompress =
+    function uncompress(chunk)
+    {
+        if(offlineMode)
+        {
+            return chunk;
+        }
+
+        var tiles = [];
+
+        for (var i=0; i< chunk.length; i++)
+        {
+            for(var k in chunk[i])
+            {
+                count = parseInt(k);
+                value = chunk[i][k];
+
+                for(var j = 0; j < count; j++)
+                {
+                    tiles.push(value);
+                }
+            }
+        }
+
+        return tiles;
     }
 }
 
