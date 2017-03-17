@@ -5,11 +5,9 @@
     <head>
         <meta charset="UTF-8">
         <title>Django-RPG</title>
-        {% compress css %}
             <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
             <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
             <link rel="stylesheet" href="{% static 'game/css/jquery.mCustomScrollbar.min.css' %}">
-        {% endcompress %}
     </head>
     <body>
 
@@ -25,7 +23,7 @@
             </div>
         </div>
         
-        {% compress js %}
+        
             <script src="{% static 'game/lib/jquery.min.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/lib/three.min.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/lib/stats.min.js' %}" charset="utf-8"></script>
@@ -77,7 +75,7 @@
             <script src="{% static 'game/js/Controls.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/GameLoader.js' %}" charset="utf-8"></script>
 
-        {% endcompress %}
+        
 
     </body>
 </html>

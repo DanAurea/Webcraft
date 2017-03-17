@@ -15,7 +15,7 @@ class Role(models.Model):
 	strength = models.IntegerField(default=1)
 
 	def __str__(self):
-		return "Name = " + self.name + ", strength = " + self.strength
+		return "Name = " + self.name + ", strength = " + str(self.strength)
 
 ## Define permissions for each role
 class RolePermission(models.Model):
