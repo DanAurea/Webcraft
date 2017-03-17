@@ -8,6 +8,8 @@ from django.db import IntegrityError
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
+from game.models import *
+from chat.models import *
 
 def login(request):
 
@@ -20,6 +22,7 @@ def login(request):
         password = form.cleaned_data['password']
         ## Check if data fits with database
         user = authenticate(username=account, password=password)
+        
         if user is not None:
             auth_login(request, user)
             return redirect(reverse("game:home"), permanent = True)
@@ -47,12 +50,11 @@ def register(request):
         #verifier si utilisateur n'existe pas déjà dans la bdd
         try:
             new_user = User.objects.create_user(account, email, password)
+            Player.objects.create(user = new_user, position="0,0,0", role=Role.objects.get(name="user"))
         except IntegrityError:
             error="L'utilisateur existe déjà"
-        else:
-            send_mail('BIENVENUE TOI', 'Bienvenue sur notre super jeu', 'from@example.com', [email], fail_silently=False)
-
-        print(account, password, email)
+        # else:
+            # send_mail('BIENVENUE TOI', 'Bienvenue sur notre super jeu', 'from@example.com', [email], fail_silently=False)
     
     return render(request, 'user/baseForm.html', locals())
 

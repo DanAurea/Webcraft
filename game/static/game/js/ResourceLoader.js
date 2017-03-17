@@ -134,6 +134,18 @@ function ResourceLoader()
     {
         $.get(url, success).fail(error);
     }
+
+    this.loadMapInfo =
+    function loadMapInfo(finishCallback, error)
+    {
+        $.get("/game/getInfoMap", finishCallback).fail(error);
+    }
+
+    this.loadChunkAt =
+    function loadChunkAt(x, z, finishCallback, error)
+    {   
+        $.get("/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
+    }
 }
 
 var ResourceLoader = new ResourceLoader();

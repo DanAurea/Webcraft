@@ -19,6 +19,26 @@ var mesh;
 
 var stats;
 
+// Uncompress chunk sent by server
+function uncompress(chunk){
+    
+    var tiles = [];
+
+    for (var i=0; i< chunk.length; i++) {
+        for(var k in chunk[i]){
+        
+            count = parseInt(k);
+            value = chunk[i][k];
+
+            for(var j = 0; j < count; j++){
+                tiles.push(value);
+            }
+        } 
+    }
+
+    return tiles;
+}
+
 function initGame()
 {
     window.addEventListener('resize', onWindowResize, false);
@@ -40,19 +60,49 @@ function initGame()
             Controls.init();
             GUIS.init();
 
-            MapManager.initMap();
-            MapManager.prepareMapRender();
+            ResourceLoader.loadMapInfo(function(data)
+            {
+                MapManager.initMap(data["size"], data["size"], data["timeDay"], data["durationDay"], data["seedColor"]);
+                var chunkAmount = MapManager.mapWidth * MapManager.mapLength;
+                var loadedChunk = 0;
 
-            GUIS.INGAME_GUI.open();
-            GUIS.CHAT_GUI.open();
+                for(var x = 0; x < MapManager.mapWidth; x++)
+                {
+                    for(var z = 0; z < MapManager.mapLength; z++)
+                    {
+                        ResourceLoader.loadChunkAt(x, z, function(chunkData)
+                        {   
+                            MapManager.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = uncompress(chunkData["tiles"]);
+                            loadedChunk++;
+
+                            if(loadedChunk >= chunkAmount)
+                            {
+                                MapManager.prepareMapRender();
+
+                                GUIS.INGAME_GUI.open();
+                                GUIS.CHAT_GUI.open();
 
 
-            thePlayer = new EntityPlayer();
-            thePlayer.setPosition(5, 15, 10);
-            thePlayer.spawn();
+                                thePlayer = new EntityPlayer();
+                                thePlayer.setPosition(5, 15, 10);
+                                thePlayer.spawn();
 
-            // On effectue le rendu de la scène
-            requestAnimationFrame(loopGame);
+                                // On effectue le rendu de la scène
+                                requestAnimationFrame(loopGame);
+                            }
+                        }, function(error)
+                        {
+                            alert("Erreur map ! Cf console");
+                            console.error(error);
+                        });
+                    }
+                }
+
+            }, function(error)
+            {
+                alert("Erreur map ! Cf console");
+                console.error(error);
+            });
         });
     });
 }

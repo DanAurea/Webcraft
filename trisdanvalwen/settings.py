@@ -27,9 +27,10 @@ SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 DEBUG = True
 
 # Compress static files
-COMPRESS_ENABLED = True
-COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
-COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
+if(DEBUG == False):
+    COMPRESS_ENABLED = True
+    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
+    COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -92,7 +93,7 @@ DATABASES = {
         'NAME': 'djangorpg',
 	'USER': 'danval',
 	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.2',
+	'HOST': '172.17.0.8',
 	'PORT': '',
     }
 }
