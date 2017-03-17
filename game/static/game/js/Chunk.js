@@ -117,6 +117,7 @@ function Chunk(x, z)
                 for(y = 0; y < this.maxHeight; y++)
                 {
                     tile = Tiles.getTile(this.getTileAt(x, y, z));
+
                     if(tile.isVisible())
                     {
                         if(tile.isSimpleCube())
@@ -126,11 +127,6 @@ function Chunk(x, z)
                         else
                         {
                             TileRenderer.renderModel(modelPositions, modelNormals, modelUVs, this, tile, x, y, z, rX, rZ);
-                            /*var model = ModelLoader.models[tile.model].clone();
-                            model.position.x += x;
-                            model.position.y += y;
-                            model.position.z += z;
-                            this.group.add(model);*/
                         }
                     }
                 }
@@ -161,10 +157,10 @@ function Chunk(x, z)
         }
     }
 
-    //Generate Chunk - TEMP
+    //Generate Chunk in offline mode
     if(offlineMode)
     {
-        var length = this.map.length
+        var length = this.map.length;
         for(var i = 0; i < length; i++)
         {
             this.map[i] = 0;

@@ -1,5 +1,3 @@
-var offlineMode = false;
-
 function MapManager()
 {
     this.update =
@@ -57,7 +55,7 @@ function MapManager()
     this.getChunkAtChunkCoords =
     function getChunkAtChunkCoords(x, z)
     {
-        if(x < 0 || z < 0 || x >= this.totalWidth || z >= this.totalLength)
+        if(x < 0 || z < 0 || x >= this.mapWidth || z >= this.mapLength)
         {
             return null;
         }

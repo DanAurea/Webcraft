@@ -1,3 +1,4 @@
+var offlineMode = true;
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
@@ -18,26 +19,6 @@ var camera;
 var mesh;
 
 var stats;
-
-// Uncompress chunk sent by server
-function uncompress(chunk){
-    
-    var tiles = [];
-
-    for (var i=0; i< chunk.length; i++) {
-        for(var k in chunk[i]){
-        
-            count = parseInt(k);
-            value = chunk[i][k];
-
-            for(var j = 0; j < count; j++){
-                tiles.push(value);
-            }
-        } 
-    }
-
-    return tiles;
-}
 
 function initGame()
 {
@@ -71,8 +52,8 @@ function initGame()
                     for(var z = 0; z < MapManager.mapLength; z++)
                     {
                         ResourceLoader.loadChunkAt(x, z, function(chunkData)
-                        {   
-                            MapManager.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = uncompress(chunkData["tiles"]);
+                        {
+                            MapManager.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = ResourceLoader.uncompress(chunkData["tiles"]);
                             loadedChunk++;
 
                             if(loadedChunk >= chunkAmount)
@@ -81,7 +62,6 @@ function initGame()
 
                                 GUIS.INGAME_GUI.open();
                                 GUIS.CHAT_GUI.open();
-
 
                                 thePlayer = new EntityPlayer();
                                 thePlayer.setPosition(5, 15, 10);
@@ -92,7 +72,7 @@ function initGame()
                             }
                         }, function(error)
                         {
-                            alert("Erreur map ! Cf console");
+                            alert("Erreur chunk ! Cf console");
                             console.error(error);
                         });
                     }
