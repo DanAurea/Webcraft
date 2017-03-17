@@ -1,6 +1,7 @@
 from opensimplex import OpenSimplex
 import math, sys, random
 from random import randint
+import inspect
 
 class TreeGenerator:
 	def generateAt(self,x,y,z,map):
@@ -239,11 +240,54 @@ class MapGenerator:
 		#JacoCookie
 		self.setTileAt(17,int((chunkSize*self.mapSize)/2),0,int((chunkSize*self.mapSize)/2))
 
+	def _compress(self, chunkObj):
+		""" Compress an array of tiles counting sequence of same numbers """
+		compressedChunk =  []
+		countVal = 1
+		buffer = chunkObj.chunk.pop(0)
+		size = len(chunkObj.chunk) - 1
+		
+		## Compressing loop
+		for index, tile in enumerate(chunkObj.chunk):
+			
+			if(index == size):
+				
+				if(buffer == tile):
+					countVal += 1
+
+				compressedChunk.append({str(countVal) : buffer})
+				if(buffer != tile):
+					compressedChunk.append({str(1) : tile})
+				
+			elif(buffer != tile):
+				compressedChunk.append({str(countVal) : buffer})
+				buffer = tile
+				countVal = 1
+			else:
+				countVal += 1
+
+		
+		# Debug purpose: permits to count value		
+		# n = 0
+		# for d in compressedChunk:
+		# 	for key, value in d.items():
+		# 		n += int(key)
+
+		# if(n == chunkSize * chunkSize * chunkHeight):
+		# 	print("Correct")
+		
+		return compressedChunk
+
 	def generate(self):
 		self.genMap()
 		#self.map.genRiver()
 		self.genVegetation()
 		#self.map.genVillage()
 		self.genEaster()
-		
+
+		## Compress chunk
+		for arr in self.map:
+			for chunkObj in arr:
+					chunkObj.chunk = self._compress(chunkObj)
+
 		return self.map

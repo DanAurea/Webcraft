@@ -19,6 +19,26 @@ var mesh;
 
 var stats;
 
+// Uncompress chunk sent by server
+function uncompress(chunk){
+    
+    var tiles = [];
+
+    for (var i=0; i< chunk.length; i++) {
+        for(var k in chunk[i]){
+        
+            count = parseInt(k);
+            value = chunk[i][k];
+
+            for(var j = 0; j < count; j++){
+                tiles.push(value);
+            }
+        } 
+    }
+
+    return tiles;
+}
+
 function initGame()
 {
     window.addEventListener('resize', onWindowResize, false);
@@ -52,7 +72,7 @@ function initGame()
                     {
                         ResourceLoader.loadChunkAt(x, z, function(chunkData)
                         {   
-                            MapManager.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = chunkData["tiles"];
+                            MapManager.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = uncompress(chunkData["tiles"]);
                             loadedChunk++;
 
                             if(loadedChunk >= chunkAmount)
