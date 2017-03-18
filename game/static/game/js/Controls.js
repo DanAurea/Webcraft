@@ -1,6 +1,8 @@
 function Controls()
 {
     this.controlMap = [];
+    this.wheelTimeout = 0;
+    this.wheelEvent = 0;
 
     this.init =
     function init()
@@ -101,19 +103,22 @@ function Controls()
             }
         });
 
-        $(document).unbind('mousewheel');
         $(document).bind("mousewheel", function(e)
         {
-            if(FPSCamera.locked)
+            clearTimeout(Controls.wheelTimeout);
+            Controls.wheelTimeout = setTimeout(function()
             {
-                for (var i = 0; i < Controls.controlMap.length; i++)
+                if(FPSCamera.locked)
                 {
-                    if(Controls.controlMap[i]["key"] == "mousewheel")
+                    for (var i = 0; i < Controls.controlMap.length; i++)
                     {
-                        Controls.controlMap[i]["call"]((e.originalEvent.wheelDelta / 120 > 0 ? -1 : 1), e);
+                        if(Controls.controlMap[i]["key"] == "mousewheel")
+                        {
+                            Controls.controlMap[i]["call"]((e.originalEvent.wheelDelta / 120 > 0 ? -1 : 1), e);
+                        }
                     }
                 }
-            }
+            }, 10);
         });
     }
 
@@ -122,7 +127,7 @@ function Controls()
     {
         if(FPSCamera.locked)
         {
-            for (var i = 0; i < this.controlMap.length; i++)
+            for (var i = 0; i < Controls.controlMap.length; i++)
             {
                 if(this.controlMap[i]["pressed"])
                 {
