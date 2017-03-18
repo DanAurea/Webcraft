@@ -140,7 +140,7 @@ function Chunk(x, z)
         var tilesGeometry = new THREE.BufferGeometry();
         tilesGeometry.addAttribute("position", new THREE.Float32BufferAttribute(tilePositions, 3).onUpload(disposeRenderArray));
         tilesGeometry.addAttribute("color", new THREE.Float32BufferAttribute(tileColors, 3).onUpload(disposeRenderArray));
-        //tilesGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(tileNormals, 3)); Useless for the moment
+        tilesGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(tileNormals, 3));
         tilesGeometry.computeBoundingBox();
 
         var modelsGeometry = new THREE.BufferGeometry();

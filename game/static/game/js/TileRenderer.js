@@ -39,16 +39,15 @@ function TileRenderer()
         1.0, 1.0, 1.0
     ];
 
-    //Useless for now
-    /*var cubeNormals =
+    var cubeNormals =
     [
-        new THREE.Vector3(0, 0, -1),
-        new THREE.Vector3(0, 0, 1),
-        new THREE.Vector3(-1, 0, 0),
-        new THREE.Vector3(1, 0, 0),
-        new THREE.Vector3(0, -1, 0),
-        new THREE.Vector3(0, 1, 0)
-    ];*/
+        0, 0, -1,
+        0, 0, 1,
+        -1, 0, 0,
+        1, 0, 0,
+        0, -1, 0,
+        0, 1, 0
+    ];
 
     this.renderTile =
     function renderTile(tilePositions, tileColors, tileNormals, chunk, tile, x, y, z, rX, rZ)
@@ -77,6 +76,13 @@ function TileRenderer()
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b);
+
+            tileNormals.push(cubeNormals[15], cubeNormals[17], cubeNormals[18],
+                             cubeNormals[15], cubeNormals[17], cubeNormals[18],
+                             cubeNormals[15], cubeNormals[17], cubeNormals[18],
+                             cubeNormals[15], cubeNormals[17], cubeNormals[18],
+                             cubeNormals[15], cubeNormals[17], cubeNormals[18],
+                             cubeNormals[15], cubeNormals[17], cubeNormals[18]);
         }
 
         //Bottom
@@ -101,6 +107,13 @@ function TileRenderer()
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b);
+
+            tileNormals.push(cubeNormals[12], cubeNormals[13], cubeNormals[14],
+                             cubeNormals[12], cubeNormals[13], cubeNormals[14],
+                             cubeNormals[12], cubeNormals[13], cubeNormals[14],
+                             cubeNormals[12], cubeNormals[13], cubeNormals[14],
+                             cubeNormals[12], cubeNormals[13], cubeNormals[14],
+                             cubeNormals[12], cubeNormals[13], cubeNormals[14]);
         }
 
         //X-
@@ -125,6 +138,13 @@ function TileRenderer()
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b);
+
+            tileNormals.push(cubeNormals[6], cubeNormals[7], cubeNormals[8],
+                             cubeNormals[6], cubeNormals[7], cubeNormals[8],
+                             cubeNormals[6], cubeNormals[7], cubeNormals[8],
+                             cubeNormals[6], cubeNormals[7], cubeNormals[8],
+                             cubeNormals[6], cubeNormals[7], cubeNormals[8],
+                             cubeNormals[6], cubeNormals[7], cubeNormals[8]);
         }
 
         //X+
@@ -149,6 +169,13 @@ function TileRenderer()
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b);
+
+            tileNormals.push(cubeNormals[9], cubeNormals[10], cubeNormals[11],
+                             cubeNormals[9], cubeNormals[10], cubeNormals[11],
+                             cubeNormals[9], cubeNormals[10], cubeNormals[11],
+                             cubeNormals[9], cubeNormals[10], cubeNormals[11],
+                             cubeNormals[9], cubeNormals[10], cubeNormals[11],
+                             cubeNormals[9], cubeNormals[10], cubeNormals[11]);
         }
 
         //Z-
@@ -173,6 +200,13 @@ function TileRenderer()
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b);
+
+            tileNormals.push(cubeNormals[0], cubeNormals[1], cubeNormals[2],
+                             cubeNormals[0], cubeNormals[1], cubeNormals[2],
+                             cubeNormals[0], cubeNormals[1], cubeNormals[2],
+                             cubeNormals[0], cubeNormals[1], cubeNormals[2],
+                             cubeNormals[0], cubeNormals[1], cubeNormals[2],
+                             cubeNormals[0], cubeNormals[1], cubeNormals[2]);
         }
 
         //Z+
@@ -197,6 +231,13 @@ function TileRenderer()
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b);
+
+            tileNormals.push(cubeNormals[3], cubeNormals[4], cubeNormals[5],
+                             cubeNormals[3], cubeNormals[4], cubeNormals[5],
+                             cubeNormals[3], cubeNormals[4], cubeNormals[5],
+                             cubeNormals[3], cubeNormals[4], cubeNormals[5],
+                             cubeNormals[3], cubeNormals[4], cubeNormals[5],
+                             cubeNormals[3], cubeNormals[4], cubeNormals[5]);
         }
     }
 
