@@ -5,13 +5,13 @@ function Chunk(x, z)
     this.chunkX = x;
     this.chunkZ = z;
     this.groupGeometry = null;
-    this.map = Array(1024 * chunkHeight);
+    this.map = Array(256 * chunkHeight);
     this.maxHeight = chunkHeight;
 
     this.setTileAt =
     function setTileAt(tile, x, y, z)
     {
-        if(x < 0 || y < 0 || z < 0 || x > 31 || y >= chunkHeight || z > 31)
+        if(x < 0 || y < 0 || z < 0 || x > 15 || y >= chunkHeight || z > 15)
         {
             return;
         }
@@ -26,7 +26,7 @@ function Chunk(x, z)
         {
             neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX - 1, this.chunkZ));
         }
-        else if(x == 31)
+        else if(x == 15)
         {
             neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX + 1, this.chunkZ));
         }
@@ -35,7 +35,7 @@ function Chunk(x, z)
         {
             neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ - 1));
         }
-        else if(z == 31)
+        else if(z == 15)
         {
             neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ + 1));
         }
@@ -65,22 +65,22 @@ function Chunk(x, z)
         if(x < 0)
         {
             chunk = MapManager.getChunkAtChunkCoords(this.chunkX - 1, this.chunkZ);
-            x = 32 + x;
+            x = 16 + x;
         }
-        else if(x > 31)
+        else if(x > 15)
         {
             chunk = MapManager.getChunkAtChunkCoords(this.chunkX + 1, this.chunkZ);
-            x = x - 32;
+            x = x - 16;
         }
         else if(z < 0)
         {
             chunk = MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ - 1);
-            z = 32 + z;
+            z = 16 + z;
         }
-        else if(z > 31)
+        else if(z > 15)
         {
             chunk = MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ + 1);
-            z = z - 32;
+            z = z - 16;
         }
 
         return chunk == null ? 0 : chunk.map[chunk.getIndexForCoords(x, y, z)];
@@ -89,7 +89,7 @@ function Chunk(x, z)
     this.getIndexForCoords =
     function getIndexForCoords(x, y, z)
     {
-        return y << 10 | x << 5 | z;
+        return y << 8 | x << 4 | z;
     }
 
     this.prepareChunkRender =
@@ -107,15 +107,15 @@ function Chunk(x, z)
         var modelNormals = [];
         var modelUVs = [];
 
-        var cX = this.chunkX * 32;
-        var cZ = this.chunkZ * 32;
+        var cX = this.chunkX * 16;
+        var cZ = this.chunkZ * 16;
         var rX, rZ;
         var x, y, z;
         var tile;
-        for(x = 0; x < 32; x++)
+        for(x = 0; x < 16; x++)
         {
             rX = x + cX;
-            for(z = 0; z < 32; z++)
+            for(z = 0; z < 16; z++)
             {
                 rZ = z + cZ;
                 for(y = 0; y < this.maxHeight; y++)
@@ -164,7 +164,6 @@ function Chunk(x, z)
         if(oldMesh != null)
         {
             scene.remove(oldMesh);
-            oldMesh.dispose();
         }
     }
 
@@ -177,11 +176,11 @@ function Chunk(x, z)
             this.map[i] = 0;
         }
 
-        for(var x = 0; x < 32; x++)
+        for(var x = 0; x < 16; x++)
         {
-            for(var z = 0; z < 32; z++)
+            for(var z = 0; z < 16; z++)
             {
-                var height = parseInt((noise.perlin2((this.chunkX * 32 + x) / 100, (this.chunkZ * 32 + z) / 100) + 1) * 10);
+                var height = parseInt((noise.perlin2((this.chunkX * 16 + x) / 100, (this.chunkZ * 16 + z) / 100) + 1) * 10);
                 this.maxHeight = Math.max(height, this.maxHeight);
 
                 for(var y = 0; y < height; y++)

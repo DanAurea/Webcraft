@@ -12,8 +12,8 @@ function MapManager()
         console.log("Initializing map...");
         this.mapWidth = mapWidth;
         this.mapLength = mapLength;
-        this.totalWidth = this.mapWidth * 32;
-        this.totalLength = this.mapLength * 32;
+        this.totalWidth = this.mapWidth * 16;
+        this.totalLength = this.mapLength * 16;
         this.time = time;
         this.dayDuration = dayDuration;
         noise.seed(seedColor);
@@ -66,7 +66,7 @@ function MapManager()
     this.getChunkAt =
     function getChunkAt(x, z)
     {
-        return this.getChunkAtChunkCoords(x >> 5, z >> 5);
+        return this.getChunkAtChunkCoords(x >> 4, z >> 4);
     }
 
     this.getTileAt =
@@ -77,7 +77,7 @@ function MapManager()
         {
             if(y >= 0 && y < chunkHeight)
             {
-                return chunk.getTileAt(x % 32, y, z % 32);
+                return chunk.getTileAt(x % 16, y, z % 16);
             }
         }
 
@@ -90,7 +90,7 @@ function MapManager()
         var chunk = this.getChunkAt(x, z);
         if(chunk != null)
         {
-            chunk.setTileAt(tile, x % 32, y, z % 32);
+            chunk.setTileAt(tile, x % 16, y, z % 16);
         }
     }
 }
