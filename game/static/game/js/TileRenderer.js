@@ -111,13 +111,13 @@ function TileRenderer()
                 tileColor = this.initTileColor(rX, rZ, tile);
             }
 
-            tilePositions.push(cubeVertices[24] + x, cubeVertices[25] + y, cubeVertices[26] + z);
-            tilePositions.push(cubeVertices[27] + x, cubeVertices[28] + y, cubeVertices[29] + z);
-            tilePositions.push(cubeVertices[30] + x, cubeVertices[31] + y, cubeVertices[32] + z);
+            tilePositions.push(cubeVertices[24] + x, cubeVertices[25] * tile.height + y, cubeVertices[26] + z);
+            tilePositions.push(cubeVertices[27] + x, cubeVertices[28] * tile.height + y, cubeVertices[29] + z);
+            tilePositions.push(cubeVertices[30] + x, cubeVertices[31] * tile.height + y, cubeVertices[32] + z);
 
-            tilePositions.push(cubeVertices[30] + x, cubeVertices[31] + y, cubeVertices[32] + z);
-            tilePositions.push(cubeVertices[27] + x, cubeVertices[28] + y, cubeVertices[29] + z);
-            tilePositions.push(cubeVertices[33] + x, cubeVertices[34] + y, cubeVertices[35] + z);
+            tilePositions.push(cubeVertices[30] + x, cubeVertices[31] * tile.height + y, cubeVertices[32] + z);
+            tilePositions.push(cubeVertices[27] + x, cubeVertices[28] * tile.height + y, cubeVertices[29] + z);
+            tilePositions.push(cubeVertices[33] + x, cubeVertices[34] * tile.height + y, cubeVertices[35] + z);
 
             tileColors.push(tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
@@ -135,13 +135,13 @@ function TileRenderer()
                 tileColor = this.initTileColor(rX, rZ, tile);
             }
 
-            tilePositions.push(cubeVertices[36] + x, cubeVertices[37] + y, cubeVertices[38] + z);
-            tilePositions.push(cubeVertices[39] + x, cubeVertices[40] + y, cubeVertices[41] + z);
-            tilePositions.push(cubeVertices[42] + x, cubeVertices[43] + y, cubeVertices[44] + z);
+            tilePositions.push(cubeVertices[36] + x, cubeVertices[37] * tile.height + y, cubeVertices[38] + z);
+            tilePositions.push(cubeVertices[39] + x, cubeVertices[40] * tile.height + y, cubeVertices[41] + z);
+            tilePositions.push(cubeVertices[42] + x, cubeVertices[43] * tile.height + y, cubeVertices[44] + z);
 
-            tilePositions.push(cubeVertices[42] + x, cubeVertices[43] + y, cubeVertices[44] + z);
-            tilePositions.push(cubeVertices[39] + x, cubeVertices[40] + y, cubeVertices[41] + z);
-            tilePositions.push(cubeVertices[45] + x, cubeVertices[46] + y, cubeVertices[47] + z);
+            tilePositions.push(cubeVertices[42] + x, cubeVertices[43] * tile.height + y, cubeVertices[44] + z);
+            tilePositions.push(cubeVertices[39] + x, cubeVertices[40] * tile.height + y, cubeVertices[41] + z);
+            tilePositions.push(cubeVertices[45] + x, cubeVertices[46] * tile.height + y, cubeVertices[47] + z);
 
             tileColors.push(tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
@@ -159,13 +159,13 @@ function TileRenderer()
                 tileColor = this.initTileColor(rX, rZ, tile);
             }
 
-            tilePositions.push(cubeVertices[0] + x, cubeVertices[1] + y, cubeVertices[2] + z);
-            tilePositions.push(cubeVertices[3] + x, cubeVertices[4] + y, cubeVertices[5] + z);
-            tilePositions.push(cubeVertices[6] + x, cubeVertices[7] + y, cubeVertices[8] + z);
+            tilePositions.push(cubeVertices[0] + x, cubeVertices[1] * tile.height + y, cubeVertices[2] + z);
+            tilePositions.push(cubeVertices[3] + x, cubeVertices[4] * tile.height + y, cubeVertices[5] + z);
+            tilePositions.push(cubeVertices[6] + x, cubeVertices[7] * tile.height + y, cubeVertices[8] + z);
 
-            tilePositions.push(cubeVertices[6] + x, cubeVertices[7] + y, cubeVertices[8] + z);
-            tilePositions.push(cubeVertices[3] + x, cubeVertices[4] + y, cubeVertices[5] + z);
-            tilePositions.push(cubeVertices[9] + x, cubeVertices[10] + y, cubeVertices[11] + z);
+            tilePositions.push(cubeVertices[6] + x, cubeVertices[7] * tile.height + y, cubeVertices[8] + z);
+            tilePositions.push(cubeVertices[3] + x, cubeVertices[4] * tile.height + y, cubeVertices[5] + z);
+            tilePositions.push(cubeVertices[9] + x, cubeVertices[10] * tile.height + y, cubeVertices[11] + z);
 
             tileColors.push(tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,
@@ -183,13 +183,13 @@ function TileRenderer()
                 tileColor = this.initTileColor(rX, rZ, tile);
             }
 
-            tilePositions.push(cubeVertices[12] + x, cubeVertices[13] + y, cubeVertices[14] + z);
-            tilePositions.push(cubeVertices[15] + x, cubeVertices[16] + y, cubeVertices[17] + z);
-            tilePositions.push(cubeVertices[18] + x, cubeVertices[19] + y, cubeVertices[20] + z);
+            tilePositions.push(cubeVertices[12] + x, cubeVertices[13] * tile.height + y, cubeVertices[14] + z);
+            tilePositions.push(cubeVertices[15] + x, cubeVertices[16] * tile.height + y, cubeVertices[17] + z);
+            tilePositions.push(cubeVertices[18] + x, cubeVertices[19] * tile.height + y, cubeVertices[20] + z);
 
-            tilePositions.push(cubeVertices[18] + x, cubeVertices[19] + y, cubeVertices[20] + z);
-            tilePositions.push(cubeVertices[15] + x, cubeVertices[16] + y, cubeVertices[17] + z);
-            tilePositions.push(cubeVertices[21] + x, cubeVertices[22] + y, cubeVertices[23] + z);
+            tilePositions.push(cubeVertices[18] + x, cubeVertices[19] * tile.height + y, cubeVertices[20] + z);
+            tilePositions.push(cubeVertices[15] + x, cubeVertices[16] * tile.height + y, cubeVertices[17] + z);
+            tilePositions.push(cubeVertices[21] + x, cubeVertices[22] * tile.height + y, cubeVertices[23] + z);
 
             tileColors.push(tileColor.r, tileColor.g, tileColor.b,
                             tileColor.r, tileColor.g, tileColor.b,

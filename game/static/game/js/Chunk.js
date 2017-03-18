@@ -138,15 +138,15 @@ function Chunk(x, z)
         }
 
         var tilesGeometry = new THREE.BufferGeometry();
-        tilesGeometry.addAttribute("position", new THREE.Float32BufferAttribute(tilePositions, 3));
-        tilesGeometry.addAttribute("color", new THREE.Float32BufferAttribute(tileColors, 3));
+        tilesGeometry.addAttribute("position", new THREE.Float32BufferAttribute(tilePositions, 3).onUpload(disposeRenderArray));
+        tilesGeometry.addAttribute("color", new THREE.Float32BufferAttribute(tileColors, 3).onUpload(disposeRenderArray));
         //tilesGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(tileNormals, 3)); Useless for the moment
         tilesGeometry.computeBoundingBox();
 
         var modelsGeometry = new THREE.BufferGeometry();
-        modelsGeometry.addAttribute("position", new THREE.Float32BufferAttribute(modelPositions, 3));
-        modelsGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(modelNormals, 3));
-        modelsGeometry.addAttribute("uv", new THREE.Float32BufferAttribute(modelUVs, 2));
+        modelsGeometry.addAttribute("position", new THREE.Float32BufferAttribute(modelPositions, 3).onUpload(disposeRenderArray));
+        modelsGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(modelNormals, 3).onUpload(disposeRenderArray));
+        modelsGeometry.addAttribute("uv", new THREE.Float32BufferAttribute(modelUVs, 2).onUpload(disposeRenderArray));
         modelsGeometry.computeBoundingBox();
 
         var tilesMesh = new THREE.Mesh(tilesGeometry, Materials.tileMaterial);
@@ -188,18 +188,17 @@ function Chunk(x, z)
                     this.map[this.getIndexForCoords(x, y, z)] = Tiles.GRASS.id;
                 }
 
-                if(Math.random() < 0.1)
+                /*if(Math.random() < 0.1)
                 {
                     var veg = Math.floor(Math.random() * 3);
                     this.map[this.getIndexForCoords(x, height, z)] = veg == 0 ? Tiles.GRASS_TALL.id : veg == 1 ? Tiles.FLOWER_RED.id : Tiles.FLOWER_BLUE.id;
-                }
+                }*/
             }
         }
     }
+}
 
-    this.disposeRenderArray =
-    function disposeRenderArray()
-    {
-        this.array = null;
-    }
+function disposeRenderArray()
+{
+    this.array = null;
 }
