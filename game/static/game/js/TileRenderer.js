@@ -272,15 +272,15 @@ function TileRenderer()
         }
 
         //Normals
-        for(var i = 0, length = modelNormals.length; i < length; i++)
+        for(var i = 0, length = modelNormals.length; i < length; i+=3)
         {
-            normals.push(modelNormals[i]);
+            normals.push(modelNormals[i],modelNormals[i + 1],modelNormals[i + 2]);
         }
 
         //UV
-        for(var i = 0, length = modelUVs.length; i < length; i++)
+        for(var i = 0, length = modelUVs.length; i < length; i+=2)
         {
-            uvs.push(modelUVs[i]);
+            uvs.push(modelUVs[i], modelUVs[i+1]);
         }
     }
 }
