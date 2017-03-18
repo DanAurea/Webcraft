@@ -98,7 +98,11 @@ function Chunk(x, z)
         var oldMesh = this.groupGeometry;
 
         this.groupGeometry = new THREE.Object3D();
-        var tilesGeometry = new THREE.Geometry();
+
+        var tilePositions = [];
+        var tileColors = [];
+        var tileNormals = [];
+
         var modelPositions = [];
         var modelNormals = [];
         var modelUVs = [];
@@ -122,16 +126,22 @@ function Chunk(x, z)
                     {
                         if(tile.isSimpleCube())
                         {
-                            TileRenderer.renderTile(tilesGeometry, this, tile, x, y, z, rX, rZ);
+                            TileRenderer.renderTile(tilePositions, tileColors, tileNormals, this, tile, x, y, z, rX, rZ);
                         }
                         else
                         {
-                            TileRenderer.renderModel(modelPositions, modelNormals, modelUVs, this, tile, x, y, z, rX, rZ);
+                            TileRenderer.renderModel(modelPositions, modelNormals, modelUVs, this, tile, x, y, z);
                         }
                     }
                 }
             }
         }
+
+        var tilesGeometry = new THREE.BufferGeometry();
+        tilesGeometry.addAttribute("position", new THREE.Float32BufferAttribute(tilePositions, 3));
+        tilesGeometry.addAttribute("color", new THREE.Float32BufferAttribute(tileColors, 3));
+        //tilesGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(tileNormals, 3)); Useless for the moment
+        tilesGeometry.computeBoundingBox();
 
         var modelsGeometry = new THREE.BufferGeometry();
         modelsGeometry.addAttribute("position", new THREE.Float32BufferAttribute(modelPositions, 3));
@@ -185,5 +195,11 @@ function Chunk(x, z)
                 }
             }
         }
+    }
+
+    this.disposeRenderArray =
+    function disposeRenderArray()
+    {
+        this.array = null;
     }
 }
