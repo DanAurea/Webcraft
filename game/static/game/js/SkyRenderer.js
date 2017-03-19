@@ -4,7 +4,7 @@ function SkyRenderer()
 {
     this.hemiLight = null;
     this.sunLight = null;
-    this.fogColor = new THREE.Color(150, 92, 208);
+    this.fogColor = new THREE.Color(34, 153, 255);
     this.skyDome = null;
     this.starFields =  [];
 
@@ -20,7 +20,7 @@ function SkyRenderer()
             return new THREE.Color(this.r + (color.r - this.r) * amount, this.g + (color.g - this.g) * amount, this.b + (color.b - this.b) * amount);
         }
 
-        scene.fog = new THREE.FogExp2(this.fogColor.toInt(), 0.000055);
+        scene.fog = new THREE.FogExp2(0xFFFFFF, 0.010);
 
         //Hemisphere light
         this.hemiLight = new THREE.HemisphereLight(0xFFFFFF, 0xFFFFFF, 1);
@@ -42,8 +42,8 @@ function SkyRenderer()
         //SkyDome
         var vertexShader = SkyDomeShader.vertexShader;
         var fragmentShader = SkyDomeShader.fragmentShader;
-        var skyGeo = new THREE.SphereGeometry(4000, 32, 15);
-        var skyMat = new THREE.ShaderMaterial({uniforms: SkyDomeShader.uniforms, vertexShader: SkyDomeShader.vertexShader, fragmentShader: SkyDomeShader.fragmentShader, side: THREE.BackSide});
+        var skyGeo = new THREE.SphereGeometry(GameRenderer.renderDistance - 1, 32, 15);
+        var skyMat = new THREE.ShaderMaterial({uniforms: SkyDomeShader.uniforms, vertexShader: SkyDomeShader.vertexShader, fragmentShader: SkyDomeShader.fragmentShader, side: THREE.BackSide, fog: false});
         this.skyDome = new THREE.Mesh(skyGeo, skyMat);
         scene.add(this.skyDome);
 
@@ -74,6 +74,7 @@ function SkyRenderer()
         {
             SkyDomeShader.uniforms.bottomColor.value = SkyDomeShader.uniforms.bottomColor.value.lerpRGB(bottomSkyColor, lightAmount);
         }
+        scene.fog.color = SkyDomeShader.uniforms.bottomColor.value;
 
         //Stars
         var starFieldAngle = (MapManager.time % (MapManager.dayDuration * starCycleDuration)) / (MapManager.dayDuration * starCycleDuration);
@@ -88,7 +89,7 @@ function SkyRenderer()
     this.buildStarField =
     function buildStarField()
     {
-        var radius = 3500;
+        var radius = GameRenderer.renderDistance - 10;
         for(var size = 0; size < 3; size++)
         {
             var starsGeometry = new THREE.Geometry();
@@ -106,7 +107,7 @@ function SkyRenderer()
             	starsGeometry.vertices.push(star);
             }
 
-            var starsMaterial = new THREE.PointsMaterial({color: 0x777777, size: size, sizeAttenuation: false, transparent: true});
+            var starsMaterial = new THREE.PointsMaterial({color: Math.random() <= 0.5 ? 0x777777 : 0xBBBBBB, size: size, sizeAttenuation: false, transparent: true, fog: true});
             this.starFields.push(new THREE.Points(starsGeometry, starsMaterial));
 
             scene.add(this.starFields[size]);

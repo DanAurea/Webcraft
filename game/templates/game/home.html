@@ -19,12 +19,13 @@
             <div class="gui" id="ingameGui">
                 <div class="gui_bottom gui_left">
                     <span id="ingame_gui_version">V: </span><br/>
-                    <span id="ingame_gui_block">Tile: </span><br>
+                    <span id="ingame_gui_block">Tile: </span><br/>
+                    <span id="ingame_gui_time">Time: </span><br/>
                     <span id="GPU"></span>
                 </div>
             </div>
         </div>
-        
+
         {% compress js %}
             <script src="{% static 'game/lib/jquery.min.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/lib/three.min.js' %}" charset="utf-8"></script>
@@ -57,10 +58,10 @@
             <script src="{% static 'game/js/Materials.js' %}" charset="utf-8"></script>
 
             <script src="{% static 'game/lib/scrollPane/jquery.mCustomScrollbar.concat.min.js' %}" charset="utf-8"></script>
-            
+
             <script src="{% static 'communication/js/Packet.js' %}" charset="utf-8"></script>
             <script src="{% static 'communication/js/Packets.js' %}" charset="utf-8"></script>
-            
+
             <script>
                 TOKEN = {{ token|safe }};
             </script>

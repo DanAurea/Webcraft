@@ -5,6 +5,7 @@ function GameRenderer()
     var depthScale = 1.0;
 
     this.ssaoPass;
+    this.renderDistance = 150;
 
     this.init =
     function init()
@@ -23,7 +24,7 @@ function GameRenderer()
         SkyRenderer.init();
 
         //Create camera (FOV, ratio, near, far)
-        camera = new THREE.PerspectiveCamera(FOV, width / height, 0.01, 10000);
+        camera = new THREE.PerspectiveCamera(FOV, width / height, 0.01, this.renderDistance);
         camera.rotation.order = "YXZ";
         camera.position.set(20, 30, 20);
 

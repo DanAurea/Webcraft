@@ -49,6 +49,9 @@ function TileRenderer()
         0, 1, 0
     ];
 
+    var lastColor = 0;
+    var lastColorObject = null;
+
     this.renderTile =
     function renderTile(tilePositions, tileColors, tileNormals, chunk, tile, x, y, z, rX, rZ)
     {
@@ -244,17 +247,24 @@ function TileRenderer()
     this.initTileColor =
     function initTileColor(rX, rZ, tile)
     {
-        var tileColor = new THREE.Color(tile.color);
         if(tile.colorChange)
         {
-            var cX = (rX - 10000) / 50;
-            var cZ = (rZ - 10000) / 50;
-            tileColor.r += noise.simplex2(cX, cZ) * tile.redVariant;
-            tileColor.g += noise.simplex2(cX, cZ) * tile.greenVariant;
-            tileColor.b += noise.simplex2(cX, cZ) * tile.blueVariant;
+            var tileColor = new THREE.Color(tile.color);
+            var change = noise.simplex2((rX - 10000) / 50, (rZ - 10000) / 50);
+            tileColor.r = tileColor.r + change * tile.redVariant;
+            tileColor.g = tileColor.g + change * tile.greenVariant;
+            tileColor.b = tileColor.b + change * tile.blueVariant;
+
+            return tileColor;
+        }
+        else if(tile.color != lastColor)
+        {
+            lastColor = tile.color;
+            lastColorObject = new THREE.Color(lastColor);
+            return lastColorObject;
         }
 
-        return tileColor;
+        return lastColorObject;
     }
 
     this.renderModel =
