@@ -1,7 +1,9 @@
 from opensimplex import OpenSimplex
 import math, sys, random
 from random import randint
-import inspect
+
+chunkSize    = 32
+chunkHeight  = 256
 
 class TreeGenerator:
 	def generateAt(self,x,y,z,map):
@@ -39,10 +41,7 @@ class TreeGenerator:
 			
 			#Wood Log
 			if(i<height-1):
-				map.setTileAt(5,x,y+i,z)
-					
-			
-				
+				map.setTileAt(5,x,y+i,z)				
 					
 
 class Biome:
@@ -103,14 +102,7 @@ class BiomeSnow(Biome):
 			# cx = random.randint(0,31)
 			# cz = random.randint(0,31)
 			# map.setTileAt(21,rx+cx,chunk.elev[cx][cz],rz+cz)
-	
-DESERT = BiomeDesert(0.5,4)
-SNOW   = BiomeSnow(0.7,7)
-OCEAN  = Biome(0.1,0)
-PLAIN  = BiomePlain(0.3,1)
 
-chunkSize = 32
-chunkHeight = 256
 
 class Chunk:
 	def __init__(self,X,Z):
@@ -131,7 +123,11 @@ class Chunk:
 		
 	def setBiome(self,biome):
 		self.biome = biome
-		
+
+DESERT = BiomeDesert(0.5,4)
+SNOW   = BiomeSnow(0.7,7)
+OCEAN  = Biome(0.1,0)
+PLAIN  = BiomePlain(0.3,1)	
 
 		
 class MapGenerator:
@@ -250,35 +246,28 @@ class MapGenerator:
 		buffer = chunkObj.chunk.pop(0)
 		size = len(chunkObj.chunk) - 1
 		
-		## Compressing loop
+		## Compressing loop with RLE encoding
 		for index, tile in enumerate(chunkObj.chunk):
 			
 			if(index == size):
 				
-				if(buffer == tile):
-					countVal += 1
-
-				compressedChunk.append({str(countVal) : buffer})
 				if(buffer != tile):
-					compressedChunk.append({str(1) : tile})
+					compressedChunk.append(str(tile))
+				else:
+					compressedChunk.append(str(countVal + 1) + ":" + str(buffer))
 				
 			elif(buffer != tile):
-				compressedChunk.append({str(countVal) : buffer})
+
+				if(countVal == 1):
+					compressedChunk.append(str(buffer))
+				else:
+					compressedChunk.append(str(countVal) + ":" + str(buffer))
+				
 				buffer = tile
 				countVal = 1
 			else:
 				countVal += 1
 
-		
-		# Debug purpose: permits to count value		
-		# n = 0
-		# for d in compressedChunk:
-		# 	for key, value in d.items():
-		# 		n += int(key)
-
-		# if(n == chunkSize * chunkSize * chunkHeight):
-		# 	print("Correct")
-		
 		return compressedChunk
 
 	def generate(self):

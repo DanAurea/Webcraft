@@ -172,18 +172,26 @@ function ResourceLoader()
 
         var tiles = [];
 
-        for (var i=0; i< chunk.length; i++)
-        {
-            for(var k in chunk[i])
-            {
-                count = parseInt(k);
-                value = chunk[i][k];
+        var i;
+        var j;
 
-                for(var j = 0; j < count; j++)
-                {
+        // RLE decompressing
+        for (i=0; i< chunk.length; i++)
+        {   
+            data  = chunk[i].split(":");
+
+            // Decoding single / multiples values in sequences
+            if(data.length == 1){
+                tiles.push(data[0]);
+            }else{
+                count = parseInt(data[0]);
+                value = parseInt(data[1]);
+
+                for(j=0; j< count; j++){
                     tiles.push(value);
                 }
             }
+
         }
 
         return tiles;
