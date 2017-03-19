@@ -37,7 +37,7 @@ function AABB(x, y, z, x2, y2, z2)
         intersect.y = intersect.y.toFixed(6);
         intersect.z = intersect.z.toFixed(6);
         output.intersect = intersect;
-        
+
         if(intersect.y == this.y)
         {
             output.normal = [0, -1, 0];
@@ -191,6 +191,7 @@ function AABB(x, y, z, x2, y2, z2)
         {
             for(z = bZ; z < bZ2; z++)
             {
+                var columnAabb = null;
                 for(y = bY; y < bY2; y++)
                 {
                     tileId = MapManager.getTileAt(x, y, z);
@@ -200,9 +201,18 @@ function AABB(x, y, z, x2, y2, z2)
                         if(aabbSelect)
                         {
                             var aabb = tile.getAABB(x, y, z);
-                            if(aabb != null)
+
+                            if(aabb != null && columnAabb == null)
                             {
-                                tiles.push(aabb);
+                                columnAabb = aabb;
+                            }
+                            else if(aabb != null && columnAabb != null)
+                            {
+                                columnAabb = columnAabb.expandBox(0, aabb.y2 - aabb.y, 0);
+                            }
+                            else if(aabb == null && columnAabb != null)
+                            {
+                                tiles.push(columnAabb);
                             }
                         }
                         else
@@ -210,6 +220,11 @@ function AABB(x, y, z, x2, y2, z2)
                             tiles.push([tile, x, y, z]);
                         }
                     }
+                }
+
+                if(columnAabb != null)
+                {
+                    tiles.push(columnAabb);
                 }
             }
         }
@@ -241,19 +256,38 @@ function AABB(x, y, z, x2, y2, z2)
     {
         if (hitbox.y >= this.y2 || hitbox.y2 <= this.y || hitbox.z >= this.z2 || hitbox.z2 <= this.z)
 		{
-			return posX;
+			return [posX, -1];
 		}
 		else if (posX > 0 && hitbox.x2 <= this.x)
 		{
-			var distance = this.x - hitbox.x2;
-			return distance < posX ? distance : posX;
+            var offsetY = this.y2 - hitbox.y;
+            var distance = this.x - hitbox.x2;
+            var nX = distance < posX ? distance : posX;
+
+            if(offsetY <= 1.0 && offsetY >= 0.0)
+            {
+    			return [nX, offsetY + 0.3];
+            }
+            else
+            {
+                return [nX, -1];
+            }
 		}
 		else if (posX < 0 && hitbox.x >= this.x2)
 		{
-			var distance = this.x2 - hitbox.x;
-			return distance > posX ? distance : posX;
+            var offsetY = this.y2 - hitbox.y;
+            var distance = this.x2 - hitbox.x;
+            var nX = distance > posX ? distance : posX;
+            if(offsetY <= 1.0 && offsetY >= 0.0)
+            {
+                 return [nX, offsetY + 0.3];
+            }
+            else
+            {
+                return [nX, -1];
+            }
 		}
-		return posX;
+		return [posX, -1];
     }
 
     this.clipY =
@@ -282,18 +316,37 @@ function AABB(x, y, z, x2, y2, z2)
     {
         if (hitbox.y >= this.y2 || hitbox.y2 <= this.y || hitbox.x >= this.x2 || hitbox.x2 <= this.x)
 		{
-			return posZ;
+			return [posZ, 0];
 		}
-		else if (posZ > 0 && hitbox.z2 <= this.z)
+        else if (posZ > 0 && hitbox.z2 <= this.z)
 		{
-			var distance = this.z - hitbox.z2;
-			return distance < posZ ? distance : posZ;
+            var offsetY = this.y2 - hitbox.y;
+            var distance = this.z - hitbox.z2;
+            var nZ = distance < posZ ? distance : posZ;
+
+            if(offsetY <= 1.0 && offsetY >= 0.0)
+            {
+    			return [nZ, offsetY + 0.3];
+            }
+            else
+            {
+                return [nZ, -1];
+            }
 		}
 		else if (posZ < 0 && hitbox.z >= this.z2)
 		{
-			var distance = this.z2 - hitbox.z;
-			return distance > posZ ? distance : posZ;
+            var offsetY = this.y2 - hitbox.y;
+            var distance = this.z2 - hitbox.z;
+            var nZ = distance > posZ ? distance : posZ;
+            if(offsetY <= 1.0 && offsetY >= 0.0)
+            {
+                 return [nZ, offsetY + 0.3];
+            }
+            else
+            {
+                return [nZ, -1];
+            }
 		}
-		return posZ;
+		return [posZ, -1];
     }
 }

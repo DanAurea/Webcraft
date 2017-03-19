@@ -45,6 +45,7 @@ function EntityPlayer()
         var newX = this.totalMotionX;
         var newY = this.totalMotionY;
         var newZ = this.totalMotionZ;
+        var offsetY = 0;
 
         //console.log(newY);
 
@@ -57,23 +58,39 @@ function EntityPlayer()
             var tileAmount = tiles.length;
             if(tileAmount > 0)
             {
+                var nPos = null;
+                for(var i = 0; i < tileAmount; i++)
+                {
+                    nPos = tiles[i].clipX(this.collision, newX);
+                    newX = nPos[0];
+
+                    if(nPos[1] > offsetY && this.onGround)
+                    {
+                        offsetY = nPos[1];
+                    }
+                }
+                newY += offsetY;
+                this.collision.move(newX, offsetY, 0);
+                offsetY = 0;
+
+                for(var i = 0; i < tileAmount; i++)
+                {
+                    nPos = tiles[i].clipZ(this.collision, newZ);
+                    newZ = nPos[0];
+
+                    if(nPos[1] > offsetY && this.onGround)
+                    {
+                        offsetY = nPos[1];
+                    }
+                }
+                newY += offsetY;
+                this.collision.move(0, offsetY, newZ);
+
                 for(var i = 0; i < tileAmount; i++)
                 {
                     newY = tiles[i].clipY(this.collision, newY);
                 }
                 this.collision.move(0, newY, 0);
-
-                for(var i = 0; i < tileAmount; i++)
-                {
-                    newX = tiles[i].clipX(this.collision, newX);
-                }
-                this.collision.move(newX, 0, 0);
-
-                for(var i = 0; i < tileAmount; i++)
-                {
-                    newZ = tiles[i].clipZ(this.collision, newZ);
-                }
-                this.collision.move(0, 0, newZ);
             }
 
             this.onGround = newY != this.totalMotionY && this.totalMotionY <= 0;
