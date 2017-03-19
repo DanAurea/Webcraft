@@ -251,9 +251,9 @@ function TileRenderer()
         {
             var tileColor = new THREE.Color(tile.color);
             var change = noise.simplex2((rX - 10000) / 50, (rZ - 10000) / 50);
-            tileColor.r = tileColor.r + change * tile.redVariant;
-            tileColor.g = tileColor.g + change * tile.greenVariant;
-            tileColor.b = tileColor.b + change * tile.blueVariant;
+            tileColor.r = Math.max(0.0, Math.min(tileColor.r + change * tile.redVariant, 1.0));
+            tileColor.g = Math.max(0.0, Math.min(tileColor.g + change * tile.greenVariant, 1.0));
+            tileColor.b = Math.max(0.0, Math.min(tileColor.b + change * tile.blueVariant, 1.0));
 
             return tileColor;
         }
