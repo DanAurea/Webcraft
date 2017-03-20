@@ -2,9 +2,13 @@ from opensimplex import OpenSimplex
 import math, sys, random
 from random import randint
 
+chunkSize = 16
+chunkHeight = 256
+
 class TreeGenerator:
 	def generateAt(self,x,y,z,map):
-		height = random.randint(6,9)
+		
+		height           = random.randint(6,9)
 
 		for i in range (height):
 			#leaves
@@ -19,7 +23,7 @@ class TreeGenerator:
 						if(map.getBiomeAt(x,z)!=SNOW):
 							#Apple
 							if(i==height-3 and i!=x and k!=z):
-								if(random.randint(1,10)==1):
+								if(random.randint(1,15)==1):
 									map.setTileAt(14,j,y+i-1,k)
 							#Mushrooms
 							if(height==6 and i!=x and k!=z):
@@ -46,13 +50,13 @@ class BiomePlain (Biome):
 		rx = chunk.x * chunkSize
 		rz = chunk.z * chunkSize
 		## Flowers
-		for i in range(random.randint(5,15)):
+		for i in range(random.randint(2,10)):
 			cx = random.randint(0,chunkSize - 1)
 			cz = random.randint(0,chunkSize - 1)
 			t = random.randint(1,3)
 			map.setTileAt(7+t,rx+cx,chunk.elev[cx][cz],rz+cz)
 		## Trees
-		for k in range (2,4):
+		for k in range (2, 4):
 			cx = random.randint(0,chunkSize - 1)
 			cz = random.randint(0,chunkSize - 1)
 			tree = TreeGenerator()
@@ -103,9 +107,6 @@ SNOW   = BiomeSnow(0.7,7)
 OCEAN  = Biome(0.1,0)
 PLAIN  = BiomePlain(0.3,1)
 
-chunkSize = 16
-chunkHeight = 256
-
 class Chunk:
 	def __init__(self,X,Z):
 		self.x=X
@@ -125,8 +126,6 @@ class Chunk:
 
 	def setBiome(self,biome):
 		self.biome = biome
-
-
 
 class MapGenerator:
 
@@ -183,8 +182,10 @@ class MapGenerator:
 				biome = self.genBiome(sx,sz)
 				e = int((self.genNoiseElev.noise2d(sx,sz) / 2.0 + 0.5) * 30)
 				chunk.elev[cx][cz] = e
+
 				for y in range(e):
 					chunk.setTileAt(self.getTile2Gen(cx,y,cz,e,biome),cx,y,cz)
+		
 		chunk.setBiome(biome)
 
 	def getBiomeAt(self,x,z):
@@ -271,8 +272,8 @@ class MapGenerator:
 		#self.map.genRiver()
 		self.genVegetation()
 		#self.map.genVillage()
-		# self.genEaster()
-
+		self.genEaster()
+		
 		## Compress chunk
 		for arr in self.map:
 			for chunkObj in arr:
