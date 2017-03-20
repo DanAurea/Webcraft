@@ -13,8 +13,4 @@ function initDebugger()
     sunLightFolder.add(SkyRenderer.sunLight.position, "x", 0, 360);
     sunLightFolder.add(SkyRenderer.sunLight.position, "y", 0, 360);
     sunLightFolder.add(SkyRenderer.sunLight.position, "z", 0, 360);
-
-    var skyFolder = gui.addFolder("Sky");
-    var fogFolder = skyFolder.addFolder("Fog");
-    fogFolder.add(scene.fog, "density", 0, 0.1);
 }
