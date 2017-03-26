@@ -58,8 +58,6 @@ function initGame()
 
                             if(loadedChunk >= chunkAmount)
                             {
-                                MapManager.prepareMapRender();
-
                                 GUIS.INGAME_GUI.open();
                                 GUIS.CHAT_GUI.open();
 
