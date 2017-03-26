@@ -129,11 +129,12 @@ class Chunk:
 
 class MapGenerator:
 
+	seedColor = randint(0, 10000000)
+	seedElev  = randint(0, 10000000)
+	seedMoist = randint(0, 10000000)
+	seedTemp  = randint(0, 10000000)
+
 	def __init__(self, size):
-		self.seedElev = randint(0, 10000000)
-		self.seedMoist = randint(0, 10000000)
-		self.seedTemp = randint(0, 10000000)
-		self.seedColor = randint(0, 10000000)
 		self.mapSize = size
 		self.genNoiseElev = OpenSimplex(self.seedElev)
 		self.genNoiseMoist = OpenSimplex(self.seedMoist)

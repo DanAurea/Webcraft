@@ -2,9 +2,8 @@ from hashlib import md5
 from django.contrib.auth.models import User
 from communication.ComAPI.packetChat import PacketChat
 from django.http import JsonResponse
-from game.mapGenerator import MapGenerator
-from multiprocessing import Process
-from game.runtime import *
+from game.runtime import Runtime
+from game.mapGenerator import MapGenerator 
 
 def getToken(username):
 	""" Generate a new token
@@ -33,10 +32,10 @@ def getInfoMap(request):
 		seed color
 	"""
 
-	data = {"timeDay": RT_timeDay,
-			"durationDay": RT_durationDay,
-			"size": RT_size,
-			"seedColor": RT_seedColor}
+	data = {"timeDay": Runtime.timeDay,
+			"durationDay": Runtime.durationDay,
+			"size": Runtime.size,
+			"seedColor": MapGenerator.seedColor}
 	return JsonResponse(data)
 
 def getChunk(request):
@@ -46,7 +45,7 @@ def getChunk(request):
 	z = int(request.GET.get("z", None))
 
 	## TODO: Exception if bad request
-	data = {"tiles" : RT_map[x][z].chunk,
+	data = {"tiles" : Runtime.map[x][z].chunk,
 			"x" : x,
 			"z": z}
 	return JsonResponse(data)
