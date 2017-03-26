@@ -2,7 +2,7 @@ from hashlib import md5
 from django.contrib.auth.models import User
 from communication.ComAPI.packetChat import PacketChat
 from django.http import JsonResponse
-from game.runtime import Runtime
+import game.runtime as Runtime
 from game.mapGenerator import MapGenerator 
 
 def getToken(username):

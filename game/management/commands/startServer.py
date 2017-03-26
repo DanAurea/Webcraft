@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 from django.core import management
-from game.runtime import Runtime
+import game.runtime as Runtime
 import argparse
 import json
 
