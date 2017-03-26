@@ -46,23 +46,23 @@ function PacketChat(message)
 
         // Call parent method for getting current header size
         this.offset      = this._getDecodePacketSize();
-        
+
         this.timestamp   = dv.getFloat64(this.offset);
         this.offset      += 8;
 
         // Convert timestamp to human readable format
         d = new Date(this.timestamp * 1000);
         this.time = addZero(d.getHours()) + ':' + addZero(d.getMinutes()) + ':' + addZero(d.getSeconds());
-        
+
         usernameSize     = dv.getUint8(this.offset);
         this.offset      += 1;
-        
+
         this.username    = PacketsUtil.decodeString(dv, this.offset, usernameSize);
         this.offset      += usernameSize;
-        
+
         this.messageSize = dv.getUint16(this.offset);
         this.offset      += 2;
-        
+
         this.message     = PacketsUtil.decodeString(dv, this.offset, this.messageSize);
 
         return dv;
@@ -71,7 +71,7 @@ function PacketChat(message)
     this._getEncodePacketSize = PacketChat.prototype.getEncodePacketSize;
     this.getEncodePacketSize =
     function getEncodePacketSize()
-    {   
+    {
         // Header size + message + messageSize
         return this._getEncodePacketSize() + this.messageSize + 2;
     }
@@ -79,7 +79,7 @@ function PacketChat(message)
     this._getDecodePacketSize = PacketChat.prototype.getDecodePacketSize;
     this.getDecodePacketSize =
     function getDecodePacketSize()
-    {   
+    {
         // Header size + Timestamp (64 bits)
         return this._getDecodePacketSize() + 8;
     }
