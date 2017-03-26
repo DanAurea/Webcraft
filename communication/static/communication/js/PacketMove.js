@@ -1,4 +1,4 @@
-function PacketLogin(x, y, z, pitch, yaw)
+function PacketMove(x, y, z, pitch, yaw)
 {
     this.x = x;
     this.y = y;
