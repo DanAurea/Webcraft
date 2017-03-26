@@ -6,6 +6,22 @@ function MapManager()
         this.time++;
     }
 
+    this.updateRender =
+    function updateRender()
+    {
+        var loadedAmount = 0;
+        for(var x = 0, length = this.chunks.length; x < length; x++)
+        {
+            var chunk = this.chunks[x];
+            if(chunk.isDirty && loadedAmount < 3)
+            {
+                chunk.isDirty = false;
+                chunk.prepareChunkRender();
+                loadedAmount++;
+            }
+        }
+    }
+
     this.initMap =
     function initMap(mapWidth, mapLength, time, dayDuration, seedColor)
     {
@@ -27,29 +43,6 @@ function MapManager()
             }
         }
         console.log("Initialized map...");
-    }
-
-    this.prepareMapRender =
-    function prepareMapRender()
-    {
-        console.log("Rendering map...");
-
-        //Clear map
-        for(var i = 0; i < this.chunks.length; i++)
-        {
-            if(this.chunks[i].mesh != null)
-            {
-                scene.remove(this.chunks[i].mesh);
-            }
-        }
-
-        var begin = new Date().getTime();
-        for(var i = 0, chunkAmount = this.chunks.length; i < chunkAmount; i++)
-        {
-            this.chunks[i].prepareChunkRender();
-        }
-
-        console.log("Map rendered in " + (new Date().getTime() - begin) + "ms");
     }
 
     this.getChunkAtChunkCoords =
