@@ -26,15 +26,15 @@ SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-if(DEBUG != False):
-	# Compress static files
-	COMPRESS_ENABLED = True
-	COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
-	COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
+# Compress static files
+if(DEBUG == False):
+    COMPRESS_ENABLED = True
+    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
+    COMPRESS_JS_FILTERS = ["compressor.filters.jsmin.JSMinFilter"]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1","mordor", "192.168.1.248"]
+ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1", "192.168.1.248"]
 
 # Application definition
 
@@ -47,9 +47,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'communication',
     'game',
+    'channels',
     'chat',
     'user',
-    "compressor",   
+    "compressor",
 ]
 
 MIDDLEWARE = [
@@ -88,11 +89,34 @@ WSGI_APPLICATION = 'trisdanvalwen.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'devDB',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'djangorpg',
+	'USER': 'danval',
+	'PASSWORD': 'danval72',
+	'HOST': '172.17.0.4',
+	'PORT': '',
     }
 }
 
+## Set redis as cache backend
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PARSER_CLASS": "redis.connection.HiredisParser",
+            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+            "SOCKET_CONNECT_TIMEOUT": 5,  # in seconds
+            "SOCKET_TIMEOUT": 5,  # in seconds
+        },
+        "KEY_PREFIX": "example",
+    }
+}
+
+## Set redis as session cache backend
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

@@ -1,11 +1,16 @@
 from game.mapGenerator import MapGenerator
 from datetime import datetime
-from os import path
+from os import path, remove
 from glob import glob
 import json
 import pickle
 
-""" Runtime class starting game loop and initialize game server side """
+""" Runtime module starting game loop and initialize game server side """
+
+## Save interval in hours
+saveInterval = 2
+## When reset save and keep the last one in hours (by day currently)
+saveReset    = 24
 
 settings = {'generate': False}
 
@@ -48,6 +53,14 @@ def saveMap():
 	now = datetime.now()
 	time = now.strftime("%Y-%m-%d-%H-%M-%S")
 	saveFile = "".join(['game/saves/DRPG-', time, '.map'])
+
+	files = glob('game/saves/*.map')
+	numberFiles = len(files)
+
+	## Remove all unecessary saves if enough saves had been made
+	if(numberFiles >= saveReset / saveInterval):
+		for file in files[:-1]:
+			remove(file)
 
 	with open(saveFile, 'wb') as save:
 		pickle.dump(map, save)
