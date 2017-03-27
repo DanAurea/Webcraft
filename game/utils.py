@@ -2,8 +2,9 @@ from hashlib import md5
 from django.contrib.auth.models import User
 from communication.ComAPI.packetChat import PacketChat
 from django.http import JsonResponse
+from game.mapGenerator import MapGenerator
+from django.core.cache import cache
 import game.runtime as Runtime
-from game.mapGenerator import MapGenerator 
 
 def getToken(username):
 	""" Generate a new token
@@ -44,8 +45,10 @@ def getChunk(request):
 	x = int(request.GET.get("x", None))
 	z = int(request.GET.get("z", None))
 
+	key = "".join(["map_", str(x), "_", str(z)])
+
 	## TODO: Exception if bad request
-	data = {"tiles" : Runtime.map[x][z].chunk,
+	data = {"tiles" : cache.get(key),
 			"x" : x,
 			"z": z}
 	return JsonResponse(data)

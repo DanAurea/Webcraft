@@ -110,7 +110,7 @@ CACHES = {
             "SOCKET_CONNECT_TIMEOUT": 5,  # in seconds
             "SOCKET_TIMEOUT": 5,  # in seconds
         },
-        "KEY_PREFIX": "example",
+        "KEY_PREFIX": "DRPG",
     }
 }
 

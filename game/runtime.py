@@ -2,6 +2,7 @@ from game.mapGenerator import MapGenerator
 from datetime import datetime
 from os import path, remove
 from glob import glob
+from django.core.cache import cache
 import json
 import pickle
 
@@ -78,4 +79,9 @@ def loadMap():
 		with open(latestSave, 'rb') as save:
 			map = pickle.load(save)
 
-loadMap()
+	## Set each chunk loaded in redis cache as
+	## map_row_col key.
+	for rowIndex, row in enumerate(map):
+		for colIndex, col in enumerate(row):
+			key = "".join(["map_", str(rowIndex), "_", str(colIndex)])
+			cache.set(key, map[rowIndex][colIndex].chunk, timeout=None)

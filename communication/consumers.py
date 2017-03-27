@@ -8,6 +8,7 @@ from communication.ComAPI.packetChat import PacketChat
 from game.utils import getToken
 from game.models import Player
 from chat.models import ChatMessage
+from django.utils.html import strip_tags
 
 ## Initliaze packet managers class
 packet = Packet()
@@ -65,6 +66,7 @@ def ws_receive(data):
 			if message == False:
 				ws_close(data)
 
+			message = strip_tags(message)
 			chatHandler(message, user)
 
 ## Send a close message to client websocket

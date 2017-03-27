@@ -60,5 +60,4 @@ class Command(BaseCommand):
 		with open('game/settings.json', 'w') as outfile:
 			json.dump(settings, outfile)
 
-		Runtime.saveMap()
-		# Runtime.loadMap()
+		Runtime.loadMap()
