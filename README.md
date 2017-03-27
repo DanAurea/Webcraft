@@ -4,6 +4,8 @@ Trisdanvalwen is a MMORPG made with Django framework, Channels (websocket) and J
 It's a minecraft like game with cute pets, we made all models with Magicavoxel to save time, you can chat with everyone and
 build creative constructions by your own hands.
 
+It's a school project made during last year of bachelor's computer science from "Université du Maine" in France for "Web architecture" class.
+
 ## How it works
 
 Trisdanvalwen make use of Channels for real time part, websocket are used for chatting app and game app currently, we should
@@ -46,4 +48,5 @@ Once you have set up your new installation, you can load some fixtures for testi
 
 Once you have all requirements you can run server executing:
 >$ ./run.sh
+
 in root's project directory, it's a tiny shell script that run daphne, initialize runtime server and run workers using gunicorn.
