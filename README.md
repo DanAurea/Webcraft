@@ -1,14 +1,49 @@
-#Installation
+# Trisdanvalwen
 
-You need to execute install.sh in sudo mode to retrieve external libraries and dependencies required for this project then
-set your proper virtualenv using python 3.5.
+Trisdanvalwen is a MMORPG made with Django framework, Channels (websocket) and Javascript for client rendering.
+It's a minecraft like game with cute pets, we made all models with Magicavoxel to save time, you can chat with everyone and
+build creative constructions by your own hands.
 
-> sudo install.sh
+## How it works
 
-> virtualenv myEnv -p /usr/bin/python3.5
+Trisdanvalwen make use of Channels for real time part, websocket are used for chatting app and game app currently, we should
+update this projet to use WebRTC (UDP packets) as a layer for any packets sent or received by game (excepting chat).
 
-#Launching
+Gunicorn is used as WSGI server because of its lower latency for http requests compared to daphne ASGI server
+Daphne is default ASGI server used by channels to handle any websocket request.
+Django-redis-cache is used as session backend cache and as application cache for sharing map informations through each worker
+and save recurrent changes on map's chunks.
 
-You need to use python 3.5 for running correctly django-rpg so use your previously created virtualenv to proceed then
+Nginx is used as proxy-server to redirect requests on correct services and for serving static files furthermore it's enable gzip compression and cache for request.
 
->source myEnv/bin/activate && python manage.py runserver
+And PostgreSQL is DBMS chosen for this project for low latency and high throughput.
+
+Demo is running on a server using Docker containers for each service (nginx, postgresql, redis etc...).
+
+## Installation
+
+This repo make uses of postgreSQL and redis-server so be sure to have them installed on your machine.
+
+Once you have them installed use pip to install any requirements:
+
+> pip install -r requirements.txt
+
+Before starting, set a new database for running this project then make necessary changes in trisdanvalwen/settings.py file.
+
+Do migrations to create table structure with following command:
+
+> python manage.py migrate
+
+Once you have set up your new installation, you can load some fixtures for testing purpose:
+
+> python manage.py loaddata user/fixtures/user_data.json
+>
+> python manage.py loaddata user/fixtures/initial_data.json
+>
+> python manage.py loaddata game/fixtures/initial_data.json
+
+## Running
+
+Once you have all requirements you can run server executing:
+>$ ./run.sh
+in root's project directory, it's a tiny shell script that run daphne, initialize runtime server and run workers using gunicorn.
