@@ -5,8 +5,10 @@
     <head>
         <meta charset="UTF-8">
         <title>Django-RPG</title>
-            <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
-            <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
+            {% compress css %}
+                <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
+                <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
+            {% endcompress %}
             <link rel="stylesheet" href="{% static 'game/css/jquery.mCustomScrollbar.min.css' %}">
     </head>
     <body>

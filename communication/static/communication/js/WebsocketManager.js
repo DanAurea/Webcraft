@@ -1,4 +1,5 @@
-var ws = new WebSocket((window.location.protocol == 'http') ? 'ws://' : 'ws://' +  window.location.host + '/')
+var ws = new WebSocket((window.location.protocol == 'http') ? 'ws://' : 'ws://' +  window.location.host + '/DRPG/ws')
+
 ws.binaryType = "arraybuffer";
 Packets.init();
 

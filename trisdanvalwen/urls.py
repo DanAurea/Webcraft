@@ -17,7 +17,7 @@ from django.conf.urls import url,include
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^game/', include('game.urls', namespace='game')),
-    url(r'^user/', include('user.urls', namespace='user')),
+    url(r'^DRPG/admin/', admin.site.urls),
+    url(r'^DRPG/game/', include('game.urls', namespace='game')),
+    url(r'^DRPG/user/', include('user.urls', namespace='user')),
 ] 

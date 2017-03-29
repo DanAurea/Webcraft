@@ -140,7 +140,7 @@ function ResourceLoader()
     {
         if(!offlineMode)
         {
-            $.get("/game/getInfoMap", finishCallback).fail(error);
+            $.get("/DRPG/game/getInfoMap", finishCallback).fail(error);
         }
         else
         {
@@ -153,7 +153,7 @@ function ResourceLoader()
     {
         if(!offlineMode)
         {
-            $.get("/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
+            $.get("/DRPG/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
         }
         else
         {
