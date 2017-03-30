@@ -9,6 +9,9 @@ function EntityPlayer()
     this.inputMotZ = 0;
     this.onGround = false;
     this.isJumping = false;
+    this.model = null;
+    this.avatar = "cat";
+    this.username = "Anonymous";
 
     this._beginUpdate = EntityPlayer.prototype.beginUpdate;
     this.beginUpdate =
@@ -113,6 +116,31 @@ function EntityPlayer()
         {
             thePlayer.isJumping = true;
         }
+    }
+
+    this.render =
+    function render()
+    {
+        renderX = TimeManager.interpolate(thePlayer.prevX, thePlayer.x);
+        renderY = TimeManager.interpolate(thePlayer.prevY, thePlayer.y);
+        renderZ = TimeManager.interpolate(thePlayer.prevZ, thePlayer.z);
+        renderPitch = TimeManager.interpolate(thePlayer.lastPitch, thePlayer.pitch);
+        renderYaw = TimeManager.interpolate(thePlayer.lastYaw, thePlayer.yaw);
+
+        this.model.position.x = renderX;
+        this.model.position.y = renderY;
+        this.model.position.z = renderZ;
+
+        this.model.rotation.y = FPSCamera.toRadians(renderYaw);
+    }
+
+    this.onLogin =
+    function onLogin(username, avatar)
+    {
+        this.username = username;
+        this.avatar = avatar;
+        this.model = ModelLoader.models["models/"+ this.avatar + ".obj"].clone();
+        scene.add(this.model);
     }
 }
 

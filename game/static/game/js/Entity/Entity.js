@@ -15,6 +15,10 @@ function Entity()
     this.motionZ = 0;
     this.rotation = 0;
     this.collision = new AABB(0, 0, 0, 0.75, 1.80, 0.75);
+    this.pitch = 0;
+    this.lastPitch = 0;
+    this.yaw = 0;
+    this.lastYaw = 0;
 
     this.spawn =
     function spawn()
@@ -44,6 +48,8 @@ function Entity()
         this.prevX = this.x;
         this.prevY = this.y;
         this.prevZ = this.z;
+        this.lastPitch = this.pitch;
+        this.lastYaw = this.yaw;
 
         this.totalMotionX = this.motionX;
         this.totalMotionY = this.motionY;
@@ -72,6 +78,9 @@ function Entity()
         this.y += this.totalMotionY;
         this.z += this.totalMotionZ;
     }
+
+    this.render =
+    function render(){}
 }
 
 function Entities()
@@ -86,6 +95,15 @@ function Entities()
             this.entityList[i].beginUpdate();
             this.entityList[i].update();
             this.entityList[i].endUpdate();
+        }
+    }
+
+    this.renderEntities =
+    function renderEntities()
+    {
+        for(var i = 0, entityAmount = this.entityList.length; i < entityAmount; i++)
+        {
+            this.entityList[i].render();
         }
     }
 }
