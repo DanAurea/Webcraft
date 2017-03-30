@@ -70,6 +70,7 @@ function GameRenderer()
     {
         FPSCamera.updateCamera();
         SkyRenderer.update();
+        MapManager.updateRender();
 
         scene.overrideMaterial = depthMaterial;
 		renderer.render(scene, camera, depthRenderTarget, true);

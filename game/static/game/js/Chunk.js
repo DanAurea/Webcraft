@@ -7,6 +7,7 @@ function Chunk(x, z)
     this.groupGeometry = null;
     this.map = Array(256 * chunkHeight);
     this.maxHeight = chunkHeight;
+    this.isDirty = true;
 
     this.setTileAt =
     function setTileAt(tile, x, y, z)
@@ -18,7 +19,7 @@ function Chunk(x, z)
 
         this.map[this.getIndexForCoords(x, y, z)] = tile;
 
-        this.prepareChunkRender();
+        this.isDirty = true;
 
         //Update neighbours chunks
         var neighbours = [];
@@ -46,7 +47,7 @@ function Chunk(x, z)
             {
                 if(neighbours[i] != null)
                 {
-                    neighbours[i].prepareChunkRender();
+                    neighbours[i].isDirty = true;
                 }
             }
         }
