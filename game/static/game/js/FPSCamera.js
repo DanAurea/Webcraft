@@ -191,6 +191,7 @@ function FPSCamera()
                     if(!collided)
                     {
                         MapManager.setTileAt(FPSCamera.tileId, tX, tY, tZ);
+                        PacketsUtil.sendPacket(new PacketPlaceTile(tX, tY, tZ, FPSCamera.tileId));
                     }
                 }
             }
@@ -198,6 +199,8 @@ function FPSCamera()
             {
                 //Break
                 MapManager.setTileAt(0, tX, tY, tZ);
+                
+                PacketsUtil.sendPacket(new PacketPlaceTile(tX, tY, tZ, 0));
             }
         }
     }

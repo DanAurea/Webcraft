@@ -17,6 +17,7 @@
             {% include "chat/window.html" %}
 
             <div class="gui" id="ingameGui">
+                <div class="cross"></div>
                 <div class="gui_bottom gui_left">
                     <span id="ingame_gui_version">V: </span><br/>
                     <span id="ingame_gui_block">Tile: </span><br/>
@@ -64,6 +65,7 @@
 
             <script>
                 TOKEN = {{ token|safe }};
+                USERNAME = {{ username|safe }};
             </script>
 
             <script src="{% static 'communication/js/PacketsUtil.js' %}" charset="utf-8"></script>

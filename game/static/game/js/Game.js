@@ -60,6 +60,7 @@ function initGame()
                             {
                                 GUIS.INGAME_GUI.open();
                                 GUIS.CHAT_GUI.open();
+                                PacketsUtil.sendPacket(new PacketReady());
 
                                 thePlayer = new EntityPlayer();
                                 thePlayer.setPosition(5, 15, 10);

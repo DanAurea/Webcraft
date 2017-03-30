@@ -5,6 +5,8 @@ from channels.sessions import channel_session
 from channels.auth import channel_session_user, channel_session_user_from_http
 from communication.ComAPI.packet import Packet
 from communication.ComAPI.packetChat import PacketChat
+from communication.ComAPI.packetPlaceTile import PacketPlaceTile
+from communication.ComAPI.packetLogin import PacketLogin
 from game.utils import getToken
 from game.models import Player
 from chat.models import ChatMessage
@@ -13,6 +15,8 @@ from django.utils.html import strip_tags
 ## Initliaze packet managers class
 packet = Packet()
 packetChat = PacketChat()
+packetPlaceTile = PacketPlaceTile()
+packetLogin = PacketLogin()
 
 MESSAGE_NUMBER = 10
 
@@ -47,7 +51,7 @@ def ws_receive(data):
 
 	## Received binary datas from channel and check if trusted 
 	## (+2 bytes because data size coded on 2 bytes + data are required )
-	if(data.content["bytes"] and len(binaryData) > packet.CLIENT_HEADER_SIZE + 2):
+	if(data.content["bytes"] and len(binaryData) >= packet.CLIENT_HEADER_SIZE):
 
 		header = packet.decode(binaryData)
 		
@@ -59,6 +63,7 @@ def ws_receive(data):
 		if(hashedToken.hex() != packet.token):
 			ws_close(data)
 
+		## Packet chat
 		if(packet.packetID == 1):
 			message = packetChat.decode(binaryData)
 			
@@ -68,6 +73,14 @@ def ws_receive(data):
 
 			message = strip_tags(message)
 			chatHandler(message, user)
+		## Packet place tile
+		elif(packet.packetID == 2):
+			loginHandler(user)
+		elif(packet.packetID == 5):
+			tX, tY, tZ, tileID = packetPlaceTile.decode(binaryData)
+
+			placeTileHandler(tX, tY, tZ, tileID)
+
 
 ## Send a close message to client websocket
 def ws_close(data):
@@ -118,3 +131,26 @@ def getLastChatMessage():
 		Group('chat').send({
 			'bytes': packetChat.encode(message, username, False),
 		})
+
+## Place a tile on every client at position specified by user
+def placeTileHandler(tX, tY, tZ, tileID):
+	Group('game').send({
+			"bytes": packetPlaceTile.encode(tX, tY, tZ, tileID)
+	})
+
+## Broadcast login from user
+def loginHandler(user):
+
+	# TODO: Make a join on table to recover models etc
+	# player = Player.Objects.get()
+
+	avatar = "cat"
+	x,y,z = 0,200,0
+
+	Group('chat').send({
+		'bytes': packetChat.encode(str(user.username) + " s'est connecte", "Server")
+	})	
+
+	Group('game').send({
+		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
+	})	

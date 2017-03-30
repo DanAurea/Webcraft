@@ -20,28 +20,28 @@ function PacketLogin()
         dv = this._decode(data);
 
         // Call parent method for getting current header size
-        var offset       = this._getDecodePacketSize();
-
-        this.usernameSize     = dv.getUint8(offset);
-        offset           += 1;
-
-        this.username    = PacketsUtil.decodeString(dv, offset, usernameSize);
-        offset           += usernameSize;
-
-        avatarSize     = dv.getUint8(offset);
-        offset           += 1;
-
-        this.avatar    = PacketsUtil.decodeString(dv, offset, avatarSize);
-        offset           += avatarSize;
-
-        this.x           = dv.getFloat32(offset);
-        offset           += 4;
-
-        this.y           = dv.getFloat32(offset);
-        offset           += 4;
-
-        this.z           = dv.getFloat32(offset);
-        offset           += 4;
+        var offset        = this._getDecodePacketSize();
+        
+        this.usernameSize = dv.getUint8(offset);
+        offset            += 1;
+        
+        this.username     = PacketsUtil.decodeString(dv, offset, usernameSize);
+        offset            += usernameSize;
+        
+        avatarSize        = dv.getUint8(offset);
+        offset            += 1;
+        
+        this.avatar       = PacketsUtil.decodeString(dv, offset, avatarSize);
+        offset            += avatarSize;
+        
+        this.x            = dv.getFloat32(offset);
+        offset            += 4;
+        
+        this.y            = dv.getFloat32(offset);
+        offset            += 4;
+        
+        this.z            = dv.getFloat32(offset);
+        offset            += 4;
 
         return dv;
     }
