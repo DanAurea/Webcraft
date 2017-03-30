@@ -79,6 +79,9 @@ function FPSCamera()
         camera.rotation.y = FPSCamera.toRadians(FPSCamera.cameraYaw);
         camera.rotation.z = 0;
 
+        thePlayer.pitch = FPSCamera.cameraPitch;
+        thePlayer.yaw = FPSCamera.cameraYaw + 90;
+
         this.targetTile = this.getTileLookingAt();
         if(this.targetTile != null)
         {

@@ -66,6 +66,7 @@ function initGame()
                                 thePlayer = new EntityPlayer();
                                 thePlayer.setPosition(5, 15, 10);
                                 thePlayer.spawn();
+                                thePlayer.onLogin("valentin4311", "cat");
 
                                 // On effectue le rendu de la scène
                                 requestAnimationFrame(loopGame);
@@ -100,6 +101,7 @@ function loopGame(time)
         Entities.updateEntities();
     }
     GameRenderer.update();
+    Entities.renderEntities();
 
     GUIS.updateAllGuis();
 
