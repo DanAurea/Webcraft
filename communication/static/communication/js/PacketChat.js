@@ -19,7 +19,27 @@ function PacketChat(message)
     this.handler =
     function handler()
     {
-        console.log("Message recu : " + this.message + " size : " + this.messageSize + " Pseudo: " + this.username + " timestamp: " + this.timestamp);
+        // Append new message on chat container
+        $('#messagesList').append(
+            '<li>'
+            + '<span>' + this.time + ' - </span>'
+            +'<span class=\'pseudo\'>' + this.username + ': </span>'
+            + '<span class=\'message\'>' + this.message + '</span>'
+            + 
+            '</li>'
+        );
+
+        // Update scroll bar
+        $("messagesContainer").mCustomScrollbar("scrollTo","last");
+        $("#messagesContainer").fadeIn(300);
+
+        // Hide messages if focus is not on chat
+        // (only for visibility purpose)
+        if($("#id_message").is(":focus") ==  false){
+            setTimeout(function() {  
+                $("#messagesContainer").fadeOut(300);
+            }, 2000);
+        }
     }
 
     this._encode = PacketChat.prototype.encode;

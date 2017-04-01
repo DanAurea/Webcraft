@@ -1,13 +1,20 @@
-var ws = new WebSocket((window.location.protocol == 'http') ? 'ws://' : 'ws://' +  window.location.host + '/')
+var ws = new WebSocket((window.location.protocol == 'http') ? 'ws://' : 'ws://' +  window.location.host + '/DRPG/ws')
+
 ws.binaryType = "arraybuffer";
 Packets.init();
 
 ws.onmessage = function(message) {
 
-    var headerPacket  = new Packet().initClientPacket();
+    var headerPacket  = new Packet();
     headerPacket.decode(message.data);
 
-    if(headerPacket.packetId == 1){
-        handleChat(message);
+    var id = headerPacket.packetId;
+    entry = Packets.packetRegistry[id];
+    if(entry != null)
+    {
+    	test = new entry.className();
+    	console.log(test,entry.className);
+    	test.decode(message.data);
+    	test.handler();
     }
 };

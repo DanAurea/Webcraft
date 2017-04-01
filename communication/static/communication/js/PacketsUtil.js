@@ -25,6 +25,16 @@ function PacketsUtil()
         }
         return strOut;
     }
+
+    this.sendPacket =
+    function sendPacket(packet)
+    {
+        packet.initClientPacket();
+        var messageEncoded = packet.encode().buffer;
+
+        console.log(messageEncoded);
+        ws.send(messageEncoded);
+    }
 }
 
 var PacketsUtil = new PacketsUtil();

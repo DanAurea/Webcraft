@@ -10,7 +10,10 @@ from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from game.models import *
 from chat.models import *
+from django.views.decorators.csrf import csrf_exempt
 
+# Currently bypass csrf security (cause is gunicorn / nginx not passing correct args)
+@csrf_exempt
 def login(request):
 
     form        = LoginForm(request.POST or None)
@@ -22,7 +25,7 @@ def login(request):
         password = form.cleaned_data['password']
         ## Check if data fits with database
         user = authenticate(username=account, password=password)
-        
+
         if user is not None:
             auth_login(request, user)
             return redirect(reverse("game:home"), permanent = True)
@@ -38,6 +41,8 @@ def login(request):
 
     return render(request, 'user/baseForm.html', locals())
 
+# Currently bypass csrf security (cause is gunicorn / nginx not passing correct args)
+@csrf_exempt
 def register(request):
     form        = RegisterForm(request.POST or None)
     valueButton = "S'inscrire"

@@ -8,7 +8,7 @@ if(window.location.pathname.endsWith("debug.html"))
 
 function ResourceLoader()
 {
-    var resources = ["img/palette.png", "models/flower_red.obj", "models/flower_blue.obj", "models/grass.obj","models/cactus.obj","models/cat.obj","models/apple.obj","models/brown_mush.obj","models/red_mush.obj","models/Jacobrownie.obj","models/deadbush.obj", "models/penguin.obj"];
+    var resources = ["img/palette.png", "models/flower_red.obj", "models/flower_blue.obj", "models/grass.obj","models/cactus.obj","models/apple.obj","models/brown_mush.obj","models/red_mush.obj","models/Jacobrownie.obj","models/deadbush.obj"];
     for(var i = 0; i < resources.length; i++)
     {
         resources[i] = gameFolder + resources[i];
@@ -140,7 +140,7 @@ function ResourceLoader()
     {
         if(!offlineMode)
         {
-            $.get("/game/getInfoMap", finishCallback).fail(error);
+            $.get("/DRPG/game/getInfoMap", finishCallback).fail(error);
         }
         else
         {
@@ -153,7 +153,7 @@ function ResourceLoader()
     {
         if(!offlineMode)
         {
-            $.get("/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
+            $.get("/DRPG/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
         }
         else
         {
@@ -172,18 +172,26 @@ function ResourceLoader()
 
         var tiles = [];
 
-        for (var i=0; i< chunk.length; i++)
-        {
-            for(var k in chunk[i])
-            {
-                count = parseInt(k);
-                value = chunk[i][k];
+        var i;
+        var j;
 
-                for(var j = 0; j < count; j++)
-                {
+        // RLE decompressing
+        for (i=0; i< chunk.length; i++)
+        {   
+            data  = chunk[i].split(":");
+
+            // Decoding single / multiples values in sequences
+            if(data.length == 1){
+                tiles.push(data[0]);
+            }else{
+                count = parseInt(data[0]);
+                value = parseInt(data[1]);
+
+                for(j=0; j< count; j++){
                     tiles.push(value);
                 }
             }
+
         }
 
         return tiles;

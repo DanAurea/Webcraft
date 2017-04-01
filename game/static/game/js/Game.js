@@ -1,4 +1,4 @@
-var offlineMode = true;
+var offlineMode = false;
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
@@ -60,6 +60,7 @@ function initGame()
                             {
                                 GUIS.INGAME_GUI.open();
                                 GUIS.CHAT_GUI.open();
+                                PacketsUtil.sendPacket(new PacketReady());
 
                                 thePlayer = new EntityPlayer();
                                 thePlayer.setPosition(5, 15, 10);

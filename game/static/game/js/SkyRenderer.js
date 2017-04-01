@@ -107,7 +107,7 @@ function SkyRenderer()
             	starsGeometry.vertices.push(star);
             }
 
-            var starsMaterial = new THREE.PointsMaterial({color: Math.random() <= 0.5 ? 0x777777 : 0xBBBBBB, size: size, sizeAttenuation: false, transparent: true, fog: true});
+            var starsMaterial = new THREE.PointsMaterial({color: Math.random() <= 0.5 ? 0x777777 : 0xBBBBBB, size: size, sizeAttenuation: false, transparent: true, fog: false});
             this.starFields.push(new THREE.Points(starsGeometry, starsMaterial));
 
             scene.add(this.starFields[size]);

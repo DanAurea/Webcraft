@@ -8,7 +8,7 @@ function PacketPlaceTile(x, y, z, tileId)
     this.handler =
     function handler()
     {
-        console.log("Place tile");
+        MapManager.setTileAt(this.tileId, this.x, this.y, this.z);
     }
 
     this._encode = PacketPlaceTile.prototype.encode;
@@ -17,7 +17,7 @@ function PacketPlaceTile(x, y, z, tileId)
     {
         dv = this._encode();
 
-        this.offset = this._getEncodePacketSize();
+        offset = this._getEncodePacketSize();
 
         dv.setUint32(offset, this.x);
         offset           += 4;
@@ -39,7 +39,6 @@ function PacketPlaceTile(x, y, z, tileId)
     function decode(data)
     {
         dv = this._decode(data);
-
         // Call parent method for getting current header size
         var offset       = this._getDecodePacketSize();
 

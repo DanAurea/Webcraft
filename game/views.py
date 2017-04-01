@@ -8,8 +8,10 @@ def home(request):
 	
 	if(request.user.is_authenticated()):
 		
+		## Generate an user token based on username
 		token = '"%s"'%getToken(request.user.username).hex()
-		
+		username ='"%s"'%request.user.username
+
 		form = ChatForm(request.POST or None)
 
 		if form.is_valid():

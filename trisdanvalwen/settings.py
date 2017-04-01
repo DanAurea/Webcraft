@@ -24,7 +24,10 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+# For nginx proxying header
+USE_X_FORWARDED_HOST = True
 
 # Compress static files
 if(DEBUG == False):
@@ -34,7 +37,7 @@ if(DEBUG == False):
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-ALLOWED_HOSTS = ["10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1", "192.168.1.248"]
+ALLOWED_HOSTS = ["tales4craft.fr","10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1", "192.168.1.248"]
 
 # Application definition
 
@@ -50,7 +53,7 @@ INSTALLED_APPS = [
     'channels',
     'chat',
     'user',
-    "compressor",   
+    "compressor",
 ]
 
 MIDDLEWARE = [
@@ -93,11 +96,30 @@ DATABASES = {
         'NAME': 'djangorpg',
 	'USER': 'danval',
 	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.8',
+	'HOST': '172.17.0.5',
 	'PORT': '',
     }
 }
 
+## Set redis as cache backend
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "PARSER_CLASS": "redis.connection.HiredisParser",
+            "COMPRESSOR": "django_redis.compressors.zlib.ZlibCompressor",
+            "SOCKET_CONNECT_TIMEOUT": 5,  # in seconds
+            "SOCKET_TIMEOUT": 5,  # in seconds
+        },
+        "KEY_PREFIX": "DRPG",
+    }
+}
+
+## Set redis as session cache backend
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -137,7 +159,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/var/www/Tristandanvalwen/static/"
+STATIC_ROOT = "/root/Documents/Server/data/web/www/tales4craft.fr/www/static/"
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
