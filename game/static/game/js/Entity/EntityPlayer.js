@@ -119,11 +119,11 @@ function EntityPlayer()
     this.render =
     function render()
     {
-        renderX = TimeManager.interpolate(thePlayer.prevX, thePlayer.x);
-        renderY = TimeManager.interpolate(thePlayer.prevY, thePlayer.y);
-        renderZ = TimeManager.interpolate(thePlayer.prevZ, thePlayer.z);
-        renderPitch = TimeManager.interpolate(thePlayer.lastPitch, thePlayer.pitch);
-        renderYaw = TimeManager.interpolate(thePlayer.lastYaw, thePlayer.yaw);
+        renderX = TimeManager.interpolate(this.prevX, this.x);
+        renderY = TimeManager.interpolate(this.prevY, this.y);
+        renderZ = TimeManager.interpolate(this.prevZ, this.z);
+        renderPitch = TimeManager.interpolate(this.lastPitch, this.pitch);
+        renderYaw = TimeManager.interpolate(this.lastYaw, this.yaw);
 
         if(this.model  != null)
         {
