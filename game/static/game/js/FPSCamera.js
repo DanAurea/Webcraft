@@ -149,6 +149,9 @@ function FPSCamera()
         {
             thePlayer.jump();
         }
+
+        PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw));
+
     }
 
     this.chooseTile =

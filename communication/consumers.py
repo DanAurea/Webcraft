@@ -151,11 +151,10 @@ def loginHandler(user):
 
 	## Retrieve informations about avatar player
 	avatarInfos = AvatarPlayer.objects.get(player_id=user.player.id_player)
-	position = user.player.position
+	x, y , z = map(int, user.player.position.split(","))
 
 	avatar = avatarInfos.avatar_id.name
-	x,y,z = 50,50,50
-
+	
 	Group('chat').send({
 		'bytes': packetChat.encode(user.username + " s'est connecte", "Server")
 	})	

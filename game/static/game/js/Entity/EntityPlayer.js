@@ -125,8 +125,6 @@ function EntityPlayer()
         renderPitch = TimeManager.interpolate(thePlayer.lastPitch, thePlayer.pitch);
         renderYaw = TimeManager.interpolate(thePlayer.lastYaw, thePlayer.yaw);
 
-        PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw));
-
         if(this.model  != null)
         {
             this.model.position.x = renderX;

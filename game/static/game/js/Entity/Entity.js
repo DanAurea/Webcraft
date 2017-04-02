@@ -40,6 +40,7 @@ function Entity()
         this.y = y;
         this.z = z;
         this.collision.updatePosCenter(x, y, z);
+        return true;
     }
 
     this.beginUpdate =
@@ -89,7 +90,7 @@ function Entities()
 
     this.updateEntities =
     function updateEntities()
-    {
+    {   
         for(var i = 0, entityAmount = this.entityList.length; i < entityAmount; i++)
         {
             this.entityList[i].beginUpdate();

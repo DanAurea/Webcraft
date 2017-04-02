@@ -10,8 +10,18 @@ function PacketMove(x, y, z, pitch, yaw)
 
     this.handler =
     function handler()
-    {
-        console.log("Player Move !");
+    {   
+         if(this.username != USERNAME)
+        {
+            var username = this.username;
+            var entity = Entities.entityList.filter(function( obj ) {   
+                return obj.username == username;
+            });
+            
+            if(entity != undefined){
+                entity[0].setPosition(this.x, this.y, this.z);
+            }
+        }
     }
 
     this._encode = PacketMove.prototype.encode;
