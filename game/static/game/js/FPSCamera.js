@@ -157,6 +157,24 @@ function FPSCamera()
         FPSCamera.tileId = Math.max(1, Math.min(FPSCamera.tileId - direction, Tiles.tiles.length - 1));
     }
 
+    this.pickTile =
+    function pickTile(key, ev)
+    {
+        if(FPSCamera.targetTile != null)
+        {
+            var tX = FPSCamera.targetTile.x;
+            var tY = FPSCamera.targetTile.y;
+            var tZ = FPSCamera.targetTile.z;
+
+            var tileAt = MapManager.getTileAt(tX, tY, tZ);
+            if(tileAt != 0)
+            {
+                FPSCamera.tileId = tileAt;
+            }
+        }
+        ev.preventDefault();
+    }
+
     this.placeTile =
     function placeTile(key, ev)
     {

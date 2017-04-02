@@ -19,6 +19,8 @@ function ModelLoader()
                 {
 					child.material.map = textures["palette"];
                     ModelLoader.material = child.material;
+
+                    child.geometry.attributes.normal.array = new Int16Array(child.geometry.attributes.normal.array);
 				}
 			});
 
