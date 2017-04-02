@@ -2,8 +2,10 @@ from opensimplex import OpenSimplex
 import math, sys, random
 from random import randint
 
+global nbTilesByChunk
 chunkSize = 16
 chunkHeight = 256
+nbTilesByChunk = chunkSize * chunkSize * chunkHeight
 
 class TreeGenerator:
 	def generateAt(self,x,y,z,map):
@@ -115,7 +117,8 @@ class Chunk:
 		self.elev = [[0 for row in range(chunkSize)] for col in range(chunkHeight)]
 		self.chunk = [0 for row in range(chunkSize*chunkSize*chunkHeight)]
 
-	def getIndex4Coords(self,x,y,z):
+	@classmethod
+	def getIndex4Coords(cls, x, y, z):
 		return y<<8|x<<4|z;
 
 	def setTileAt(self,id,x,y,z):
@@ -237,15 +240,24 @@ class MapGenerator:
 		#JacoCookie
 		self.setTileAt(17,int((chunkSize*self.mapSize)/2),0,int((chunkSize*self.mapSize)/2))
 
-	def _compress(self, chunkObj):
+	def generate(self):
+		self.genMap()
+		#self.map.genRiver()
+		self.genVegetation()
+		#self.map.genVillage()
+		self.genEaster()
+
+		return self.map
+
+def _compress(chunk):
 		""" Compress an array of tiles counting sequence of same numbers """
 		compressedChunk =  []
 		countVal = 1
-		buffer = chunkObj.chunk.pop(0)
-		size = len(chunkObj.chunk) - 1
+		buffer = chunk.pop(0)
+		size = len(chunk) - 1
 		
 		## Compressing loop with RLE encoding
-		for index, tile in enumerate(chunkObj.chunk):
+		for index, tile in enumerate(chunk):
 			
 			if(index == size):
 				
@@ -267,17 +279,3 @@ class MapGenerator:
 				countVal += 1
 
 		return compressedChunk
-
-	def generate(self):
-		self.genMap()
-		#self.map.genRiver()
-		self.genVegetation()
-		#self.map.genVillage()
-		self.genEaster()
-		
-		## Compress chunk
-		for arr in self.map:
-			for chunkObj in arr:
-					chunkObj.chunk = self._compress(chunkObj)
-
-		return self.map

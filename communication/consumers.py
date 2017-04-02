@@ -1,5 +1,3 @@
-import logging
-
 from channels import Group
 from channels.sessions import channel_session
 from channels.auth import channel_session_user, channel_session_user_from_http
@@ -8,10 +6,14 @@ from communication.ComAPI.packetChat import PacketChat
 from communication.ComAPI.packetPlaceTile import PacketPlaceTile
 from communication.ComAPI.packetLogin import PacketLogin
 from communication.ComAPI.packetMove import PacketMove
+from django.core.cache import cache
 from game.utils import getToken
+from game.mapGenerator import Chunk
 from game.models import *
 from chat.models import ChatMessage
 from django.utils.html import strip_tags
+import game.runtime as Runtime
+import game.mapGenerator as MapInfo
 
 ## Initliaze packet managers class
 packet = Packet()
@@ -142,6 +144,21 @@ def getLastChatMessage():
 
 ## Place a tile on every client at position specified by user
 def placeTileHandler(tX, tY, tZ, tileID):
+
+	cX, cZ = int(tX / MapInfo.chunkSize), int(tZ / MapInfo.chunkSize)
+	posInChunkX = int(tX % 16)
+	posInChunkZ = int(tZ % 16)
+
+	indexSubdiv = int(Chunk.getIndex4Coords(posInChunkX, tY, posInChunkZ) / Runtime.sizeChunk)
+	
+	key = "".join(["map_", str(cX), "_", str(cZ), "_", str(indexSubdiv)])
+
+	indexTile = int(Chunk.getIndex4Coords(posInChunkX, tY, posInChunkZ) % Runtime.sizeChunk)
+	
+	chunk = cache.get(key)
+	chunk[indexTile] = tileID
+	cache.set(key, chunk, timeout=None)
+
 	Group('game').send({
 			"bytes": packetPlaceTile.encode(tX, tY, tZ, tileID)
 	})

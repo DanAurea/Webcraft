@@ -8,6 +8,8 @@ import pickle
 
 """ Runtime module starting game loop and initialize game server side """
 
+sizeChunk = 1024
+
 ## Save interval in hours
 saveInterval = 2
 ## When reset save and keep the last one in hours (by day currently)
@@ -38,7 +40,7 @@ if('size' in settings):
 	size = settings['size']
 else:
 	size = 6
-
+	
 def generate():
 	"""Generate a new map"""
 	global map
@@ -66,6 +68,27 @@ def saveMap():
 	with open(saveFile, 'wb') as save:
 		pickle.dump(map, save)
 
+def chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+def subdivideMap():
+	"""Subdivide map chunks in data chunks for
+		a smoother update in redis cache."""
+	global map
+	for arr in map:
+			for chunkObj in arr:
+					chunkObj.chunk = list(chunks(chunkObj.chunk, sizeChunk))
+
+def saveInRedis():
+	"""Save in Redis all chunks previously subdivided."""
+	for rowIndex, row in enumerate(map):
+		for colIndex, col in enumerate(row):
+			for chunkIndex, chunk in enumerate(col.chunk):
+				key = "".join(["map_", str(rowIndex), "_", str(colIndex), "_",str(chunkIndex)])
+				cache.set(key, chunk, timeout=None)
+
 def loadMap():
 	""" Load map from latest save """
 	global map
@@ -79,9 +102,5 @@ def loadMap():
 		with open(latestSave, 'rb') as save:
 			map = pickle.load(save)
 
-	## Set each chunk loaded in redis cache as
-	## map_row_col key.
-	for rowIndex, row in enumerate(map):
-		for colIndex, col in enumerate(row):
-			key = "".join(["map_", str(rowIndex), "_", str(colIndex)])
-			cache.set(key, map[rowIndex][colIndex].chunk, timeout=None)
+	subdivideMap()
+	saveInRedis()

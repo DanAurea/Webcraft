@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # For nginx proxying header
 USE_X_FORWARDED_HOST = True
@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'djangorpg',
 	'USER': 'danval',
 	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.5',
+	'HOST': '172.18.0.7',
 	'PORT': '',
     }
 }
@@ -183,8 +183,7 @@ CHANNEL_LAYERS = {
         "CONFIG": {
         	"hosts": [("localhost", 6379)],
         	"channel_capacity": {
-        		"http.request" : 200,
-        		"http.response": 10,
+        	   "websocket.receive": 2500,
         	}
         }
     },
