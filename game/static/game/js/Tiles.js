@@ -71,6 +71,15 @@ function Tiles()
         this.PENGUIN = new Tile(18, "Penguin", 0x000000, false, 0, 0, 0, 1, "models/penguin.obj");
 		this.SNOW_TILE = new Tile(19,"Snow Tile",0xe7fafc,true,0,0,0.1,0.1);
 		this.DEADBUSH = new Tile(20,"Deadbush",0x000000,false,0,0,0,1,"models/deadbush.obj");
+        this.PLANKS = new Tile(21,"Planks", 0xe3a553,false);
+        this.ICE = new Tile(22,"Ice", 0xaaf7ff,false);
+        this.RUBY = new Tile(23,"Blood rock", 0xde1b00,false);
+        this.OBSIDIAN = new Tile(24,"Obsidian", 0x723091,false);
+        this.SAPHIR = new Tile(25,"Saphir", 0x4449cb,false);
+        this.GOLD = new Tile(26,"Butter, definitely not gold", 0xecdd15,false);
+        this.AMETHYST = new Tile(27,"Amethyst", 0xff1cb9,false);
+        this.EMERALD = new Tile(28,"Emerald", 0x00b407,false);
+        this.ORANGE = new Tile(29,"Orange block with no name", 0xffbf00,false);
     }
 
     this.getTile =
