@@ -58,17 +58,7 @@ function initGame()
 
                             if(loadedChunk >= chunkAmount)
                             {
-                                GUIS.INGAME_GUI.open();
-                                GUIS.CHAT_GUI.open();
                                 PacketsUtil.sendPacket(new PacketReady());
-
-                                thePlayer = new EntityPlayer();
-                                thePlayer.setPosition(5, 15, 10);
-                                thePlayer.spawn();
-                                thePlayer.onLogin("valentin4311", "cat");
-
-                                // On effectue le rendu de la scène
-                                requestAnimationFrame(loopGame);
                             }
                         }, function(error)
                         {
@@ -85,6 +75,15 @@ function initGame()
             });
         });
     });
+}
+
+function finalizeGame()
+{
+    GUIS.INGAME_GUI.open();
+    GUIS.CHAT_GUI.open();
+
+    // On effectue le rendu de la scène
+    requestAnimationFrame(loopGame);    
 }
 
 function loopGame(time)

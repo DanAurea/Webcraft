@@ -70,7 +70,7 @@ function PacketPlaceTile(x, y, z, tileId)
     function getDecodePacketSize()
     {
         // Header size + Timestamp (64 bits)
-        return this._getDecodePacketSize() + 8;
+        return this._getDecodePacketSize() + 16;
     }
 
     this.getPacketId =

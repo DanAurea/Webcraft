@@ -7,16 +7,18 @@ from communication.ComAPI.packet import Packet
 from communication.ComAPI.packetChat import PacketChat
 from communication.ComAPI.packetPlaceTile import PacketPlaceTile
 from communication.ComAPI.packetLogin import PacketLogin
+from communication.ComAPI.packetMove import PacketMove
 from game.utils import getToken
-from game.models import Player
+from game.models import *
 from chat.models import ChatMessage
 from django.utils.html import strip_tags
 
 ## Initliaze packet managers class
 packet = Packet()
 packetChat = PacketChat()
-packetPlaceTile = PacketPlaceTile()
+packetMove = PacketMove()
 packetLogin = PacketLogin()
+packetPlaceTile = PacketPlaceTile()
 
 MESSAGE_NUMBER = 10
 
@@ -76,10 +78,16 @@ def ws_receive(data):
 		## Packet place tile
 		elif(packet.packetID == 2):
 			loginHandler(user)
+		elif(packet.packetID == 4):
+			x, y, z, pitch, yaw = packetMove.decode(binaryData)
+
+			moveHandler(user=user, x=x, y=y, z=z, pitch=pitch, yaw=yaw)
 		elif(packet.packetID == 5):
 			tX, tY, tZ, tileID = packetPlaceTile.decode(binaryData)
 
 			placeTileHandler(tX, tY, tZ, tileID)
+		elif(packet.packetID == 6):
+			pass
 
 
 ## Send a close message to client websocket
@@ -141,16 +149,31 @@ def placeTileHandler(tX, tY, tZ, tileID):
 ## Broadcast login from user
 def loginHandler(user):
 
-	# TODO: Make a join on table to recover models etc
-	# player = Player.Objects.get()
+	## Retrieve informations about avatar player
+	avatarInfos = AvatarPlayer.objects.get(player_id=user.player.id_player)
+	position = user.player.position
 
-	avatar = "cat"
-	x,y,z = 0,200,0
+	avatar = avatarInfos.avatar_id.name
+	x,y,z = 50,50,50
 
 	Group('chat').send({
-		'bytes': packetChat.encode(str(user.username) + " s'est connecte", "Server")
+		'bytes': packetChat.encode(user.username + " s'est connecte", "Server")
 	})	
 
 	Group('game').send({
 		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
-	})	
+	})
+
+def moveHandler(**kwargs):
+
+	user = kwargs.get("user", None)
+	username = user.username
+	x     = kwargs.get("x", None)
+	y     = kwargs.get("y", None)
+	z     = kwargs.get("z", None)
+	pitch = kwargs.get("pitch", None)
+	yaw   = kwargs.get("yaw", None)
+
+	Group('game').send({
+		'bytes': packetMove.encode(username=username, x=x, y=y, z=z, pitch=pitch, yaw=yaw)
+	})

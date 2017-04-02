@@ -3,7 +3,7 @@ var gravity = (9.81 / 40);
 function EntityPlayer()
 {
     this.noClip = false;
-    this.fly = false;
+    this.fly = true;
     this.inputMotX = 0;
     this.inputMotY = 0;
     this.inputMotZ = 0;
@@ -49,8 +49,6 @@ function EntityPlayer()
         var newY = this.totalMotionY;
         var newZ = this.totalMotionZ;
         var offsetY = 0;
-
-        //console.log(newY);
 
         if(!this.noClip)
         {
@@ -127,11 +125,16 @@ function EntityPlayer()
         renderPitch = TimeManager.interpolate(thePlayer.lastPitch, thePlayer.pitch);
         renderYaw = TimeManager.interpolate(thePlayer.lastYaw, thePlayer.yaw);
 
-        this.model.position.x = renderX;
-        this.model.position.y = renderY;
-        this.model.position.z = renderZ;
+        PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw));
 
-        this.model.rotation.y = FPSCamera.toRadians(renderYaw);
+        if(this.model  != null)
+        {
+            this.model.position.x = renderX;
+            this.model.position.y = renderY;
+            this.model.position.z = renderZ;
+
+            this.model.rotation.y = FPSCamera.toRadians(renderYaw);
+        }
     }
 
     this.onLogin =
@@ -139,7 +142,7 @@ function EntityPlayer()
     {
         this.username = username;
         this.avatar = avatar;
-        this.model = ModelLoader.models["models/"+ this.avatar + ".obj"].clone();
+        this.model = ModelLoader.models[gameFolder + "models/" + this.avatar + ".obj"].clone();
         scene.add(this.model);
     }
 }

@@ -6,7 +6,7 @@ function PacketMove(x, y, z, pitch, yaw)
     this.pitch   = pitch;
     this.yaw     = yaw;
     this.username = "";
-    this.usernameSize = username.length;
+    this.usernameSize = 0;
 
     this.handler =
     function handler()
@@ -20,7 +20,7 @@ function PacketMove(x, y, z, pitch, yaw)
     {
         dv = this._encode();
 
-        this.offset = this._getEncodePacketSize();
+        var offset = this._getEncodePacketSize();
 
         dv.setFloat32(offset, this.x);
         offset           += 4;
@@ -52,8 +52,8 @@ function PacketMove(x, y, z, pitch, yaw)
         this.usernameSize     = dv.getUint8(offset);
         offset           += 1;
 
-        this.username    = PacketsUtil.decodeString(dv, offset, usernameSize);
-        offset           += usernameSize;
+        this.username    = PacketsUtil.decodeString(dv, offset, this.usernameSize);
+        offset           += this.usernameSize;
 
         this.x           = dv.getFloat32(offset);
         offset           += 4;
@@ -87,7 +87,7 @@ function PacketMove(x, y, z, pitch, yaw)
     function getDecodePacketSize()
     {
         // Header size + Timestamp (64 bits)
-        return this._getDecodePacketSize() + 8;
+        return this._getDecodePacketSize() + this.usernameSize + 21 ;
     }
 
     this.getPacketId =

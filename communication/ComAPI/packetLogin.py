@@ -14,18 +14,19 @@ class PacketLogin(Packet):
 	def encode(self, username, avatar, position):
 		"""
 			Encode a message with API format
-			DRPG + PacketID + 
+			DRPG + PacketID + username length + username
+			+ avatar length + avatar + x + y + z
 		"""
 
 		bContainer = super().encode()
 
 		## Add position
 		## TODO: Be aware of byte order from client for portable version
-		bContainer = bContainer.__add__(pack(">b" , len(username) ))
+		bContainer = bContainer.__add__(pack(">B" , len(username) ))
 		
 		bContainer = bContainer.__add__(username.encode())
 		
-		bContainer = bContainer.__add__(pack(">b",len(avatar)))
+		bContainer = bContainer.__add__(pack(">B",len(avatar)))
 
 		bContainer = bContainer.__add__(avatar.encode())
 		
@@ -35,5 +36,4 @@ class PacketLogin(Packet):
 
 		bContainer = bContainer.__add__(pack(">f", position[2]))
 
-		print(bContainer)
 		return bContainer		

@@ -32,7 +32,6 @@ function PacketsUtil()
         packet.initClientPacket();
         var messageEncoded = packet.encode().buffer;
 
-        console.log(messageEncoded);
         ws.send(messageEncoded);
     }
 }

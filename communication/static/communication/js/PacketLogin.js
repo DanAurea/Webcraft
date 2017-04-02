@@ -4,13 +4,31 @@ function PacketLogin()
     this.y = 0;
     this.z = 0;
     this.username = "";
-    this.avatar   = "";
     this.usernameSize = 0;
+    this.avatar   = "";
+    this.avatarSize = 0;
 
     this.handler =
     function handler()
     {
-        console.log("Player logged !");
+
+        //Us
+        if(this.username == USERNAME)
+        {
+            thePlayer = new EntityPlayer();
+            thePlayer.setPosition(this.x, this.y, this.z);
+            thePlayer.onLogin(this.username, this.avatar);
+            thePlayer.spawn();
+
+            finalizeGame();
+        }
+        else
+        {
+            newPlayer = new EntityPlayer();
+            newPlayer.setPosition(this.x, this.y, this.z);
+            newPlayer.onLogin(this.username, this.avatar);
+            newPlayer.spawn();
+        }
     }
 
     this._decode = PacketLogin.prototype.decode;
@@ -25,18 +43,20 @@ function PacketLogin()
         this.usernameSize = dv.getUint8(offset);
         offset            += 1;
         
-        this.username     = PacketsUtil.decodeString(dv, offset, usernameSize);
-        offset            += usernameSize;
+        this.username     = PacketsUtil.decodeString(dv, offset, this.usernameSize);
+        offset            += this.usernameSize;
         
-        avatarSize        = dv.getUint8(offset);
+        this.avatarSize        = dv.getUint8(offset);
         offset            += 1;
+
         
-        this.avatar       = PacketsUtil.decodeString(dv, offset, avatarSize);
-        offset            += avatarSize;
+        this.avatar       = PacketsUtil.decodeString(dv, offset, this.avatarSize);
+        offset            += this.avatarSize;
+
         
         this.x            = dv.getFloat32(offset);
         offset            += 4;
-        
+
         this.y            = dv.getFloat32(offset);
         offset            += 4;
         
@@ -50,8 +70,8 @@ function PacketLogin()
     this.getDecodePacketSize =
     function getDecodePacketSize()
     {
-        // Header size + Timestamp (64 bits)
-        return this._getDecodePacketSize() + 8;
+        // Header size + usernameSize + username + x + y + z
+        return this._getDecodePacketSize() +  this.usernameSize + this.avatarSize + 14;
     }
 
     this.getPacketId =

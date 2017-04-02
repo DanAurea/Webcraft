@@ -10,11 +10,12 @@ ws.onmessage = function(message) {
 
     var id = headerPacket.packetId;
     entry = Packets.packetRegistry[id];
+
     if(entry != null)
     {
-    	test = new entry.className();
-    	console.log(test,entry.className);
-    	test.decode(message.data);
-    	test.handler();
+    	packet = new entry.className();
+    	packet.decode(message.data);
+    	packet.handler();
     }
+
 };
