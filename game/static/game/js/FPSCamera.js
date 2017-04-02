@@ -149,11 +149,6 @@ function FPSCamera()
         {
             thePlayer.jump();
         }
-
-        if(!offlineMode){
-            PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw, thePlayer.totalMotionX, thePlayer.totalMotionY, thePlayer.totalMotionZ));
-        }
-
     }
 
     this.chooseTile =
