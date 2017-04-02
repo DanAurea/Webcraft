@@ -100,6 +100,12 @@ function Entity()
 
     this.render =
     function render(){}
+
+    this.hasMoved =
+    function hasMoved()
+    {
+        return this.lastYaw != this.yaw || this.lastPitch != this.pitch || this.prevX != this.x || this.prevY != this.y || this.prevZ != this.z;
+    }
 }
 
 function Entities()
