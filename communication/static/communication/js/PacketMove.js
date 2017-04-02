@@ -1,10 +1,13 @@
-function PacketMove(x, y, z, pitch, yaw)
+function PacketMove(x, y, z, pitch, yaw, motionX, motionY, motionZ)
 {
     this.x = x;
     this.y = y;
     this.z = z;
     this.pitch   = pitch;
     this.yaw     = yaw;
+    this.motionX = motionX;
+    this.motionY = motionY;
+    this.motionZ = motionZ;
     this.username = "";
     this.usernameSize = 0;
 
@@ -19,6 +22,8 @@ function PacketMove(x, y, z, pitch, yaw)
             if(entity != null)
             {
                 entity.setPosition(this.x, this.y, this.z);
+                entity.setCamera(this.pitch, this.yaw);
+                entity.setMotion(this.motionX, this.motionY, this.motionZ);
             }
         }
     }
@@ -44,6 +49,15 @@ function PacketMove(x, y, z, pitch, yaw)
         offset           += 4;
 
         dv.setFloat32(offset, this.yaw);
+        offset           += 4;
+
+        dv.setFloat32(offset, this.motionX);
+        offset           += 4;
+
+        dv.setFloat32(offset, this.motionY);
+        offset           += 4;
+
+        dv.setFloat32(offset, this.motionZ);
         offset           += 4;
 
         return dv;
@@ -79,6 +93,14 @@ function PacketMove(x, y, z, pitch, yaw)
         this.yaw         = dv.getFloat32(offset);
         offset           += 4;
 
+        this.motionX         = dv.getFloat32(offset);
+        offset           += 4;
+
+        this.motionY         = dv.getFloat32(offset);
+        offset           += 4;
+
+        this.motionZ         = dv.getFloat32(offset);
+        offset           += 4;
 
         return dv;
     }
@@ -88,7 +110,7 @@ function PacketMove(x, y, z, pitch, yaw)
     function getEncodePacketSize()
     {
         // Header size + message + messageSize
-        return this._getEncodePacketSize() + 20;
+        return this._getEncodePacketSize() + this.usernameSize + 33;
     }
 
     this._getDecodePacketSize = PacketMove.prototype.getDecodePacketSize;
@@ -96,7 +118,7 @@ function PacketMove(x, y, z, pitch, yaw)
     function getDecodePacketSize()
     {
         // Header size + Timestamp (64 bits)
-        return this._getDecodePacketSize() + this.usernameSize + 21 ;
+        return this._getDecodePacketSize() + this.usernameSize + 33;
     }
 
     this.getPacketId =

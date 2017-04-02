@@ -3,7 +3,7 @@ var gravity = (9.81 / 40);
 function EntityPlayer()
 {
     this.noClip = false;
-    this.fly = true;
+    this.fly = false;
     this.inputMotX = 0;
     this.inputMotY = 0;
     this.inputMotZ = 0;

@@ -46,6 +46,21 @@ function Entity()
         }
     }
 
+    this.setMotion =
+    function setMotion(x, y, z)
+    {
+        this.totalMotionX = x;
+        this.totalMotionY = y;
+        this.totalMotionZ = z;
+    }
+
+    this.setCamera =
+    function setCamera(pitch, yaw)
+    {
+        this.pitch = pitch;
+        this.yaw = yaw;
+    }
+
     this.beginUpdate =
     function beginUpdate()
     {
