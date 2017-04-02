@@ -1,4 +1,4 @@
-var offlineMode = true;
+var offlineMode = false;
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
@@ -111,10 +111,10 @@ function loopGame(time)
         MapManager.update();
         Entities.updateEntities();
 
-        if(!offlineMode)
-        {
-            PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw, thePlayer.totalMotionX, thePlayer.totalMotionY, thePlayer.totalMotionZ));
-        }
+        // if(!offlineMode)
+        // {
+        //     PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw, thePlayer.totalMotionX, thePlayer.totalMotionY, thePlayer.totalMotionZ));
+        // }
     }
     GameRenderer.update();
     Entities.renderEntities();

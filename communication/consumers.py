@@ -79,9 +79,9 @@ def ws_receive(data):
 		elif(packet.packetID == 2):
 			loginHandler(user)
 		elif(packet.packetID == 4):
-			x, y, z, pitch, yaw = packetMove.decode(binaryData)
+			x, y, z, pitch, yaw, motionX, motionY, motionZ = packetMove.decode(binaryData)
 
-			moveHandler(user=user, x=x, y=y, z=z, pitch=pitch, yaw=yaw)
+			moveHandler(user=user, x=x, y=y, z=z, pitch=pitch, yaw=yaw, motionX=motionX, motionY=motionY, motionZ=motionZ)
 		elif(packet.packetID == 5):
 			tX, tY, tZ, tileID = packetPlaceTile.decode(binaryData)
 
@@ -167,12 +167,19 @@ def moveHandler(**kwargs):
 
 	user = kwargs.get("user", None)
 	username = user.username
+	
 	x     = kwargs.get("x", None)
 	y     = kwargs.get("y", None)
 	z     = kwargs.get("z", None)
+	
 	pitch = kwargs.get("pitch", None)
 	yaw   = kwargs.get("yaw", None)
+	
+	motionX = kwargs.get("motionX", None)
+	motionY = kwargs.get("motionY", None)
+	motionZ = kwargs.get("motionZ", None)
+
 
 	Group('game').send({
-		'bytes': packetMove.encode(username=username, x=x, y=y, z=z, pitch=pitch, yaw=yaw)
+		'bytes': packetMove.encode(username=username, x=x, y=y, z=z, pitch=pitch, yaw=yaw, motionX=motionX, motionY=motionY, motionZ=motionZ)
 	})

@@ -31,8 +31,13 @@ class PacketMove(Packet):
 		bContainer = bContainer.__add__(pack(">f" , kwargs.get('x', None)))
 		bContainer = bContainer.__add__(pack(">f" , kwargs.get('y', None)))
 		bContainer = bContainer.__add__(pack(">f" , kwargs.get('z', None)))
+		
 		bContainer = bContainer.__add__(pack(">f" , kwargs.get('pitch', None)))
 		bContainer = bContainer.__add__(pack(">f" , kwargs.get('yaw', None)))
+
+		bContainer = bContainer.__add__(pack(">f" , kwargs.get('motionX', None)))
+		bContainer = bContainer.__add__(pack(">f" , kwargs.get('motionY', None)))
+		bContainer = bContainer.__add__(pack(">f" , kwargs.get('motionZ', None)))
 		
 		return bContainer		
 
@@ -46,8 +51,13 @@ class PacketMove(Packet):
 		x = unpack(">f" , data[37:41])[0]
 		y = unpack(">f" , data[41:45])[0]
 		z = unpack(">f" , data[45:49])[0]
+		
 		pitch = unpack(">f" , data[49:53])[0]
 		yaw = unpack(">f" , data[53:57])[0]
+		
+		motionX = unpack(">f" , data[57:61])[0]
+		motionY = unpack(">f" , data[61:65])[0]
+		motionZ = unpack(">f" , data[65:69])[0]
 
 		## Finally return message sent by client
-		return x, y, z, pitch, yaw
+		return x, y, z, pitch, yaw, motionX, motionY, motionZ
