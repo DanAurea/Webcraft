@@ -19,6 +19,7 @@ function ResourceLoader()
         "models/cat.obj",
         "models/cow.obj",
         "models/deadbush.obj",
+        "models/dog.obj",
         "models/doge.obj",
         "models/elephant.obj",
         "models/flower_blue.obj",
