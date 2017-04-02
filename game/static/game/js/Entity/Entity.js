@@ -14,7 +14,7 @@ function Entity()
     this.motionY = 0;
     this.motionZ = 0;
     this.rotation = 0;
-    this.collision = new AABB(0, 0, 0, 0.75, 1.80, 0.75);
+    this.collision = null;
     this.pitch = 0;
     this.lastPitch = 0;
     this.yaw = 0;
@@ -24,6 +24,7 @@ function Entity()
     function spawn()
     {
         this.id = Entities.entityList.length;
+        this.collision = new AABB(0, 0, 0, 0.75, 1.80, 0.75);
         Entities.entityList.push(this);
     }
 
@@ -39,7 +40,11 @@ function Entity()
         this.x = x;
         this.y = y;
         this.z = z;
-        this.collision.updatePosCenter(x, y, z);
+
+        if(this.collision != null)
+        {
+            this.collision.updatePosCenter(x, y, z);
+        }
     }
 
     this.beginUpdate =
