@@ -1,4 +1,4 @@
-var offlineMode = false;
+var offlineMode = true;
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
@@ -58,7 +58,19 @@ function initGame()
 
                             if(loadedChunk >= chunkAmount)
                             {
-                                PacketsUtil.sendPacket(new PacketReady());
+                                if(!offlineMode)
+                                {
+                                    PacketsUtil.sendPacket(new PacketReady());
+                                }
+                                else
+                                {
+                                    thePlayer = new EntityPlayer();
+                                    thePlayer.setPosition(20, 40, 20);
+                                    thePlayer.onLogin("OffLineUsername", "cat");
+                                    thePlayer.spawn();
+
+                                    finalizeGame();
+                                }
                             }
                         }, function(error)
                         {
@@ -81,9 +93,10 @@ function finalizeGame()
 {
     GUIS.INGAME_GUI.open();
     GUIS.CHAT_GUI.open();
+    MapManager.applyQueue();
 
     // On effectue le rendu de la scène
-    requestAnimationFrame(loopGame);    
+    requestAnimationFrame(loopGame);
 }
 
 function loopGame(time)
@@ -97,6 +110,11 @@ function loopGame(time)
     {
         MapManager.update();
         Entities.updateEntities();
+
+        if(!offlineMode)
+        {
+            PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw));
+        }
     }
     GameRenderer.update();
     Entities.renderEntities();

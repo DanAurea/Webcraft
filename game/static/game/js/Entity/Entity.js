@@ -93,7 +93,7 @@ function Entities()
 
     this.updateEntities =
     function updateEntities()
-    {   
+    {
         for(var i = 0, entityAmount = this.entityList.length; i < entityAmount; i++)
         {
             this.entityList[i].beginUpdate();
@@ -109,6 +109,20 @@ function Entities()
         {
             this.entityList[i].render();
         }
+    }
+
+    this.getPlayerByUsername =
+    function getPlayerByUsername(username)
+    {
+        for(var i = 0, entityAmount = this.entityList.length; i < entityAmount; i++)
+        {
+            entity = this.entityList[i];
+            if(entity instanceof EntityPlayer && entity.username == username)
+            {
+                return entity;
+            }
+        }
+        return null;
     }
 }
 

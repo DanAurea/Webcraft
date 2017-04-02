@@ -7,6 +7,13 @@ function PacketLogout()
     function handler()
     {
         console.log("Player logout !");
+        var entity = Entities.getPlayerByUsername(this.username);
+
+        if(entity != null)
+        {
+            entity.despawn();
+            scene.remove(entity.model);
+        }
     }
 
     this._decode = PacketLogout.prototype.decode;

@@ -8,7 +8,14 @@ function PacketPlaceTile(x, y, z, tileId)
     this.handler =
     function handler()
     {
-        MapManager.setTileAt(this.tileId, this.x, this.y, this.z);
+        if(mapIsReady)
+        {
+            MapManager.setTileAt(this.tileId, this.x, this.y, this.z);
+        }
+        else
+        {
+            MapManager.queueTile(this.x, this.y, this.z, this.tileId);
+        }
     }
 
     this._encode = PacketPlaceTile.prototype.encode;

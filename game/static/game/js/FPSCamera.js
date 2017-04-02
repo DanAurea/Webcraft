@@ -149,9 +149,6 @@ function FPSCamera()
         {
             thePlayer.jump();
         }
-
-        PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw));
-
     }
 
     this.chooseTile =
@@ -205,7 +202,7 @@ function FPSCamera()
             {
                 //Break
                 MapManager.setTileAt(0, tX, tY, tZ);
-                
+
                 PacketsUtil.sendPacket(new PacketPlaceTile(tX, tY, tZ, 0));
             }
         }
