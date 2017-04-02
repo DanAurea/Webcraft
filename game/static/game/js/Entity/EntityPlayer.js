@@ -23,6 +23,11 @@ function EntityPlayer()
             this.motionY -= gravity;
         }
 
+        if(this.y < -100)
+        {
+            this.setPosition(2, 260, 2);
+        }
+
         if(this.isJumping)
         {
             this.isJumping = false;
