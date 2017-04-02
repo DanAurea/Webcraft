@@ -19,11 +19,12 @@ def login(request):
     form        = LoginForm(request.POST or None)
     valueButton = "Se connecter"
     error       = None
-
+    registerLink = "<a href=\"register\" >Inscrivez-vous</a>"
     if form.is_valid():
         account = form.cleaned_data['account']
         password = form.cleaned_data['password']
         ## Check if data fits with database
+
         user = authenticate(username=account, password=password)
 
         if user is not None:
@@ -37,7 +38,7 @@ def login(request):
         	# 	error="L'utilisateur est banni"
         else:
         	error="L'utilisateur n'existe pas"
-        	registerLink = "<a href=\"register\" >Inscrivez-vous</a>"
+        	
 
     return render(request, 'user/baseForm.html', locals())
 
@@ -51,11 +52,14 @@ def register(request):
         account = form.cleaned_data['account']
         password = form.cleaned_data['password']
         email = form.cleaned_data['email']
-
+        avatarName = form.cleaned_data['avatarName']
+        model = form.cleaned_data['model']
+        print (model)
         #verifier si utilisateur n'existe pas déjà dans la bdd
         try:
             new_user = User.objects.create_user(account, email, password)
             Player.objects.create(user = new_user, position="0,0,0", role=Role.objects.get(name="user"))
+            return redirect(reverse("user:login"), permanent = True)
         except IntegrityError:
             error="L'utilisateur existe déjà"
         # else:
