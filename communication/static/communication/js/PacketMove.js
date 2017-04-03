@@ -18,7 +18,7 @@ function PacketMove(x, y, z, pitch, yaw, motionX, motionY, motionZ)
         {
             var username = this.username;
             var entity = Entities.getPlayerByUsername(username);
-            console.log(entity);
+            
             if(entity != null)
             {
                 entity.setPosition(this.x, this.y, this.z);
