@@ -137,7 +137,7 @@ function Chunk(x, z)
                 }
             }
         }
-
+        
         var tilesGeometry = new THREE.BufferGeometry();
         tilesGeometry.addAttribute("position", new THREE.Float32BufferAttribute(tilePositions, 3).onUpload(disposeRenderArray));
         tilesGeometry.addAttribute("color", new THREE.Float32BufferAttribute(tileColors, 3).onUpload(disposeRenderArray));
@@ -146,7 +146,7 @@ function Chunk(x, z)
 
         var modelsGeometry = new THREE.BufferGeometry();
         modelsGeometry.addAttribute("position", new THREE.Float32BufferAttribute(modelPositions, 3).onUpload(disposeRenderArray));
-        modelsGeometry.addAttribute("normal", new THREE.Float32BufferAttribute(modelNormals, 3).onUpload(disposeRenderArray));
+        modelsGeometry.addAttribute("normal", new THREE.Int16BufferAttribute(modelNormals, 3).onUpload(disposeRenderArray));
         modelsGeometry.addAttribute("uv", new THREE.Float32BufferAttribute(modelUVs, 2).onUpload(disposeRenderArray));
         modelsGeometry.computeBoundingBox();
 
@@ -157,6 +157,11 @@ function Chunk(x, z)
 
         modelsMesh.position.x = cX + 0.5;
         modelsMesh.position.z = cZ + 0.5;
+
+        tilesMesh.matrixAutoUpdate = false;
+        tilesMesh.updateMatrix();
+        modelsMesh.matrixAutoUpdate = false;
+        modelsMesh.updateMatrix();
 
         this.groupGeometry.add(tilesMesh);
         this.groupGeometry.add(modelsMesh);

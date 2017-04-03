@@ -8,7 +8,52 @@ if(window.location.pathname.endsWith("debug.html"))
 
 function ResourceLoader()
 {
-    var resources = ["img/palette.png", "models/flower_red.obj", "models/flower_blue.obj", "models/grass.obj","models/cactus.obj","models/apple.obj","models/brown_mush.obj","models/red_mush.obj","models/Jacobrownie.obj","models/deadbush.obj"];
+    var resources = [
+        "img/palette.png",
+        "models/apple.obj",
+        "models/bear.obj",
+        "models/beaver.obj",
+        "models/boar.obj",
+        "models/brown_mush.obj",
+        "models/cactus.obj",
+        "models/cat.obj",
+        "models/cow.obj",
+        "models/deadbush.obj",
+        "models/dog.obj",
+        "models/doge.obj",
+        "models/elephant.obj",
+        "models/flower_blue.obj",
+        "models/flower_red.obj",
+        "models/fox.obj",
+        "models/grass.obj",
+        "models/half.obj",
+        "models/Jacobrownie.obj",
+        "models/mammoth.obj",
+        "models/panda.obj",
+        "models/penguin.obj",
+        "models/perry.obj",
+        "models/pig.obj",
+        "models/polar bear.obj",
+        "models/racoon.obj",
+        "models/red_mush.obj",
+        "models/satan cow.obj",
+        "models/satan sheep.obj",
+        "models/sheep.obj",
+        "models/tiger.obj",
+        "models/white tiger.obj",
+        "models/winter fox.obj",
+        "models/window_x.obj",
+        "models/window_z.obj",
+        "models/grid_x.obj",
+        "models/grid_z.obj",
+        "models/chair.obj",
+        "models/bottom_x.obj",
+        "models/bottom_z.obj",
+        "models/top_x.obj",
+        "models/top_z.obj",
+        "models/table.obj",
+        "models/flower_pot.obj"
+    ];
     for(var i = 0; i < resources.length; i++)
     {
         resources[i] = gameFolder + resources[i];
@@ -177,7 +222,7 @@ function ResourceLoader()
 
         // RLE decompressing
         for (i=0; i< chunk.length; i++)
-        {   
+        {
             data  = chunk[i].split(":");
 
             // Decoding single / multiples values in sequences

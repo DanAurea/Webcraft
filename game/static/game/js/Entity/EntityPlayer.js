@@ -9,6 +9,9 @@ function EntityPlayer()
     this.inputMotZ = 0;
     this.onGround = false;
     this.isJumping = false;
+    this.model = null;
+    this.avatar = "cat";
+    this.username = "Anonymous";
 
     this._beginUpdate = EntityPlayer.prototype.beginUpdate;
     this.beginUpdate =
@@ -18,6 +21,11 @@ function EntityPlayer()
         if(!this.fly && this.motionY > -200)
         {
             this.motionY -= gravity;
+        }
+
+        if(this.y < -100)
+        {
+            this.setPosition(2, 260, 2);
         }
 
         if(this.isJumping)
@@ -46,8 +54,6 @@ function EntityPlayer()
         var newY = this.totalMotionY;
         var newZ = this.totalMotionZ;
         var offsetY = 0;
-
-        //console.log(newY);
 
         if(!this.noClip)
         {
@@ -113,6 +119,34 @@ function EntityPlayer()
         {
             thePlayer.isJumping = true;
         }
+    }
+
+    this.render =
+    function render()
+    {
+        renderX = TimeManager.interpolate(this.prevX, this.x);
+        renderY = TimeManager.interpolate(this.prevY, this.y);
+        renderZ = TimeManager.interpolate(this.prevZ, this.z);
+        renderPitch = TimeManager.interpolate(this.lastPitch, this.pitch);
+        renderYaw = TimeManager.interpolate(this.lastYaw, this.yaw);
+
+        if(this.model  != null)
+        {
+            this.model.position.x = renderX;
+            this.model.position.y = renderY;
+            this.model.position.z = renderZ;
+
+            this.model.rotation.y = FPSCamera.toRadians(renderYaw);
+        }
+    }
+
+    this.onLogin =
+    function onLogin(username, avatar)
+    {
+        this.username = username;
+        this.avatar = avatar;
+        this.model = ModelLoader.models[gameFolder + "models/" + this.avatar + ".obj"].clone();
+        scene.add(this.model);
     }
 }
 

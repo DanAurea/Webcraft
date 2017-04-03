@@ -5,10 +5,17 @@ Packets.init();
 
 ws.onmessage = function(message) {
 
-    var headerPacket  = new Packet().initClientPacket();
+    var headerPacket  = new Packet();
     headerPacket.decode(message.data);
 
-    if(headerPacket.packetId == 1){
-        handleChat(message);
+    var id = headerPacket.packetId;
+    entry = Packets.packetRegistry[id];
+
+    if(entry != null)
+    {
+    	packet = new entry.className();
+    	packet.decode(message.data);
+    	packet.handler();
     }
+
 };

@@ -1,5 +1,6 @@
 function PacketReady()
-{
+{	
+
     this.getPacketId =
     function getPacketId()
     {

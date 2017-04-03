@@ -14,12 +14,17 @@ function Entity()
     this.motionY = 0;
     this.motionZ = 0;
     this.rotation = 0;
-    this.collision = new AABB(0, 0, 0, 0.75, 1.80, 0.75);
+    this.collision = null;
+    this.pitch = 0;
+    this.lastPitch = 0;
+    this.yaw = 0;
+    this.lastYaw = 0;
 
     this.spawn =
     function spawn()
     {
         this.id = Entities.entityList.length;
+        this.collision = new AABB(0, 0, 0, 0.75, 1.80, 0.75);
         Entities.entityList.push(this);
     }
 
@@ -35,7 +40,25 @@ function Entity()
         this.x = x;
         this.y = y;
         this.z = z;
-        this.collision.updatePosCenter(x, y, z);
+        if(this.collision != null)
+        {
+            this.collision.updatePosCenter(x, y, z);
+        }
+    }
+
+    this.setMotion =
+    function setMotion(x, y, z)
+    {
+        this.totalMotionX = x;
+        this.totalMotionY = y;
+        this.totalMotionZ = z;
+    }
+
+    this.setCamera =
+    function setCamera(pitch, yaw)
+    {
+        this.pitch = pitch;
+        this.yaw = yaw;
     }
 
     this.beginUpdate =
@@ -44,6 +67,8 @@ function Entity()
         this.prevX = this.x;
         this.prevY = this.y;
         this.prevZ = this.z;
+        this.lastPitch = this.pitch;
+        this.lastYaw = this.yaw;
 
         this.totalMotionX = this.motionX;
         this.totalMotionY = this.motionY;
@@ -72,6 +97,15 @@ function Entity()
         this.y += this.totalMotionY;
         this.z += this.totalMotionZ;
     }
+
+    this.render =
+    function render(){}
+
+    this.hasMoved =
+    function hasMoved()
+    {
+        return this.lastYaw != this.yaw || this.lastPitch != this.pitch || this.prevX != this.x || this.prevY != this.y || this.prevZ != this.z;
+    }
 }
 
 function Entities()
@@ -87,6 +121,29 @@ function Entities()
             this.entityList[i].update();
             this.entityList[i].endUpdate();
         }
+    }
+
+    this.renderEntities =
+    function renderEntities()
+    {
+        for(var i = 0, entityAmount = this.entityList.length; i < entityAmount; i++)
+        {
+            this.entityList[i].render();
+        }
+    }
+
+    this.getPlayerByUsername =
+    function getPlayerByUsername(username)
+    {
+        for(var i = 0, entityAmount = this.entityList.length; i < entityAmount; i++)
+        {
+            entity = this.entityList[i];
+            if(entity instanceof EntityPlayer && entity.username == username)
+            {
+                return entity;
+            }
+        }
+        return null;
     }
 }
 

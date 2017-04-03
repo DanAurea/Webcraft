@@ -157,6 +157,7 @@ Controls.register(" ", FPSCamera.move, "hold");
 //Controls.register("arrowdown", FPSCamera.chooseTile, "press");
 Controls.register("shift", FPSCamera.move, "hold");
 Controls.register("mouse-0", FPSCamera.placeTile, "press");
+Controls.register("mouse-1", FPSCamera.pickTile, "press");
 Controls.register("mouse-2", FPSCamera.placeTile, "press");
 Controls.register("mousewheel", FPSCamera.chooseTile, "wheel");
 Controls.register("t", activeChat, "press");

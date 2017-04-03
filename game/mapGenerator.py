@@ -2,8 +2,10 @@ from opensimplex import OpenSimplex
 import math, sys, random
 from random import randint
 
+global nbTilesByChunk
 chunkSize = 16
 chunkHeight = 256
+nbTilesByChunk = chunkSize * chunkSize * chunkHeight
 
 class TreeGenerator:
 	def generateAt(self,x,y,z,map):
@@ -115,7 +117,8 @@ class Chunk:
 		self.elev = [[0 for row in range(chunkSize)] for col in range(chunkHeight)]
 		self.chunk = [0 for row in range(chunkSize*chunkSize*chunkHeight)]
 
-	def getIndex4Coords(self,x,y,z):
+	@classmethod
+	def getIndex4Coords(cls, x, y, z):
 		return y<<8|x<<4|z;
 
 	def setTileAt(self,id,x,y,z):
@@ -180,7 +183,11 @@ class MapGenerator:
 				rz=cz+chunk.z*chunkSize
 				sx = rx / 200
 				sz = rz / 200
-				biome = self.genBiome(sx,sz)
+				
+				sx2 = rx / 120
+				sz2 = rz / 120
+
+				biome = self.genBiome(sx2, sz2)
 				e = int((self.genNoiseElev.noise2d(sx,sz) / 2.0 + 0.5) * 30)
 				chunk.elev[cx][cz] = e
 
@@ -223,29 +230,35 @@ class MapGenerator:
 		return self.getBiome4MoistAndTemp(m,t)
 
 	def getBiome4MoistAndTemp(self,M,T):
-		if T>0.8 and M<0.2:
+		if T>0.66 and M<0.43:
 			return DESERT
-		# elif T<0.2 and M>0.7:
-		# 	return SNOW
+		elif T<0.65 and M>0.62:
+			return SNOW
 		else:
-			if M>0.9:
-				return OCEAN
-			else:
-				return PLAIN
+			return PLAIN
 
 	def genEaster(self):
 		#JacoCookie
 		self.setTileAt(17,int((chunkSize*self.mapSize)/2),0,int((chunkSize*self.mapSize)/2))
 
-	def _compress(self, chunkObj):
+	def generate(self):
+		self.genMap()
+		#self.map.genRiver()
+		self.genVegetation()
+		#self.map.genVillage()
+		self.genEaster()
+
+		return self.map
+
+def _compress(chunk):
 		""" Compress an array of tiles counting sequence of same numbers """
 		compressedChunk =  []
 		countVal = 1
-		buffer = chunkObj.chunk.pop(0)
-		size = len(chunkObj.chunk) - 1
+		buffer = chunk.pop(0)
+		size = len(chunk) - 1
 		
 		## Compressing loop with RLE encoding
-		for index, tile in enumerate(chunkObj.chunk):
+		for index, tile in enumerate(chunk):
 			
 			if(index == size):
 				
@@ -267,17 +280,3 @@ class MapGenerator:
 				countVal += 1
 
 		return compressedChunk
-
-	def generate(self):
-		self.genMap()
-		#self.map.genRiver()
-		self.genVegetation()
-		#self.map.genVillage()
-		self.genEaster()
-		
-		## Compress chunk
-		for arr in self.map:
-			for chunkObj in arr:
-					chunkObj.chunk = self._compress(chunkObj)
-
-		return self.map

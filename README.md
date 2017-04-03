@@ -8,6 +8,11 @@ build creative constructions by your own hands.
 
 It's a school project made during last year of bachelor's computer science from "Université du Maine" in France for "Web architecture" class.
 
+
+![screengit](https://cloud.githubusercontent.com/assets/15633085/24589764/66176b4a-17e0-11e7-8d2b-a723c2accf7a.png)
+
+
+
 ## How it works
 
 Trisdanvalwen make use of Channels for real time part, websocket are used for chatting app and game app currently, we should

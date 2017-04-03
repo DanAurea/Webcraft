@@ -58,15 +58,19 @@ function initGame()
 
                             if(loadedChunk >= chunkAmount)
                             {
-                                GUIS.INGAME_GUI.open();
-                                GUIS.CHAT_GUI.open();
+                                if(!offlineMode)
+                                {
+                                    PacketsUtil.sendPacket(new PacketReady());
+                                }
+                                else
+                                {
+                                    thePlayer = new EntityPlayer();
+                                    thePlayer.setPosition(20, 40, 20);
+                                    thePlayer.onLogin("OffLineUsername", "cat");
+                                    thePlayer.spawn();
 
-                                thePlayer = new EntityPlayer();
-                                thePlayer.setPosition(5, 15, 10);
-                                thePlayer.spawn();
-
-                                // On effectue le rendu de la scène
-                                requestAnimationFrame(loopGame);
+                                    finalizeGame();
+                                }
                             }
                         }, function(error)
                         {
@@ -85,6 +89,16 @@ function initGame()
     });
 }
 
+function finalizeGame()
+{
+    GUIS.INGAME_GUI.open();
+    GUIS.CHAT_GUI.open();
+    MapManager.applyQueue();
+
+    // On effectue le rendu de la scène
+    requestAnimationFrame(loopGame);
+}
+
 function loopGame(time)
 {
     stats.begin();
@@ -96,8 +110,14 @@ function loopGame(time)
     {
         MapManager.update();
         Entities.updateEntities();
+
+        if(!offlineMode && thePlayer.hasMoved())
+        {
+            PacketsUtil.sendPacket(new PacketMove(thePlayer.x, thePlayer.y, thePlayer.z, thePlayer.pitch, thePlayer.yaw, thePlayer.totalMotionX, thePlayer.totalMotionY, thePlayer.totalMotionZ));
+        }
     }
     GameRenderer.update();
+    Entities.renderEntities();
 
     GUIS.updateAllGuis();
 

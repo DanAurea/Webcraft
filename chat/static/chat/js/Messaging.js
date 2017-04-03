@@ -1,38 +1,9 @@
-function activeChat(key){
+function activeChat(key, ev){
 
 	if(key == "t"){
 		$("#id_message").focus();
-
 	}
-}
-
-speed = 300
-
-function handleChat(message){
-	var messagePacket = new PacketChat().initClientPacket();
-	messagePacket.decode(message.data);
-
-	// Append new message on chat container
-	$('#messagesList').append(
-		'<li>'
-		+ '<span>' + messagePacket.time + ' - </span>'
-		+'<span class=\'pseudo\'>' + messagePacket.username + ': </span>'
-		+ '<span class=\'message\'>' + messagePacket.message + '</span>'
-		+ 
-		'</li>'
-	);
-
-	// Update scroll bar
-	$("messagesContainer").mCustomScrollbar("scrollTo","last");
-	$("#messagesContainer").fadeIn(300);
-
-	// Hide messages if focus is not on chat
-	// (only for visibility purpose)
-	if($("#id_message").is(":focus") ==  false){
-		setTimeout(function() {  
-			$("#messagesContainer").fadeOut(300);
-		}, 2000);
-	}
+	ev.preventDefault();
 }
 
 // Hide chat messages when focus is lost

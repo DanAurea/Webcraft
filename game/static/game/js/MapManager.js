@@ -1,3 +1,6 @@
+var tileQueue = [];//Handle tile placed before player connected
+var mapIsReady = false;
+
 function MapManager()
 {
     this.update =
@@ -85,6 +88,24 @@ function MapManager()
         {
             chunk.setTileAt(tile, x % 16, y, z % 16);
         }
+    }
+
+    this.applyQueue =
+    function applyQueue()
+    {
+        for(var i = 0; i < tileQueue.length; i++)
+        {
+            var tile = tileQueue[i];
+            this.setTileAt(tile.id, tile.x, tile.y, tile.z);
+        }
+        tileQueue = [];
+        mapIsReady = true;
+    }
+
+    this.queueTile =
+    function queueTile(x, y, z, tile)
+    {
+        tileQueue.push({"x": x, "y": y, "z": z, "id": tile})
     }
 }
 

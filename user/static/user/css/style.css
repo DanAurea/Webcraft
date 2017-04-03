@@ -225,3 +225,8 @@ form button:hover {
             transform: translateY(-700px) rotate(600deg);
   }
 }
+
+#link{
+  position: relative;
+  z-index: 999;
+}
