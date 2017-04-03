@@ -40,21 +40,6 @@ def getInfoMap(request):
 			"seedColor": MapGenerator.seedColor}
 	return JsonResponse(data)
 
-def reassemble(x, z): 
-	"""	Reassemble a dispatched chunk from redis"""
-
-	nbDivisions = int(MapInfo.nbTilesByChunk / Runtime.sizeChunk)
-	
-	chunk = []	
-
-	for i in range(0, nbDivisions):
-		key      = "".join(["map_", str(x), "_", str(z), "_", str(i)])
-		division = cache.get(key)
-		chunk.append(division)
-
-	chunk = [item for sublist in chunk for item in sublist]
-
-	return chunk
 
 def getChunk(request):
 	"""Ajax request sending chunk status"""
@@ -63,7 +48,7 @@ def getChunk(request):
 
 	## Get chunk from subdivision stored 
 	## in redis.
-	chunk           = reassemble(x, z)
+	chunk           = Runtime.reassemble(x, z)
 	compressedChunk = MapInfo._compress(chunk)
 
 	## TODO: Exception if bad request

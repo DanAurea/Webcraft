@@ -172,18 +172,20 @@ def loginHandler(channel, user):
 	users = cache.get_many(cache.keys("user_*"))
 
 	for key in users:
-		tmp = User.objects.get(username=users[key])
 
-		## Retrieve informations about avatar player
-		avatarInfos = AvatarPlayer.objects.get(player_id=tmp.player.id_player)
-		x, y , z = map(int, tmp.player.position.split(","))
+		if(users[key] != user.username):
+			tmp = User.objects.get(username=users[key])
 
-		avatar = avatarInfos.avatar_id.name
-		
-		## Send users already connected to user who logged in 
-		channel.send({
-			'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
-		})
+			## Retrieve informations about avatar player
+			avatarInfos = AvatarPlayer.objects.get(player_id=tmp.player.id_player)
+			x, y , z = map(int, tmp.player.position.split(","))
+
+			avatar = avatarInfos.avatar_id.name
+	
+			## Send users already connected to user who logged in 
+			channel.send({
+				'bytes': packetLogin.encode(tmp.username, avatar, [x,y,z])
+			})
 
 	## Send info about current logged user to all users connected
 	avatarInfos = AvatarPlayer.objects.get(player_id=user.player.id_player)
@@ -199,9 +201,8 @@ def loginHandler(channel, user):
 		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
 	})
 	
-	if cache.get("user_" + user.username) == None:
-		## Set a new user in redis cache
-		cache.set("user_" + user.username, user.username, timeout=None)
+	## Set a new user in redis cache
+	cache.set("user_" + user.username, user.username, timeout=None)
 
 def moveHandler(**kwargs):
 
