@@ -185,6 +185,11 @@ def loginHandler(channel, user):
 			'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
 		})
 
+	## Send info about current logged user to all users connected
+	avatarInfos = AvatarPlayer.objects.get(player_id=user.player.id_player)
+	x, y , z = map(int, user.player.position.split(","))
+	avatar = avatarInfos.avatar_id.name
+
 	## Say
 	Group('chat').send({
 		'bytes': packetChat.encode(user.username + " s'est connecte", "Server")

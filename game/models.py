@@ -8,7 +8,7 @@ from django.core.validators import validate_comma_separated_integer_list
 class Player(models.Model):
 	id_player = models.AutoField(primary_key=True)
 	user      = models.OneToOneField(User)
-	position  = models.CharField(max_length = 10,validators=[validate_comma_separated_integer_list], default = "0,0,0")
+	position  = models.CharField(max_length = 10,validators=[validate_comma_separated_integer_list], default = "50,100,50")
 	map       = models.IntegerField(default=1)
 	role      = models.ForeignKey(Role)
 
