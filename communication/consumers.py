@@ -199,8 +199,9 @@ def loginHandler(channel, user):
 		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
 	})
 	
-	## Set a new user in redis cache
-	cache.set("user_" + user.username, user.username, timeout=None)
+	if cache.get("user_" + user.username) == None:
+		## Set a new user in redis cache
+		cache.set("user_" + user.username, user.username, timeout=None)
 
 def moveHandler(**kwargs):
 
