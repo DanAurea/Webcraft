@@ -1,9 +1,9 @@
-function activeChat(key){
+function activeChat(key, ev){
 
 	if(key == "t"){
 		$("#id_message").focus();
-
 	}
+	ev.preventDefault();
 }
 
 // Hide chat messages when focus is lost

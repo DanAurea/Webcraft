@@ -183,7 +183,11 @@ class MapGenerator:
 				rz=cz+chunk.z*chunkSize
 				sx = rx / 200
 				sz = rz / 200
-				biome = self.genBiome(sx,sz)
+				
+				sx2 = rx / 120
+				sz2 = rz / 120
+
+				biome = self.genBiome(sx2, sz2)
 				e = int((self.genNoiseElev.noise2d(sx,sz) / 2.0 + 0.5) * 30)
 				chunk.elev[cx][cz] = e
 
@@ -226,15 +230,12 @@ class MapGenerator:
 		return self.getBiome4MoistAndTemp(m,t)
 
 	def getBiome4MoistAndTemp(self,M,T):
-		if T>0.8 and M<0.2:
+		if T>0.66 and M<0.43:
 			return DESERT
-		# elif T<0.2 and M>0.7:
-		# 	return SNOW
+		elif T<0.65 and M>0.62:
+			return SNOW
 		else:
-			if M>0.9:
-				return OCEAN
-			else:
-				return PLAIN
+			return PLAIN
 
 	def genEaster(self):
 		#JacoCookie

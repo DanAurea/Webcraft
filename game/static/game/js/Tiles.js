@@ -54,7 +54,7 @@ function Tiles()
         this.GRASS = new Tile(1, "Grass", 0x167117, true, 0.15, 0.2, 0.05);
         this.DIRT = new Tile(2, "Dirt", 0x4d361f, false);
         this.STONE = new Tile(3, "Stone", 0x787878, false);
-        this.SAND = new Tile(4, "Sand", 0xFFFCAC, false);
+        this.SAND = new Tile(4, "Sand", 0xcdc470, false);
         this.LOG = new Tile(5, "Wood Log", 0x2e1b0d, false);
         this.LEAVES = new Tile(6, "Leaves", 0x13a825, false);
         this.SNOW = new Tile(7, "Snow", 0xe7fafc, true, 0,0,0.1);

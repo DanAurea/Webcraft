@@ -50,7 +50,7 @@ def ws_connect(message):
 # Filter packets and handle them
 @channel_session_user
 def ws_receive(data):
-	
+
 	binaryData = data.content["bytes"]
 
 	## Received binary datas from channel and check if trusted 
@@ -79,7 +79,7 @@ def ws_receive(data):
 			chatHandler(message, user)
 		## Packet place tile
 		elif(packet.packetID == 2):
-			loginHandler(user)
+			loginHandler(data.reply_channel,user)
 		elif(packet.packetID == 4):
 			x, y, z, pitch, yaw, motionX, motionY, motionZ = packetMove.decode(binaryData)
 
@@ -94,6 +94,9 @@ def ws_receive(data):
 
 ## Send a close message to client websocket
 def ws_close(data):
+	Group('game').send({
+		'bytes': packetLogout.encode(username=username)
+	})
 	data.reply_channel.send({"close": True})
 	
 # Consumer for chat disconnection using
@@ -102,7 +105,7 @@ def ws_close(data):
 @channel_session
 def ws_disconnect(message):
 	 Group('chat').discard(message.reply_channel)
-	 Group('game').add(message.reply_channel)
+	 Group('game').discard(message.reply_channel)
 
 ## Handler for chat packet
 ## Data persistance enabled
@@ -164,14 +167,25 @@ def placeTileHandler(tX, tY, tZ, tileID):
 	})
 
 ## Broadcast login from user
-def loginHandler(user):
+def loginHandler(channel, user):
 
-	## Retrieve informations about avatar player
-	avatarInfos = AvatarPlayer.objects.get(player_id=user.player.id_player)
-	x, y , z = map(int, user.player.position.split(","))
+	users = cache.get_many(cache.keys("user_*"))
 
-	avatar = avatarInfos.avatar_id.name
-	
+	for key in users:
+		tmp = User.objects.get(username=users[key])
+
+		## Retrieve informations about avatar player
+		avatarInfos = AvatarPlayer.objects.get(player_id=tmp.player.id_player)
+		x, y , z = map(int, tmp.player.position.split(","))
+
+		avatar = avatarInfos.avatar_id.name
+		
+		## Send users already connected to user who logged in 
+		channel.send({
+			'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
+		})
+
+	## Say
 	Group('chat').send({
 		'bytes': packetChat.encode(user.username + " s'est connecte", "Server")
 	})	
@@ -179,6 +193,9 @@ def loginHandler(user):
 	Group('game').send({
 		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
 	})
+	
+	## Set a new user in redis cache
+	cache.set("user_" + user.username, user.username, timeout=None)
 
 def moveHandler(**kwargs):
 
