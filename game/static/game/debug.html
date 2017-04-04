@@ -4,16 +4,43 @@
         <meta charset="UTF-8">
         <title>Django-RPG</title>
         <link rel="stylesheet" href="./css/style.css">
+        <link rel="stylesheet" href="../../../chat/static/chat/css/style.css">
+        <link rel="stylesheet" href="./css/jquery.mCustomScrollbar.min.css">
     </head>
     <body>
         <div id="gameContainer"></div>
         <div id="gameOverlay">
             <div class="gui" id="ingameGui">
                 <div class="cross"></div>
-                <div class="gui_bottom gui_left">
+                <div class="gui_bottom gui_right">
                     <span id="ingame_gui_version">V: </span><br/>
                     <span id="ingame_gui_block">Tile: </span><br/>
                     <span id="ingame_gui_time">Time: </span>
+                </div>
+                <div class="gui_top gui_right">
+                    <br/>
+                    <span>Players : </span><br/>
+                    <span id="ingame_gui_playerList">...</span><br/>
+                </div>
+            </div>
+
+            <div class="gui" id="guiChat">
+                <div class="gui_bottom gui_left chat">
+
+                    <div class="mCustomScrollbar" id="messagesContainer">
+                 		<ol id="messagesList">
+                 		</ol>
+                    </div>
+
+                    <div class="messageBox">
+                    	<div id="channelBox">
+                    		<span id="channel">Tous: </span>
+                    	</div>
+                    	<form id="messageInput" class="gui_element" action="#" method="POST">
+                 			<input id="id_message" type="text">
+                 		</form>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -22,6 +49,7 @@
         <script src="./lib/three.min.js" charset="utf-8"></script>
         <script src="./lib/stats.min.js" charset="utf-8"></script>
         <script src="./lib/dat.gui.min.js" charset="utf-8"></script>
+        <script src="./lib/scrollPane/jquery.mCustomScrollbar.concat.min.js" charset="utf-8"></script>
         <script src="./lib/perlin.js" charset="utf-8"></script>
         <script src="./lib/OBJLoader.js" charset="utf-8"></script>
         <script src="./js/Shaders/CopyShader.js" charset="utf-8"></script>
@@ -49,6 +77,7 @@
         <script src="./js/Materials.js" charset="utf-8"></script>
         <script src="./js/Gui/Gui.js" charset="utf-8"></script>
         <script src="./js/Gui/IngameGui.js" charset="utf-8"></script>
+        <script src="../../../chat/static/chat/js/Messaging.js" charset="utf-8"></script>
         <script src="./js/Controls.js" charset="utf-8"></script>
         <script src="./js/GameLoader.js" charset="utf-8"></script>
     </body>

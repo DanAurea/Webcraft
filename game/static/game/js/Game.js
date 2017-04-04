@@ -1,10 +1,10 @@
-var offlineMode = true;
+var offlineMode = false;
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 //Constants
 var FOV = 45;
-var VERSION = "0.1A";
+var VERSION = "0.2.1A";
 
 //Properties
 var width;
@@ -93,6 +93,7 @@ function finalizeGame()
 {
     GUIS.INGAME_GUI.open();
     GUIS.CHAT_GUI.open();
+    ChatManager.init();
     MapManager.applyQueue();
 
     // On effectue le rendu de la scène

@@ -1,12 +1,8 @@
-/** Basic style */
 @font-face
 {
-    font-family: 'fippsregular';
-    src: url('../font/fipps-regular-webfont.eot');
-    src: url('../font/fipps-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../font/fipps-regular-webfont.woff') format('woff'),
-         url('../font/fipps-regular-webfont.ttf') format('truetype'),
-         url('../font/fipps-regular-webfont.svg#fippsregular') format('svg');
+    font-family: 'pixellarimedium';
+    src: url('../font/pixellari-webfont.woff2') format('woff2'),
+         url('../font/pixellari-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -16,8 +12,9 @@ html, body
     margin: 0px;
     padding: 0px;
     overflow: hidden;
-    font-family: 'fippsregular';
-    font-size: 8px;
+    font-size: 20px;
+    font-family: 'pixellarimedium';
+    text-shadow: 2px 2px black;
     color: white;
 }
 
@@ -50,26 +47,27 @@ body,ul,ol,textarea,figure,label,form,form ol, form ol li{
 .gui_bottom
 {
     position: absolute;
-    bottom: 0px;
+    bottom: 5px;
     pointer-events: none;
 }
 .gui_top
 {
     position: absolute;
-    top: 0px;
+    top: 5px;
     pointer-events: none;
 }
 .gui_left
 {
     position: absolute;
-    left: 0px;
+    left: 5px;
     pointer-events: none;
 }
 .gui_right
 {
     position: absolute;
-    right: 0px;
+    right: 5px;
     pointer-events: none;
+    text-align: right;
 }
 .gui_element
 {
