@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from game.mapGenerator import MapGenerator
 from django.core.cache import cache
 import game.runtime as Runtime
+import game.mapGenerator as MapInfo
 
 def getToken(username):
 	""" Generate a new token
@@ -39,16 +40,19 @@ def getInfoMap(request):
 			"seedColor": MapGenerator.seedColor}
 	return JsonResponse(data)
 
+
 def getChunk(request):
 	"""Ajax request sending chunk status"""
-
 	x = int(request.GET.get("x", None))
 	z = int(request.GET.get("z", None))
 
-	key = "".join(["map_", str(x), "_", str(z)])
+	## Get chunk from subdivision stored 
+	## in redis.
+	chunk           = Runtime.reassemble(x, z)
+	compressedChunk = MapInfo._compress(chunk)
 
 	## TODO: Exception if bad request
-	data = {"tiles" : cache.get(key),
+	data = {"tiles" : compressedChunk,
 			"x" : x,
 			"z": z}
 	return JsonResponse(data)

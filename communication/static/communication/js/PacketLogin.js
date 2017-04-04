@@ -14,7 +14,7 @@ function PacketLogin()
 
         //Us
         if(this.username == USERNAME)
-        {
+        {   
             thePlayer = new EntityPlayer();
             thePlayer.setPosition(this.x, this.y, this.z);
             thePlayer.onLogin(this.username, this.avatar);
@@ -23,7 +23,7 @@ function PacketLogin()
             finalizeGame();
         }
         else
-        {
+        {   
             newPlayer = new EntityPlayer();
             newPlayer.setPosition(this.x, this.y, this.z);
             newPlayer.onLogin(this.username, this.avatar);

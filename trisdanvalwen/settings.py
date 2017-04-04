@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = 'lr3)f6wgs)i)h-p4n1kq)l^m6d+)-9nlka&8!2=1psh=5z%&=g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # For nginx proxying header
 USE_X_FORWARDED_HOST = True
@@ -37,7 +37,7 @@ if(DEBUG == False):
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-ALLOWED_HOSTS = ["tales4craft.fr","10.0.0.2","192.168.1.4", "192.168.1.101", "127.0.0.1", "192.168.1.248"]
+ALLOWED_HOSTS = ["tales4craft.fr"]
 
 # Application definition
 
@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'djangorpg',
 	'USER': 'danval',
 	'PASSWORD': 'danval72',
-	'HOST': '172.17.0.5',
+	'HOST': 'postgres',
 	'PORT': '',
     }
 }
@@ -105,7 +105,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://localhost:6379/1",
+        "LOCATION": "redis://redis:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             "PARSER_CLASS": "redis.connection.HiredisParser",
@@ -159,7 +159,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/root/Documents/Server/data/web/www/tales4craft.fr/www/static/"
+STATIC_ROOT = "/var/www/tales4craft.fr/static/"
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
@@ -181,10 +181,9 @@ CHANNEL_LAYERS = {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "ROUTING": 'communication.routing.channel_routing',
         "CONFIG": {
-        	"hosts": [("localhost", 6379)],
+        	"hosts": [("redis", 6379)],
         	"channel_capacity": {
-        		"http.request" : 200,
-        		"http.response": 10,
+        	   "websocket.receive": 2500,
         	}
         }
     },

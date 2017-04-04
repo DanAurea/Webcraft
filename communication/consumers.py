@@ -1,5 +1,3 @@
-import logging
-
 from channels import Group
 from channels.sessions import channel_session
 from channels.auth import channel_session_user, channel_session_user_from_http
@@ -8,10 +6,14 @@ from communication.ComAPI.packetChat import PacketChat
 from communication.ComAPI.packetPlaceTile import PacketPlaceTile
 from communication.ComAPI.packetLogin import PacketLogin
 from communication.ComAPI.packetMove import PacketMove
+from django.core.cache import cache
 from game.utils import getToken
+from game.mapGenerator import Chunk
 from game.models import *
 from chat.models import ChatMessage
 from django.utils.html import strip_tags
+import game.runtime as Runtime
+import game.mapGenerator as MapInfo
 
 ## Initliaze packet managers class
 packet = Packet()
@@ -48,7 +50,7 @@ def ws_connect(message):
 # Filter packets and handle them
 @channel_session_user
 def ws_receive(data):
-	
+
 	binaryData = data.content["bytes"]
 
 	## Received binary datas from channel and check if trusted 
@@ -77,7 +79,7 @@ def ws_receive(data):
 			chatHandler(message, user)
 		## Packet place tile
 		elif(packet.packetID == 2):
-			loginHandler(user)
+			loginHandler(data.reply_channel,user)
 		elif(packet.packetID == 4):
 			x, y, z, pitch, yaw, motionX, motionY, motionZ = packetMove.decode(binaryData)
 
@@ -92,6 +94,9 @@ def ws_receive(data):
 
 ## Send a close message to client websocket
 def ws_close(data):
+	Group('game').send({
+		'bytes': packetLogout.encode(username=username)
+	})
 	data.reply_channel.send({"close": True})
 	
 # Consumer for chat disconnection using
@@ -100,7 +105,7 @@ def ws_close(data):
 @channel_session
 def ws_disconnect(message):
 	 Group('chat').discard(message.reply_channel)
-	 Group('game').add(message.reply_channel)
+	 Group('game').discard(message.reply_channel)
 
 ## Handler for chat packet
 ## Data persistance enabled
@@ -142,19 +147,52 @@ def getLastChatMessage():
 
 ## Place a tile on every client at position specified by user
 def placeTileHandler(tX, tY, tZ, tileID):
+
+	cX, cZ = int(tX / MapInfo.chunkSize), int(tZ / MapInfo.chunkSize)
+	posInChunkX = int(tX % 16)
+	posInChunkZ = int(tZ % 16)
+
+	indexSubdiv = int(Chunk.getIndex4Coords(posInChunkX, tY, posInChunkZ) / Runtime.sizeChunk)
+	
+	key = "".join(["map_", str(cX), "_", str(cZ), "_", str(indexSubdiv)])
+
+	indexTile = int(Chunk.getIndex4Coords(posInChunkX, tY, posInChunkZ) % Runtime.sizeChunk)
+	
+	chunk = cache.get(key)
+	chunk[indexTile] = tileID
+	cache.set(key, chunk, timeout=None)
+
 	Group('game').send({
 			"bytes": packetPlaceTile.encode(tX, tY, tZ, tileID)
 	})
 
 ## Broadcast login from user
-def loginHandler(user):
+def loginHandler(channel, user):
 
-	## Retrieve informations about avatar player
+	users = cache.get_many(cache.keys("user_*"))
+
+	for key in users:
+
+		if(users[key] != user.username):
+			tmp = User.objects.get(username=users[key])
+
+			## Retrieve informations about avatar player
+			avatarInfos = AvatarPlayer.objects.get(player_id=tmp.player.id_player)
+			x, y , z = map(int, tmp.player.position.split(","))
+
+			avatar = avatarInfos.avatar_id.name
+	
+			## Send users already connected to user who logged in 
+			channel.send({
+				'bytes': packetLogin.encode(tmp.username, avatar, [x,y,z])
+			})
+
+	## Send info about current logged user to all users connected
 	avatarInfos = AvatarPlayer.objects.get(player_id=user.player.id_player)
 	x, y , z = map(int, user.player.position.split(","))
-
 	avatar = avatarInfos.avatar_id.name
-	
+
+	## Say
 	Group('chat').send({
 		'bytes': packetChat.encode(user.username + " s'est connecte", "Server")
 	})	
@@ -162,6 +200,9 @@ def loginHandler(user):
 	Group('game').send({
 		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
 	})
+	
+	## Set a new user in redis cache
+	cache.set("user_" + user.username, user.username, timeout=None)
 
 def moveHandler(**kwargs):
 
