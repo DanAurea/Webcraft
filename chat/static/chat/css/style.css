@@ -7,6 +7,7 @@
     background-color: rgba(30, 30 , 55, 0.25);
     width: 30%;
     border: 1px solid rgb(10, 10, 10);
+    pointer-events: initial;
 }
 
 #messagesContainer{
@@ -18,9 +19,14 @@
 }
 
 #messagesList>li{
-    font-size: 13px;
+    font-size: 14px;
     padding: 5px;
     color:white;
+}
+
+#messagesList>li:nth-child(even)
+{
+    background-color: rgba(0, 0 , 0, 0.05);
 }
 
 .pseudo{

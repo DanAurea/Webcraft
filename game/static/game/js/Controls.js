@@ -9,7 +9,7 @@ function Controls()
     {
         $(document).keydown(function(e)
         {
-            if(FPSCamera.locked)
+            if(FPSCamera.locked || e.key == "Escape")
             {
                 e.key = e.key.toLowerCase();
 
@@ -33,7 +33,8 @@ function Controls()
 
         $(document).keyup(function(e)
         {
-            if(FPSCamera.locked)
+
+            if(FPSCamera.locked || e.key == "Escape")
             {
                 e.key = e.key.toLowerCase();
 
@@ -160,4 +161,5 @@ Controls.register("mouse-0", FPSCamera.placeTile, "press");
 Controls.register("mouse-1", FPSCamera.pickTile, "press");
 Controls.register("mouse-2", FPSCamera.placeTile, "press");
 Controls.register("mousewheel", FPSCamera.chooseTile, "wheel");
-Controls.register("t", activeChat, "press");
+Controls.register("t", ChatManager.toggleChat, "press");
+Controls.register("escape", ChatManager.toggleChat, "press");

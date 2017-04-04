@@ -21,13 +21,26 @@ function FPSCamera()
 
     	container.onclick = function()
     	{
-    		container.requestPointerLock();
+    		FPSCamera.attachPointer();
     	};
 
         var geometry = new THREE.CubeGeometry(1.01, 1.01, 1.01);
         var material = new THREE.MeshBasicMaterial({color: 0xFF0000, transparent: true, opacity: 0.25});
         this.hoverMesh = new THREE.Mesh(geometry, material);
         scene.add(this.hoverMesh);
+    }
+
+    this.releasePointer =
+    function releasePointer()
+    {
+        document.exitPointerLock();
+    }
+
+    this.attachPointer =
+    function attachPointer()
+    {
+        var container = $("#gameContainer")[0];
+        container.requestPointerLock();
     }
 
     this.lockChange =
@@ -95,8 +108,6 @@ function FPSCamera()
             this.hoverMesh.visible = false;
         }
     }
-
-    this.placeDebug = false;
 
     this.getTileLookingAt =
     function getTileLookingAt()
@@ -191,6 +202,11 @@ function FPSCamera()
                 tX += FPSCamera.targetTile.normal[0];
                 tY += FPSCamera.targetTile.normal[1];
                 tZ += FPSCamera.targetTile.normal[2];
+
+                if(tY >= 255)
+                {
+                    return;
+                }
 
                 //Check block is air
                 var tileAt = MapManager.getTileAt(tX, tY, tZ);

@@ -18,11 +18,15 @@
 
             <div class="gui" id="ingameGui">
                 <div class="cross"></div>
-                <div class="gui_bottom gui_left">
+                <div class="gui_bottom gui_right">
                     <span id="ingame_gui_version">V: </span><br/>
                     <span id="ingame_gui_block">Tile: </span><br/>
-                    <span id="ingame_gui_time">Time: </span><br/>
-                    <span id="GPU"></span>
+                    <span id="ingame_gui_time">Time: </span>
+                </div>
+                <div class="gui_top gui_right">
+                    <br/>
+                    <span>Online Players :</span><br/>
+                    <span id="ingame_gui_playerList">...</span><br/>
                 </div>
             </div>
         </div>
@@ -85,7 +89,7 @@
             <script src="{% static 'game/js/Controls.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/GameLoader.js' %}" charset="utf-8"></script>
         {% endcompress %}
-        
+
 
     </body>
 </html>
