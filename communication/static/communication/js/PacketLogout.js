@@ -1,7 +1,7 @@
 function PacketLogout()
 {
     this.username = "";
-    this.usernameSize = username.length;
+    this.usernameSize = 0;
 
     this.handler =
     function handler()
@@ -9,6 +9,7 @@ function PacketLogout()
         console.log("Player logout !");
         var entity = Entities.getPlayerByUsername(this.username);
 
+        console.log(entity);
         if(entity != null)
         {
             entity.despawn();
@@ -28,8 +29,8 @@ function PacketLogout()
         this.usernameSize     = dv.getUint8(offset);
         offset           += 1;
 
-        this.username    = PacketsUtil.decodeString(dv, offset, usernameSize);
-        offset           += usernameSize;
+        this.username    = PacketsUtil.decodeString(dv, offset, this.usernameSize);
+        offset           += this.usernameSize;
 
         return dv;
     }
@@ -38,8 +39,8 @@ function PacketLogout()
     this.getDecodePacketSize =
     function getDecodePacketSize()
     {
-        // Header size + Timestamp (64 bits)
-        return this._getDecodePacketSize() + 8;
+        // Header size + 1 + username length
+        return this._getDecodePacketSize() + this.usernameSize + this.username;
     }
 
     this.getPacketId =
