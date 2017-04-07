@@ -154,9 +154,19 @@ function FPSCamera()
         var forward = key == "z" ? 1 : (key == "s" ? -1 : 0);
         var strafe = key == "d" ? 1 : (key == "q" ? -1 : 0);
 
+        FPSCamera.moveFromForce(forward, strafe);
+    }
+
+    this.moveFromForce =
+    function moveFromForce(forward, strafe)
+    {
         thePlayer.inputMotX += ((Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * 0.15;
         thePlayer.inputMotZ += ((Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * 0.15;
+    }
 
+    this.fly =
+    function fly(key, ev)
+    {
         if(thePlayer.fly)
         {
             thePlayer.inputMotY += (key == " " ? 1 : (key == "shift" ? -1 : 0)) * 0.3;
@@ -188,7 +198,11 @@ function FPSCamera()
                 FPSCamera.tileId = tileAt;
             }
         }
-        ev.preventDefault();
+
+        if(key == "mouse-1")
+        {
+            ev.preventDefault();
+        }
     }
 
     this.placeTile =

@@ -40,6 +40,7 @@ function initGame()
             Materials.init();
             GameRenderer.init();
             Controls.init();
+            GamePadControls.init();
             GUIS.init();
 
             ResourceLoader.loadMapInfo(function(data)
@@ -107,6 +108,7 @@ function loopGame(time)
 
     TimeManager.calculateTime(time);
     Controls.update();
+    GamePadControls.update();
 
     while(TimeManager.shallTick())
     {
