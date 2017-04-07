@@ -104,7 +104,7 @@ function Controls()
             }
         });
 
-        $(document).bind("mousewheel", function(e)
+        $(document).bind("wheel", function(e)
         {
             clearTimeout(Controls.wheelTimeout);
             Controls.wheelTimeout = setTimeout(function()
@@ -115,11 +115,11 @@ function Controls()
                     {
                         if(Controls.controlMap[i]["key"] == "mousewheel")
                         {
-                            Controls.controlMap[i]["call"]((e.originalEvent.wheelDelta / 120 > 0 ? -1 : 1), e);
+                            Controls.controlMap[i]["call"]((Math.sign(e.originalEvent.deltaY)), e);
                         }
                     }
                 }
-            }, 10);
+            }, 5);
         });
     }
 

@@ -4,7 +4,7 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 
 //Constants
 var FOV = 45;
-var VERSION = "0.2.1A";
+var VERSION = "0.2.2A";
 
 //Properties
 var width;
