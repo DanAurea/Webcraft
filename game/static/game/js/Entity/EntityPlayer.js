@@ -18,7 +18,7 @@ function EntityPlayer()
     function beginUpdate()
     {
         //Manage gravity and jump
-        if(!this.fly && this.motionY > -200)
+        if(!this.fly && this.motionY > -200 && this == thePlayer)
         {
             this.motionY -= gravity;
         }
