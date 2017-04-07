@@ -12,7 +12,6 @@ function GamePadControls()
 
         gamepad.bind(Gamepad.Event.BUTTON_DOWN, function(e)
         {
-            console.log(e.control);
             if(FPSCamera.locked)
             {
                 for (var i = 0; i < GamePadControls.controlMap.length; i++)
