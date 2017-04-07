@@ -1,6 +1,6 @@
 function TileRenderer()
 {
-    var cubeVertices =
+    /*var cubeVertices =
     [
         ///Z-
         1.0, 0.0, 0.0,
@@ -37,7 +37,7 @@ function TileRenderer()
         0.0, 1.0, 1.0,
         1.0, 1.0, 0.0,
         1.0, 1.0, 1.0
-    ];
+    ];*/
 
     var cubeNormals =
     [
@@ -50,35 +50,37 @@ function TileRenderer()
     ];
 
     var lastColor = 0;
-    var lastColorObject = null;
+    var red = 0;
+    var green = 0;
+    var blue = 0;
 
     this.renderTile =
     function renderTile(tilePositions, tileColors, tileNormals, chunk, tile, x, y, z, rX, rZ)
     {
-        var tileColor = null;
-
         //Top
-        if(tile.isSideVisible(Tiles.getTile(chunk.getTileAt(x, y + 1, z))))
+        if(y > 254 || tile.isSideVisible(0, Tiles.getTile(chunk.getTileAt(x, y + 1, z))))
         {
-            if(tileColor == null)
-            {
-                tileColor = this.initTileColor(rX, rZ, tile);
-            }
+            this.initTileColor(rX, rZ, tile);
 
-            tilePositions.push(cubeVertices[60] + x, cubeVertices[61] * tile.height + y, cubeVertices[62] + z);
-            tilePositions.push(cubeVertices[63] + x, cubeVertices[64] * tile.height + y, cubeVertices[65] + z);
-            tilePositions.push(cubeVertices[66] + x, cubeVertices[67] * tile.height + y, cubeVertices[68] + z);
+            var top = tile.normalizedRenderBox.y2 + y;
+            var rX1 = tile.normalizedRenderBox.x + x;
+            var rX2 = tile.normalizedRenderBox.x2 + x;
+            var rZ1 = tile.normalizedRenderBox.z + z;
+            var rZ2 = tile.normalizedRenderBox.z2 + z;
+            tilePositions.push(rX1, top, rZ1);
+            tilePositions.push(rX1, top, rZ2);
+            tilePositions.push(rX2, top, rZ1);
 
-            tilePositions.push(cubeVertices[66] + x, cubeVertices[67] * tile.height + y, cubeVertices[68] + z);
-            tilePositions.push(cubeVertices[63] + x, cubeVertices[64] * tile.height + y, cubeVertices[65] + z);
-            tilePositions.push(cubeVertices[69] + x, cubeVertices[70] * tile.height + y, cubeVertices[71] + z);
+            tilePositions.push(rX2, top, rZ1);
+            tilePositions.push(rX1, top, rZ2);
+            tilePositions.push(rX2, top, rZ2);
 
-            tileColors.push(tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b);
+            tileColors.push(red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue);
 
             tileNormals.push(cubeNormals[15], cubeNormals[17], cubeNormals[18],
                              cubeNormals[15], cubeNormals[17], cubeNormals[18],
@@ -89,27 +91,29 @@ function TileRenderer()
         }
 
         //Bottom
-        if(y > 0 && tile.isSideVisible(Tiles.getTile(chunk.getTileAt(x, y - 1, z))))
+        if(y > 0 && tile.isSideVisible(1, Tiles.getTile(chunk.getTileAt(x, y - 1, z))))
         {
-            if(tileColor == null)
-            {
-                tileColor = this.initTileColor(rX, rZ, tile);
-            }
+            this.initTileColor(rX, rZ, tile);
 
-            tilePositions.push(cubeVertices[48] + x, cubeVertices[49] + y, cubeVertices[50] + z);
-            tilePositions.push(cubeVertices[51] + x, cubeVertices[52] + y, cubeVertices[53] + z);
-            tilePositions.push(cubeVertices[54] + x, cubeVertices[55] + y, cubeVertices[56] + z);
+            var bottom = tile.normalizedRenderBox.y + y;
+            var rX1 = tile.normalizedRenderBox.x + x;
+            var rX2 = tile.normalizedRenderBox.x2 + x;
+            var rZ1 = tile.normalizedRenderBox.z + z;
+            var rZ2 = tile.normalizedRenderBox.z2 + z;
+            tilePositions.push(rX1, bottom, rZ1);
+            tilePositions.push(rX2, bottom, rZ1);
+            tilePositions.push(rX1, bottom, rZ2);
 
-            tilePositions.push(cubeVertices[54] + x, cubeVertices[55] + y, cubeVertices[56] + z);
-            tilePositions.push(cubeVertices[51] + x, cubeVertices[52] + y, cubeVertices[53] + z);
-            tilePositions.push(cubeVertices[57] + x, cubeVertices[58] + y, cubeVertices[69] + z);
+            tilePositions.push(rX1, bottom, rZ2);
+            tilePositions.push(rX2, bottom, rZ1);
+            tilePositions.push(rX2, bottom, rZ2);
 
-            tileColors.push(tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b);
+            tileColors.push(red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue);
 
             tileNormals.push(cubeNormals[12], cubeNormals[13], cubeNormals[14],
                              cubeNormals[12], cubeNormals[13], cubeNormals[14],
@@ -120,27 +124,29 @@ function TileRenderer()
         }
 
         //X-
-        if(rX > 0 && tile.isSideVisible(Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x - 1, y, z))))
+        if(rX > 0 && tile.isSideVisible(2, Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x - 1, y, z))))
         {
-            if(tileColor == null)
-            {
-                tileColor = this.initTileColor(rX, rZ, tile);
-            }
+            this.initTileColor(rX, rZ, tile);
 
-            tilePositions.push(cubeVertices[24] + x, cubeVertices[25] * tile.height + y, cubeVertices[26] + z);
-            tilePositions.push(cubeVertices[27] + x, cubeVertices[28] * tile.height + y, cubeVertices[29] + z);
-            tilePositions.push(cubeVertices[30] + x, cubeVertices[31] * tile.height + y, cubeVertices[32] + z);
+            var top = tile.normalizedRenderBox.y2 + y;
+            var bottom = tile.normalizedRenderBox.y + y;
+            var rX1 = tile.normalizedRenderBox.x + x;
+            var rZ1 = tile.normalizedRenderBox.z + z;
+            var rZ2 = tile.normalizedRenderBox.z2 + z;
+            tilePositions.push(rX1, bottom, rZ1);
+            tilePositions.push(rX1, bottom, rZ2);
+            tilePositions.push(rX1, top, rZ1);
 
-            tilePositions.push(cubeVertices[30] + x, cubeVertices[31] * tile.height + y, cubeVertices[32] + z);
-            tilePositions.push(cubeVertices[27] + x, cubeVertices[28] * tile.height + y, cubeVertices[29] + z);
-            tilePositions.push(cubeVertices[33] + x, cubeVertices[34] * tile.height + y, cubeVertices[35] + z);
+            tilePositions.push(rX1, top, rZ1);
+            tilePositions.push(rX1, bottom, rZ2);
+            tilePositions.push(rX1, top, rZ2);
 
-            tileColors.push(tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b);
+            tileColors.push(red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue);
 
             tileNormals.push(cubeNormals[6], cubeNormals[7], cubeNormals[8],
                              cubeNormals[6], cubeNormals[7], cubeNormals[8],
@@ -151,27 +157,29 @@ function TileRenderer()
         }
 
         //X+
-        if(rX < MapManager.totalWidth - 1 && tile.isSideVisible(Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x + 1, y, z))))
+        if(rX < MapManager.totalWidth - 1 && tile.isSideVisible(3, Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x + 1, y, z))))
         {
-            if(tileColor == null)
-            {
-                tileColor = this.initTileColor(rX, rZ, tile);
-            }
+            this.initTileColor(rX, rZ, tile);
 
-            tilePositions.push(cubeVertices[36] + x, cubeVertices[37] * tile.height + y, cubeVertices[38] + z);
-            tilePositions.push(cubeVertices[39] + x, cubeVertices[40] * tile.height + y, cubeVertices[41] + z);
-            tilePositions.push(cubeVertices[42] + x, cubeVertices[43] * tile.height + y, cubeVertices[44] + z);
+            var top = tile.normalizedRenderBox.y2 + y;
+            var bottom = tile.normalizedRenderBox.y + y;
+            var rX2 = tile.normalizedRenderBox.x2 + x;
+            var rZ1 = tile.normalizedRenderBox.z + z;
+            var rZ2 = tile.normalizedRenderBox.z2 + z;
+            tilePositions.push(rX2, bottom, rZ1);
+            tilePositions.push(rX2, top, rZ1);
+            tilePositions.push(rX2, bottom, rZ2);
 
-            tilePositions.push(cubeVertices[42] + x, cubeVertices[43] * tile.height + y, cubeVertices[44] + z);
-            tilePositions.push(cubeVertices[39] + x, cubeVertices[40] * tile.height + y, cubeVertices[41] + z);
-            tilePositions.push(cubeVertices[45] + x, cubeVertices[46] * tile.height + y, cubeVertices[47] + z);
+            tilePositions.push(rX2, bottom, rZ2);
+            tilePositions.push(rX2, top, rZ1);
+            tilePositions.push(rX2, top, rZ2);
 
-            tileColors.push(tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b);
+            tileColors.push(red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue);
 
             tileNormals.push(cubeNormals[9], cubeNormals[10], cubeNormals[11],
                              cubeNormals[9], cubeNormals[10], cubeNormals[11],
@@ -182,27 +190,29 @@ function TileRenderer()
         }
 
         //Z-
-        if(rZ > 0 && tile.isSideVisible(Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x, y, z - 1))))
+        if(rZ > 0 && tile.isSideVisible(4, Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x, y, z - 1))))
         {
-            if(tileColor == null)
-            {
-                tileColor = this.initTileColor(rX, rZ, tile);
-            }
+            this.initTileColor(rX, rZ, tile);
 
-            tilePositions.push(cubeVertices[0] + x, cubeVertices[1] * tile.height + y, cubeVertices[2] + z);
-            tilePositions.push(cubeVertices[3] + x, cubeVertices[4] * tile.height + y, cubeVertices[5] + z);
-            tilePositions.push(cubeVertices[6] + x, cubeVertices[7] * tile.height + y, cubeVertices[8] + z);
+            var top = tile.normalizedRenderBox.y2 + y;
+            var bottom = tile.normalizedRenderBox.y + y;
+            var rX1 = tile.normalizedRenderBox.x + x;
+            var rX2 = tile.normalizedRenderBox.x2 + x;
+            var rZ1 = tile.normalizedRenderBox.z + z;
+            tilePositions.push(rX2, bottom, rZ1);
+            tilePositions.push(rX1, bottom, rZ1);
+            tilePositions.push(rX2, top, rZ1);
 
-            tilePositions.push(cubeVertices[6] + x, cubeVertices[7] * tile.height + y, cubeVertices[8] + z);
-            tilePositions.push(cubeVertices[3] + x, cubeVertices[4] * tile.height + y, cubeVertices[5] + z);
-            tilePositions.push(cubeVertices[9] + x, cubeVertices[10] * tile.height + y, cubeVertices[11] + z);
+            tilePositions.push(rX2, top, rZ1);
+            tilePositions.push(rX1, bottom, rZ1);
+            tilePositions.push(rX1, top, rZ1);
 
-            tileColors.push(tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b);
+            tileColors.push(red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue);
 
             tileNormals.push(cubeNormals[0], cubeNormals[1], cubeNormals[2],
                              cubeNormals[0], cubeNormals[1], cubeNormals[2],
@@ -213,27 +223,29 @@ function TileRenderer()
         }
 
         //Z+
-        if(rZ < MapManager.totalLength - 1 && tile.isSideVisible(Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x, y, z + 1))))
+        if(rZ < MapManager.totalLength - 1 && tile.isSideVisible(5, Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x, y, z + 1))))
         {
-            if(tileColor == null)
-            {
-                tileColor = this.initTileColor(rX, rZ, tile);
-            }
+            this.initTileColor(rX, rZ, tile);
 
-            tilePositions.push(cubeVertices[12] + x, cubeVertices[13] * tile.height + y, cubeVertices[14] + z);
-            tilePositions.push(cubeVertices[15] + x, cubeVertices[16] * tile.height + y, cubeVertices[17] + z);
-            tilePositions.push(cubeVertices[18] + x, cubeVertices[19] * tile.height + y, cubeVertices[20] + z);
+            var top = tile.normalizedRenderBox.y2 + y;
+            var bottom = tile.normalizedRenderBox.y + y;
+            var rX1 = tile.normalizedRenderBox.x + x;
+            var rX2 = tile.normalizedRenderBox.x2 + x;
+            var rZ2 = tile.normalizedRenderBox.z2 + z;
+            tilePositions.push(rX1, bottom, rZ2);
+            tilePositions.push(rX2, bottom, rZ2);
+            tilePositions.push(rX1, top, rZ2);
 
-            tilePositions.push(cubeVertices[18] + x, cubeVertices[19] * tile.height + y, cubeVertices[20] + z);
-            tilePositions.push(cubeVertices[15] + x, cubeVertices[16] * tile.height + y, cubeVertices[17] + z);
-            tilePositions.push(cubeVertices[21] + x, cubeVertices[22] * tile.height + y, cubeVertices[23] + z);
+            tilePositions.push(rX1, top, rZ2);
+            tilePositions.push(rX2, bottom, rZ2);
+            tilePositions.push(rX2, top, rZ2);
 
-            tileColors.push(tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b,
-                            tileColor.r, tileColor.g, tileColor.b);
+            tileColors.push(red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue,
+                            red, green, blue);
 
             tileNormals.push(cubeNormals[3], cubeNormals[4], cubeNormals[5],
                              cubeNormals[3], cubeNormals[4], cubeNormals[5],
@@ -247,24 +259,21 @@ function TileRenderer()
     this.initTileColor =
     function initTileColor(rX, rZ, tile)
     {
-        if(tile.colorChange)
+        if(tile.renderId() == 2)
         {
-            var tileColor = new THREE.Color(tile.color);
             var change = noise.simplex2((rX - 10000) / 50, (rZ - 10000) / 50);
-            tileColor.r = Math.max(0.0, Math.min(tileColor.r + change * tile.redVariant, 1.0));
-            tileColor.g = Math.max(0.0, Math.min(tileColor.g + change * tile.greenVariant, 1.0));
-            tileColor.b = Math.max(0.0, Math.min(tileColor.b + change * tile.blueVariant, 1.0));
-
-            return tileColor;
+            red = Math.max(0.0, Math.min(tile.red + change * tile.redVariant, 1.0));
+            green = Math.max(0.0, Math.min(tile.green + change * tile.greenVariant, 1.0));
+            blue = Math.max(0.0, Math.min(tile.blue + change * tile.blueVariant, 1.0));
+            lastColor = tile.color;
         }
         else if(tile.color != lastColor)
         {
             lastColor = tile.color;
-            lastColorObject = new THREE.Color(lastColor);
-            return lastColorObject;
+            red = tile.red;
+            green = tile.green;
+            blue = tile.blue;
         }
-
-        return lastColorObject;
     }
 
     this.renderModel =

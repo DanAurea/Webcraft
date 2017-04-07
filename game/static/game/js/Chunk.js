@@ -113,6 +113,7 @@ function Chunk(x, z)
         var rX, rZ;
         var x, y, z;
         var tile;
+        var renderId;
         for(x = 0; x < 16; x++)
         {
             rX = x + cX;
@@ -122,22 +123,20 @@ function Chunk(x, z)
                 for(y = 0; y < this.maxHeight; y++)
                 {
                     tile = Tiles.getTile(this.getTileAt(x, y, z));
+                    renderId = tile.renderId();
 
-                    if(tile.isVisible())
+                    if(renderId < 4 && renderId > 0)
                     {
-                        if(tile.isSimpleCube())
-                        {
-                            TileRenderer.renderTile(tilePositions, tileColors, tileNormals, this, tile, x, y, z, rX, rZ);
-                        }
-                        else
-                        {
-                            TileRenderer.renderModel(modelPositions, modelNormals, modelUVs, this, tile, x, y, z);
-                        }
+                        TileRenderer.renderTile(tilePositions, tileColors, tileNormals, this, tile, x, y, z, rX, rZ);
+                    }
+                    else if(renderId == 4)
+                    {
+                        TileRenderer.renderModel(modelPositions, modelNormals, modelUVs, this, tile, x, y, z);
                     }
                 }
             }
         }
-        
+
         var tilesGeometry = new THREE.BufferGeometry();
         tilesGeometry.addAttribute("position", new THREE.Float32BufferAttribute(tilePositions, 3).onUpload(disposeRenderArray));
         tilesGeometry.addAttribute("color", new THREE.Float32BufferAttribute(tileColors, 3).onUpload(disposeRenderArray));
@@ -194,7 +193,7 @@ function Chunk(x, z)
                     this.map[this.getIndexForCoords(x, y, z)] = Tiles.GRASS.id;
                 }
 
-                if(Math.random() < 0.1)
+                if(Math.random() < 0.05)
                 {
                     var veg = Math.floor(Math.random() * 3);
                     this.map[this.getIndexForCoords(x, height, z)] = veg == 0 ? Tiles.GRASS_TALL.id : veg == 1 ? Tiles.FLOWER_RED.id : Tiles.FLOWER_BLUE.id;

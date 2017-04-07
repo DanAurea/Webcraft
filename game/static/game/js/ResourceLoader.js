@@ -189,7 +189,7 @@ function ResourceLoader()
         }
         else
         {
-            finishCallback({"size": 10, "timeDay": 600, "durationDay": 2400, "seedColor": 40000});
+            finishCallback({"size": 5, "timeDay": 600, "durationDay": 2400, "seedColor": 40000});
         }
     }
 

@@ -99,9 +99,14 @@ function FPSCamera()
         if(this.targetTile != null)
         {
 			var tile = Tiles.getTile(MapManager.getTileAt(this.targetTile.x, this.targetTile.y, this.targetTile.z));
+            var aabb = tile.normalizedRenderBox;
+
             this.hoverMesh.visible = true;
-			this.hoverMesh.scale.y = tile.height;
-            this.hoverMesh.position.set(this.targetTile.x + 0.5, this.targetTile.y + tile.height / 2, this.targetTile.z + 0.5);
+			this.hoverMesh.scale.x = aabb.x2 - aabb.x;
+            this.hoverMesh.scale.y = aabb.y2 - aabb.y;
+            this.hoverMesh.scale.z = aabb.z2 - aabb.z;
+
+            this.hoverMesh.position.set(this.targetTile.x + aabb.x + this.hoverMesh.scale.x / 2, this.targetTile.y + aabb.y + this.hoverMesh.scale.y / 2, this.targetTile.z + aabb.z + this.hoverMesh.scale.z / 2);
         }
         else
         {

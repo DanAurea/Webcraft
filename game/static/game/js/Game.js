@@ -1,4 +1,4 @@
-var offlineMode = false;
+var offlineMode = true;
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
@@ -36,6 +36,7 @@ function initGame()
     {
         ResourceLoader.initModels(function()
         {
+            Tiles.init();
             Materials.init();
             GameRenderer.init();
             Controls.init();

@@ -99,6 +99,12 @@ function AABB(x, y, z, x2, y2, z2)
         return [true, fLow, fHigh];
     }
 
+    this.duplicateNormalizedAt =
+    function duplicateNormalizedAt(x, y, z)
+    {
+        return new AABB(this.x + x, this.y + y, this.z + z, x + this.x2, y + this.y2, z + this.z2);
+    }
+
     this.updatePos =
     function updatePos(x, y, z)
     {
