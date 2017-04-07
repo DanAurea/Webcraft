@@ -31,7 +31,7 @@ function Entity()
     this.despawn =
     function despawn()
     {
-        Entities.entityList.slice(this.id, 0);
+        Entities.entityList.splice(this.id, 1);
     }
 
     this.setPosition =
