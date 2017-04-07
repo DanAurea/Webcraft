@@ -83,7 +83,7 @@ function ChatManager()
         );
 
         // Update scroll bar
-		$("#messagesContainer").fadeIn(400);
+		$("#messagesContainer").fadeIn(1000);
         $("#messagesContainer").mCustomScrollbar("scrollTo", "last", {scrollInertia:0});
 
 
@@ -92,7 +92,7 @@ function ChatManager()
 		{
 			if(!ChatManager.isOpen)
 			{
-				$("#messagesContainer").fadeOut(400);
+				$("#messagesContainer").fadeOut(1000);
 			}
 		}, 2000);
 	}

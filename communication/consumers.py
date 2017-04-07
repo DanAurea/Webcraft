@@ -5,6 +5,7 @@ from communication.ComAPI.packet import Packet
 from communication.ComAPI.packetChat import PacketChat
 from communication.ComAPI.packetPlaceTile import PacketPlaceTile
 from communication.ComAPI.packetLogin import PacketLogin
+from communication.ComAPI.packetLogout import PacketLogout
 from communication.ComAPI.packetMove import PacketMove
 from django.core.cache import cache
 from game.utils import getToken
@@ -20,6 +21,7 @@ packet = Packet()
 packetChat = PacketChat()
 packetMove = PacketMove()
 packetLogin = PacketLogin()
+packetLogout = PacketLogout()
 packetPlaceTile = PacketPlaceTile()
 
 MESSAGE_NUMBER = 10
@@ -94,18 +96,22 @@ def ws_receive(data):
 
 ## Send a close message to client websocket
 def ws_close(data):
-	Group('game').send({
-		'bytes': packetLogout.encode(username=username)
-	})
 	data.reply_channel.send({"close": True})
 	
 # Consumer for chat disconnection using
 # session for keeping token and
 # using group for broadcast purpose
-@channel_session
+@channel_session_user
 def ws_disconnect(message):
-	 Group('chat').discard(message.reply_channel)
-	 Group('game').discard(message.reply_channel)
+
+	username = message.user.username
+	
+	Group('game').send({
+		'bytes': packetLogout.encode(username=username)
+	})
+	
+	Group('chat').discard(message.reply_channel)
+	Group('game').discard(message.reply_channel)
 
 ## Handler for chat packet
 ## Data persistance enabled

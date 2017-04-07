@@ -11,7 +11,7 @@ class PacketLogout(Packet):
 
 		self.packetID = 6
 	
-	def encode(self, username, avatar, position):
+	def encode(self, username):
 		"""
 			Encode a message with API format
 			DRPG + PacketID + username length + username
