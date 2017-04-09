@@ -106,6 +106,7 @@ def ws_disconnect(message):
 
 	username = message.user.username
 	
+	cache.delete("user_" + username)
 	Group('game').send({
 		'bytes': packetLogout.encode(username=username)
 	})
