@@ -157,7 +157,7 @@ function TileRenderer()
         }
 
         //X+
-        if(rX < MapManager.totalWidth - 1 && tile.isSideVisible(3, Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x + 1, y, z))))
+        if(rX < World.totalWidth - 1 && tile.isSideVisible(3, Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x + 1, y, z))))
         {
             this.initTileColor(rX, rZ, tile);
 
@@ -223,7 +223,7 @@ function TileRenderer()
         }
 
         //Z+
-        if(rZ < MapManager.totalLength - 1 && tile.isSideVisible(5, Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x, y, z + 1))))
+        if(rZ < World.totalLength - 1 && tile.isSideVisible(5, Tiles.getTile(chunk.getTileWithNeighbourChunkAt(x, y, z + 1))))
         {
             this.initTileColor(rX, rZ, tile);
 

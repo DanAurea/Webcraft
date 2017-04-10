@@ -10,6 +10,10 @@ function ResourceLoader()
 {
     var resources = [
         "img/palette.png",
+        "img/inventory.png",
+        "img/cross.png",
+        "img/gamepad_pointer.png",
+        "models/full.obj",
         "models/apple.obj",
         "models/bear.obj",
         "models/beaver.obj",
@@ -118,21 +122,27 @@ function ResourceLoader()
         {
             if(resources[i].endsWith(".png"))
             {
-                var nameScheme = resources[i].split("/");
-                var name = nameScheme[nameScheme.length - 1];
-                name = name.substr(0, name.length - 4);
-                textureLoader.load(resources[i], function(tex)
+                onResult = function()
                 {
-                    tex.wrapS = THREE.RepeatWrapping;
-                    tex.wrapT = THREE.RepeatWrapping;
-                    textures[name] = tex;
-
-                    loadedImgAmount++;
-                    if(loadedImgAmount >= imgAmount)
+                    var nameScheme = resources[i].split("/");
+                    var name = nameScheme[nameScheme.length - 1];
+                    name = name.substr(0, name.length - 4)
+                    textureLoader.load(resources[i], function(tex)
                     {
-                        finishCallback();
-                    }
-                });
+                        tex.wrapS = THREE.RepeatWrapping;
+                        tex.wrapT = THREE.RepeatWrapping;
+                        tex.magFilter = THREE.NearestFilter;
+                        tex.minFilter = THREE.NearestFilter;
+                        textures[name] = tex;
+
+                        loadedImgAmount++;
+                        if(loadedImgAmount >= imgAmount)
+                        {
+                            finishCallback();
+                        }
+                    });
+                }
+                onResult();
             }
         }
 
@@ -202,7 +212,7 @@ function ResourceLoader()
         }
         else
         {
-            finishCallback({"x": x, "z": z, "tiles": MapManager.getChunkAtChunkCoords(x, z).map});
+            finishCallback({"x": x, "z": z, "tiles": World.getChunkAtChunkCoords(x, z).map});
         }
     }
 

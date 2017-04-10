@@ -25,7 +25,7 @@ body,ul,ol,textarea,figure,label,form,form ol, form ol li{
 }
 
 
-#gameOverlay
+#gameOverlay, #glOverlay
 {
     position: absolute;
     width: 100%;
@@ -68,6 +68,31 @@ body,ul,ol,textarea,figure,label,form,form ol, form ol li{
     right: 5px;
     pointer-events: none;
     text-align: right;
+}
+.gui_center
+{
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    pointer-events: none;
+    text-align: center;
+    transform: translate(-50%, -50%);
+}
+.gui_center_h
+{
+    left: 50%;
+    position: absolute;
+    pointer-events: none;
+    text-align: center;
+    transform: translate(-50%, 0%);
+}
+.gui_center_v
+{
+    top: 50%;
+    position: absolute;
+    pointer-events: none;
+    text-align: center;
+    transform: translate(0%, -50%);
 }
 .gui_element
 {

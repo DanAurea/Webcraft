@@ -1,4 +1,4 @@
-function GUI(domId, openCallback, updateCallback, closeCallback)
+function GUI(domId, openCallback, updateCallback, closeCallback, closedByEscape)
 {
     GUIS.guiList.push(this);
 
@@ -6,6 +6,7 @@ function GUI(domId, openCallback, updateCallback, closeCallback)
     this.openCallback = openCallback;
     this.updateCallback = updateCallback;
     this.closeCallback = closeCallback;
+    this.closedByEscape = closedByEscape;
     this.opened = false;
 
     this.open =
@@ -33,6 +34,19 @@ function GUI(domId, openCallback, updateCallback, closeCallback)
         }
         this.opened = false;
     }
+
+    this.toggle =
+    function toggle()
+    {
+        if(this.opened)
+        {
+            this.close();
+        }
+        else
+        {
+            this.open();
+        }
+    }
 }
 
 function GUIS()
@@ -41,11 +55,13 @@ function GUIS()
     this.init =
     function init()
     {
-        initDebugger();
         //Register All GUI
-        this.INGAME_GUI = new GUI("#ingameGui", ingameGui.onIngameGuiOpen, ingameGui.onIngameGuiUpdate, null);
-        this.CHAT_GUI = new GUI("#guiChat", null, null, null);
-        this.MAIN_MENU= new GUI("#mainMenu", null, null, null);
+        this.INGAME_GUI = new Gui3D(ingameGui.ingameGuiOpen, ingameGui.ingameGuiUpdate, ingameGui.ingameGuiClose, false);
+        this.DEBUG_GUI = new GUI("#debugGui", null, debugGui.onDebugGuiUpdate, null, false);
+        this.PLAYER_LIST = new GUI("#playerListGui", null, playerListGui.onPlayerListGuiUpdate, null, false);
+        this.CHAT_GUI = new GUI("#guiChat", null, null, null, false);
+        this.MAIN_MENU = new GUI("#mainMenu", null, null, null, false);
+        this.INVENTORY = new Gui3D(inventoryGui.inventoryGuiOpen, inventoryGui.inventoryGuiUpdate, inventoryGui.inventoryGuiClose, true);
     }
 
     this.updateAllGuis =
@@ -59,6 +75,18 @@ function GUIS()
                 {
                     this.guiList[i].updateCallback($(this.guiList[i].domId));
                 }
+            }
+        }
+    }
+
+    this.escapePressed =
+    function escapePressed()
+    {
+        for(var i = 0, guiAmount = GUIS.guiList.length; i < guiAmount; i++)
+        {
+            if(GUIS.guiList[i].opened && GUIS.guiList[i].closedByEscape)
+            {
+                GUIS.guiList[i].close();
             }
         }
     }

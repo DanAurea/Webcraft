@@ -18,6 +18,19 @@ function Materials()
     		shading: THREE.FlatShading,
             map: textures["palette"]
     	});
+
+        this.uiModelMaterial = new THREE.MeshStandardMaterial(
+        {
+            map: textures["palette"],
+            roughness: 1,
+            shading: THREE.FlatShading
+    	});
+
+        this.uiCubeMaterial = new THREE.MeshStandardMaterial(
+        {
+            roughness: 1,
+            shading: THREE.FlatShading
+    	});
     }
 }
 

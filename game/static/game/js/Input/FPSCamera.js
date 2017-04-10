@@ -2,64 +2,17 @@ function FPSCamera()
 {
     this.cameraPitch = 0;
     this.cameraYaw = 0;
-    this.locked = false;
-    this.sensitivity = 0.1;
     this.targetTile = null;
     this.hoverMesh = null;
     this.placeDistance = 6;
-    this.tileId = 2;
 
     this.initFPSCamera =
     function initFPSCamera()
     {
-        var container = $("#gameContainer")[0];
-        container.requestPointerLock = container.requestPointerLock || container.mozRequestPointerLock;
-    	document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
-    	document.addEventListener('pointerlockchange', this.lockChange, false);
-    	document.addEventListener('mozpointerlockchange', this.lockChange, false);
-    	document.addEventListener('webkitpointerlockchange', this.lockChange, false);
-
-    	container.onclick = function()
-    	{
-    		FPSCamera.attachPointer();
-    	};
-
         var geometry = new THREE.CubeGeometry(1.01, 1.01, 1.01);
         var material = new THREE.MeshBasicMaterial({color: 0xFF0000, transparent: true, opacity: 0.25});
         this.hoverMesh = new THREE.Mesh(geometry, material);
         scene.add(this.hoverMesh);
-    }
-
-    this.releasePointer =
-    function releasePointer()
-    {
-        document.exitPointerLock();
-    }
-
-    this.attachPointer =
-    function attachPointer()
-    {
-        var container = $("#gameContainer")[0];
-        container.requestPointerLock();
-    }
-
-    this.lockChange =
-    function lockChange()
-    {
-
-        if (document.pointerLockElement === $("#gameContainer")[0] ||
-            document.mozPointerLockElement === $("#gameContainer")[0] ||
-            document.webkitpointerLockElement === $("#gameContainer")[0])
-        {
-
-            FPSCamera.locked = true;
-            document.addEventListener("mousemove", FPSCamera.onMouseMove, false);
-        }
-        else
-        {
-    		FPSCamera.locked = false;
-    		document.removeEventListener("mousemove", FPSCamera.onMouseMove, false);
-    	}
     }
 
     this.onMouseMove =
@@ -68,17 +21,23 @@ function FPSCamera()
         var movementX = e.movementX || e.mozMovementX || e.webkitMovementX || 0;
         var movementY = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
 
-    	FPSCamera.cameraYaw -= movementX * FPSCamera.sensitivity;
-    	FPSCamera.cameraPitch -= movementY * FPSCamera.sensitivity;
+    	FPSCamera.cameraYaw -= movementX * MouseUtil.sensitivity;
+    	FPSCamera.cameraPitch -= movementY * MouseUtil.sensitivity;
 
     	//Clamp pitch
     	FPSCamera.cameraPitch = Math.min(Math.max(FPSCamera.cameraPitch, -90), 90);
     }
 
-    this.toRadians =
-    function toRadians(degrees)
+    this.zoom =
+    function zoom()
     {
-    	return degrees * (Math.PI / 180);
+        camera.zoom = 4;
+    }
+
+    this.unZoom =
+    function unZoom()
+    {
+        camera.zoom = 1;
     }
 
     this.updateCamera =
@@ -88,8 +47,8 @@ function FPSCamera()
         camera.position.y = TimeManager.interpolate(thePlayer.prevY, thePlayer.y) + 1.75;
         camera.position.z = TimeManager.interpolate(thePlayer.prevZ, thePlayer.z);
 
-        camera.rotation.x = FPSCamera.toRadians(FPSCamera.cameraPitch);
-        camera.rotation.y = FPSCamera.toRadians(FPSCamera.cameraYaw);
+        camera.rotation.x = MathUtil.toRadians(FPSCamera.cameraPitch);
+        camera.rotation.y = MathUtil.toRadians(FPSCamera.cameraYaw);
         camera.rotation.z = 0;
 
         thePlayer.pitch = FPSCamera.cameraPitch;
@@ -98,7 +57,7 @@ function FPSCamera()
         this.targetTile = this.getTileLookingAt();
         if(this.targetTile != null)
         {
-			var tile = Tiles.getTile(MapManager.getTileAt(this.targetTile.x, this.targetTile.y, this.targetTile.z));
+			var tile = Tiles.getTile(World.getTileAt(this.targetTile.x, this.targetTile.y, this.targetTile.z));
             var aabb = tile.normalizedRenderBox;
 
             this.hoverMesh.visible = true;
@@ -118,9 +77,9 @@ function FPSCamera()
     function getTileLookingAt()
     {
         //Calculate look angle
-        var lookAngleX = -Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * Math.cos(FPSCamera.toRadians(FPSCamera.cameraPitch));
-        var lookAngleY = Math.sin(FPSCamera.toRadians(FPSCamera.cameraPitch));
-        var lookAngleZ = -Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * Math.cos(FPSCamera.toRadians(FPSCamera.cameraPitch));
+        var lookAngleX = -Math.sin(MathUtil.toRadians(FPSCamera.cameraYaw)) * Math.cos(MathUtil.toRadians(FPSCamera.cameraPitch));
+        var lookAngleY = Math.sin(MathUtil.toRadians(FPSCamera.cameraPitch));
+        var lookAngleZ = -Math.cos(MathUtil.toRadians(FPSCamera.cameraYaw)) * Math.cos(MathUtil.toRadians(FPSCamera.cameraPitch));
 
         //Get tiles in range
         var nearestIntersect = null;
@@ -160,8 +119,8 @@ function FPSCamera()
     this.moveFromForce =
     function moveFromForce(forward, strafe)
     {
-        thePlayer.inputMotX += ((Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.sin(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * 0.15;
-        thePlayer.inputMotZ += ((Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.cos(FPSCamera.toRadians(FPSCamera.cameraYaw)) * forward)) * 0.15;
+        thePlayer.inputMotX += ((Math.sin(MathUtil.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.sin(MathUtil.toRadians(FPSCamera.cameraYaw)) * forward)) * 0.15;
+        thePlayer.inputMotZ += ((Math.cos(MathUtil.toRadians(FPSCamera.cameraYaw + 90)) * strafe) - (Math.cos(MathUtil.toRadians(FPSCamera.cameraYaw)) * forward)) * 0.15;
     }
 
     this.fly =
@@ -180,7 +139,11 @@ function FPSCamera()
     this.chooseTile =
     function chooseTile(direction, ev)
     {
-        FPSCamera.tileId = Math.max(1, Math.min(FPSCamera.tileId - direction, Tiles.tiles.length - 1));
+        thePlayer.handIndex = (thePlayer.handIndex + direction) % 10;
+        if(thePlayer.handIndex == -1)
+        {
+            thePlayer.handIndex = 9;
+        }
     }
 
     this.pickTile =
@@ -192,16 +155,11 @@ function FPSCamera()
             var tY = FPSCamera.targetTile.y;
             var tZ = FPSCamera.targetTile.z;
 
-            var tileAt = MapManager.getTileAt(tX, tY, tZ);
+            var tileAt = World.getTileAt(tX, tY, tZ);
             if(tileAt != 0)
             {
-                FPSCamera.tileId = tileAt;
+                thePlayer.inventory[thePlayer.handIndex] = tileAt;
             }
-        }
-
-        if(key == "mouse-1")
-        {
-            ev.preventDefault();
         }
     }
 
@@ -228,10 +186,11 @@ function FPSCamera()
                 }
 
                 //Check block is air
-                var tileAt = MapManager.getTileAt(tX, tY, tZ);
-                if(tileAt == 0)
+                var tileAt = World.getTileAt(tX, tY, tZ);
+                var tile = thePlayer.inventory[thePlayer.handIndex];
+                if(tileAt == 0 && tile != null)
                 {
-                    var tileAABB = Tiles.getTile(FPSCamera.tileId).getAABB(tX, tY, tZ);
+                    var tileAABB = Tiles.getTile(tile).getAABB(tX, tY, tZ);
 
                     //Check players collision
                     var collided = false;
@@ -246,23 +205,27 @@ function FPSCamera()
 
                     if(!collided)
                     {
-                        MapManager.setTileAt(FPSCamera.tileId, tX, tY, tZ);
+                        World.setTileAt(tile, tX, tY, tZ);
 
                         if(!offlineMode)
                         {
-                            PacketsUtil.sendPacket(new PacketPlaceTile(tX, tY, tZ, FPSCamera.tileId));
+                            PacketsUtil.sendPacket(new PacketPlaceTile(tX, tY, tZ, tile));
                         }
                     }
                 }
             }
             else
             {
-                //Break
-                MapManager.setTileAt(0, tX, tY, tZ);
-
-                if(!offlineMode)
+                var tile = Tiles.getTile(World.getTileAt(tX, tY, tZ));
+                if(!tile.unbreakable)
                 {
-                    PacketsUtil.sendPacket(new PacketPlaceTile(tX, tY, tZ, 0));
+                    //Break
+                    World.setTileAt(0, tX, tY, tZ);
+
+                    if(!offlineMode)
+                    {
+                        PacketsUtil.sendPacket(new PacketPlaceTile(tX, tY, tZ, 0));
+                    }
                 }
             }
         }

@@ -8,7 +8,7 @@ function ChatManager()
 	{
 		if(!ChatManager.isOpen && key == "t")
 		{
-			FPSCamera.releasePointer();
+			MouseUtil.releasePointer();
 			$("#id_message").focus();
 			ev.preventDefault();
 		}
@@ -18,7 +18,7 @@ function ChatManager()
 			$("#id_message").blur();
 			setTimeout(function()
 			{
-				FPSCamera.attachPointer();
+				MouseUtil.attachPointer();
 			}, 200);
 			ev.preventDefault();
 		}

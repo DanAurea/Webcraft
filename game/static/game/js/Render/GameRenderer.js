@@ -1,3 +1,11 @@
+//Three.js
+var renderer;
+var scene;
+var uiScene;
+var camera;
+var uiCamera;
+var FOV = 45;
+
 function GameRenderer()
 {
     var depthMaterial, effectComposer, depthRenderTarget;
@@ -16,10 +24,12 @@ function GameRenderer()
         renderer.setSize(width, height);
         renderer.gammaInput = true;
     	renderer.gammaOutput = true;
+        renderer.autoClear = false;
         $("#gameContainer").append(renderer.domElement);
 
         //Init scene
         scene = new THREE.Scene();
+        uiScene = new THREE.Scene();
         FPSCamera.initFPSCamera();
         SkyRenderer.init();
 
@@ -27,6 +37,8 @@ function GameRenderer()
         camera = new THREE.PerspectiveCamera(FOV, width / height, 0.01, this.renderDistance);
         camera.rotation.order = "YXZ";
         camera.position.set(20, 30, 20);
+
+        uiCamera = new THREE.OrthographicCamera(0, width, height, 0, 0, 1000);
 
         scene.add(camera);
 
@@ -70,12 +82,16 @@ function GameRenderer()
     {
         FPSCamera.updateCamera();
         SkyRenderer.update();
-        MapManager.updateRender();
+        World.updateRender();
 
+        renderer.clear();
         scene.overrideMaterial = depthMaterial;
 		renderer.render(scene, camera, depthRenderTarget, true);
 		scene.overrideMaterial = null;
 		effectComposer.render();
+        renderer.clearDepth();
+
+        renderer.render(uiScene, uiCamera);
     }
 
     this.onResize =
@@ -87,6 +103,13 @@ function GameRenderer()
 		var newHeight = Math.floor(height / pixelRatio) || 1;
 		depthRenderTarget.setSize(newWidth, newHeight);
 		effectComposer.setSize(newWidth, newHeight);
+
+        width = newWidth;
+        height = newHeight;
+
+        uiCamera.top = height;
+        uiCamera.right = width;
+        uiCamera.updateProjectionMatrix();
     }
 }
 

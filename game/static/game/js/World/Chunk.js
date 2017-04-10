@@ -25,20 +25,20 @@ function Chunk(x, z)
         var neighbours = [];
         if(x == 0)
         {
-            neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX - 1, this.chunkZ));
+            neighbours.push(World.getChunkAtChunkCoords(this.chunkX - 1, this.chunkZ));
         }
         else if(x == 15)
         {
-            neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX + 1, this.chunkZ));
+            neighbours.push(World.getChunkAtChunkCoords(this.chunkX + 1, this.chunkZ));
         }
 
         if(z == 0)
         {
-            neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ - 1));
+            neighbours.push(World.getChunkAtChunkCoords(this.chunkX, this.chunkZ - 1));
         }
         else if(z == 15)
         {
-            neighbours.push(MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ + 1));
+            neighbours.push(World.getChunkAtChunkCoords(this.chunkX, this.chunkZ + 1));
         }
 
         if(neighbours.length > 0)
@@ -65,22 +65,22 @@ function Chunk(x, z)
         var chunk = this;
         if(x < 0)
         {
-            chunk = MapManager.getChunkAtChunkCoords(this.chunkX - 1, this.chunkZ);
+            chunk = World.getChunkAtChunkCoords(this.chunkX - 1, this.chunkZ);
             x = 16 + x;
         }
         else if(x > 15)
         {
-            chunk = MapManager.getChunkAtChunkCoords(this.chunkX + 1, this.chunkZ);
+            chunk = World.getChunkAtChunkCoords(this.chunkX + 1, this.chunkZ);
             x = x - 16;
         }
         else if(z < 0)
         {
-            chunk = MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ - 1);
+            chunk = World.getChunkAtChunkCoords(this.chunkX, this.chunkZ - 1);
             z = 16 + z;
         }
         else if(z > 15)
         {
-            chunk = MapManager.getChunkAtChunkCoords(this.chunkX, this.chunkZ + 1);
+            chunk = World.getChunkAtChunkCoords(this.chunkX, this.chunkZ + 1);
             z = z - 16;
         }
 

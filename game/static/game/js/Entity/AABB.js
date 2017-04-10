@@ -200,7 +200,7 @@ function AABB(x, y, z, x2, y2, z2)
                 var columnAabb = null;
                 for(y = bY; y < bY2; y++)
                 {
-                    tileId = MapManager.getTileAt(x, y, z);
+                    tileId = World.getTileAt(x, y, z);
                     if(tileId != 0)
                     {
                         var tile = Tiles.getTile(tileId);
@@ -241,8 +241,8 @@ function AABB(x, y, z, x2, y2, z2)
     this.addMapBoundaries =
     function addMapBoundaries(aabbArray)
     {
-        mapWidth = MapManager.totalWidth;
-        mapLength = MapManager.totalLength;
+        mapWidth = World.totalWidth;
+        mapLength = World.totalLength;
 
         //Floor & Ceiling
         aabbArray.push(new AABB(0, -100, 0, mapWidth, 0, mapLength));

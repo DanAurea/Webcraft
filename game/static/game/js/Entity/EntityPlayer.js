@@ -12,6 +12,8 @@ function EntityPlayer()
     this.model = null;
     this.avatar = "cat";
     this.username = "Anonymous";
+    this.inventory = new Array(10);
+    this.handIndex = 0;
 
     this._beginUpdate = EntityPlayer.prototype.beginUpdate;
     this.beginUpdate =
@@ -136,7 +138,7 @@ function EntityPlayer()
             this.model.position.y = renderY;
             this.model.position.z = renderZ;
 
-            this.model.rotation.y = FPSCamera.toRadians(renderYaw);
+            this.model.rotation.y = MathUtil.toRadians(renderYaw);
         }
     }
 

@@ -9,29 +9,33 @@
                 <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
                 <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
             {% endcompress %}
-            <link rel="stylesheet" href="{% static 'game/css/jquery.mCustomScrollbar.min.css' %}">
+            <link rel="stylesheet" href="{% static 'game/css/mCustomScrollbar.min.css' %}">
     </head>
     <body>
 
         <div id="gameContainer">
             {% include "chat/window.html" %}
 
-            <div class="gui" id="ingameGui">
-                <div class="cross"></div>
-                <div class="gui_bottom gui_right">
-                    <span id="ingame_gui_version">V: </span><br/>
-                    <span id="ingame_gui_block">Tile: </span><br/>
-                    <span id="ingame_gui_time">Time: </span>
+            <div class="gui" id="debugGui">
+                <div id="debugGuiInternal" class="gui_bottom gui_right">>
                 </div>
+            </div>
+            <div class="gui" id="playerListGui">
                 <div class="gui_top gui_right">
                     <br/>
-                    <span>Online Players :</span><br/>
-                    <span id="ingame_gui_playerList">...</span><br/>
+                    <span>Players : </span><br/>
+                    <span id="playerListGui_playerList">...</span><br/>
                 </div>
             </div>
         </div>
 
         {% compress js %}
+            <script>
+                TOKEN = {{ token|safe }};
+                USERNAME = {{ username|safe }};
+            </script>
+
+            <!-- Libs -->
             <script src="{% static 'game/lib/jquery.min.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/lib/three.min.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/lib/stats.min.js' %}" charset="utf-8"></script>
@@ -39,6 +43,9 @@
             <script src="{% static 'game/lib/perlin.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/lib/OBJLoader.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/lib/gamepad.min.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/lib/mCustomScrollbar.min.js' %}" charset="utf-8"></script>
+
+            <!-- Shaders -->
             <script src="{% static 'game/js/Shaders/CopyShader.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Shaders/EffectComposer.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Shaders/MaskPass.js' %}" charset="utf-8"></script>
@@ -46,38 +53,43 @@
             <script src="{% static 'game/js/Shaders/ShaderPass.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Shaders/SSAOShader.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Shaders/SkyDome.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/Gui/GuiDebugger.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/ResourceLoader.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/TimeManager.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/MapManager.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/Chunk.js' %}" charset="utf-8"></script>
+
+
+            <!-- Ressources -->
+            <script src="{% static 'game/js/Resources/ModelLoader.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Resources/ResourceLoader.js' %}" charset="utf-8"></script>
+
+
+            <!-- World -->
+            <script src="{% static 'game/js/World/World.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/World/Chunk.js' %}" charset="utf-8"></script>
+
+
+            <!-- Entities -->
             <script src="{% static 'game/js/Entity/AABB.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Entity/Entity.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Entity/EntityPlayer.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/GameRenderer.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/TileRenderer.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/SkyRenderer.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/Game.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/Tiles.js' %}" charset="utf-8"></script>
+
+
+            <!-- Render -->
+            <script src="{% static 'game/js/Render/GameRenderer.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Render/TileRenderer.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Render/SkyRenderer.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Render/Materials.js' %}" charset="utf-8"></script>
+
+
+            <!-- Tiles -->
+            <script src="{% static 'game/js/Tiles/Tiles.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Tiles/Tile.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Tiles/TileAir.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Tiles/TileBounded.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Tiles/TileColorChange.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Tiles/TileModel.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/ModelLoader.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/FPSCamera.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/Materials.js' %}" charset="utf-8"></script>
 
-            <script src="{% static 'game/lib/scrollPane/jquery.mCustomScrollbar.concat.min.js' %}" charset="utf-8"></script>
 
+            <!-- WebSocket & Packets -->
             <script src="{% static 'communication/js/Packet.js' %}" charset="utf-8"></script>
-            <script src="{% static 'communication/js/Packets.js' %}" charset="utf-8"></script>
-
-            <script>
-                TOKEN = {{ token|safe }};
-                USERNAME = {{ username|safe }};
-            </script>
-
+            <script src="{% static 'communication/js/Packets.js' %}" charset="utf-8"></script>s
             <script src="{% static 'communication/js/PacketsUtil.js' %}" charset="utf-8"></script>
             <script src="{% static 'communication/js/PacketChat.js' %}" charset="utf-8"></script>
             <script src="{% static 'communication/js/PacketLogin.js' %}" charset="utf-8"></script>
@@ -85,15 +97,41 @@
             <script src="{% static 'communication/js/PacketMove.js' %}" charset="utf-8"></script>
             <script src="{% static 'communication/js/PacketPlaceTile.js' %}" charset="utf-8"></script>
             <script src="{% static 'communication/js/PacketReady.js' %}" charset="utf-8"></script>
-
             <script src="{% static 'communication/js/WebsocketManager.js' %}" charset="utf-8"></script>
 
+
+            <!-- Chat module -->
             <script src="{% static 'chat/js/Messaging.js' %}" charset="utf-8"></script>
 
+
+            <!-- GUI -->
             <script src="{% static 'game/js/Gui/Gui.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/Gui/IngameGui.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/Controls.js' %}" charset="utf-8"></script>
-            <script src="{% static 'game/js/GamePadControls.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/Gui3D.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/Gui3DHelper.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/GuiInventory.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/GuiIngame.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/GuiDebug.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/GuiPlayerList.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/Container/Slot.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/Container/SlotInfinite.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/Container/SlotHotbar.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/Container/ContainerManager.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Gui/Container/Container.js' %}" charset="utf-8"></script>
+
+
+            <!-- Input -->
+            <script src="{% static 'game/js/Input/Controls.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Input/GamePadControls.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Input/FPSCamera.js' %}" charset="utf-8"></script>
+
+
+            <!-- Utils -->
+            <script src="{% static 'game/js/Utils/MathUtil.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Utils/TimeManager.js' %}" charset="utf-8"></script>
+
+
+            <!-- Starting script -->
+            <script src="{% static 'game/js/Game.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/GameLoader.js' %}" charset="utf-8"></script>
         {% endcompress %}
 

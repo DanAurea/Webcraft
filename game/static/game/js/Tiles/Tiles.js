@@ -1,12 +1,13 @@
 function Tiles()
 {
-    this.tiles = Array();
+    this.tiles = [];
+    this.placableTiles = [];
 
     this.init =
     function init()
     {
         //Register tiles
-        this.AIR = new TileAir(0, "Air", 0xFFFFFF);
+        this.AIR = new TileAir(0, "Air", 0xFFFFFF).setUnplacable();
         this.GRASS = new TileColorChange(1, "Grass", 0x167117, 0.15, 0.2, 0.05);
         this.DIRT = new Tile(2, "Dirt", 0x4d361f);
         this.STONE = new Tile(3, "Stone", 0x787878);
@@ -17,7 +18,7 @@ function Tiles()
         this.FLOWER_RED = new TileModel(8, "Red flower", "models/flower_red.obj").setRenderAABB(new AABB(0.0, 0.0, 0.0, 1, 0.4, 1)).setCollisionAABB(null);
         this.FLOWER_BLUE = new TileModel(9, "Blue flower", "models/flower_blue.obj").setRenderAABB(new AABB(0.0, 0.0, 0.0, 1, 0.4, 1)).setCollisionAABB(null);
         this.GRASS_TALL = new TileModel(10, "Tall grass", "models/grass.obj").setRenderAABB(new AABB(0.0, 0.0, 0.0, 1, 0.4, 1)).setCollisionAABB(null);
-		this.BEDROCK = new Tile (11, "Bedrock", 0x111111);
+		this.BEDROCK = new Tile (11, "Bedrock", 0x111111).setUnplacable().setUnbreakable();
 		this.CACTUS = new TileModel(12, "Cactus", "models/cactus.obj");
         this.CAT = new TileModel(13, "Ninja Cat", "models/cat.obj").setRenderAABB(new AABB(0.15, 0.0, 0.15, 0.85, 0.6, 0.85)).setCollisionAABB(new AABB(0.15, 0.0, 0.15, 0.85, 0.6, 0.85));
 		this.APPLE = new TileModel(14,"Apple", "models/apple.obj").setCollisionAABB(null);

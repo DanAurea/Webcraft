@@ -1,7 +1,7 @@
 var tileQueue = [];//Handle tile placed before player connected
 var mapIsReady = false;
 
-function MapManager()
+function World()
 {
     this.update =
     function update()
@@ -109,4 +109,4 @@ function MapManager()
     }
 }
 
-var MapManager = new MapManager();
+var World = new World();

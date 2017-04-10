@@ -1,28 +1,24 @@
 var offlineMode = true;
+
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 //Constants
-var FOV = 45;
-var VERSION = "0.2.2A";
+var VERSION = "0.3A";
 
 //Properties
 var width;
 var height;
 var textures;
 var thePlayer;
-
-//Three.js
-var renderer;
-var scene;
-var camera;
-var mesh;
+var mouseX = 0
+var mouseY = 0;
 
 var stats;
 
 function initGame()
 {
-    window.addEventListener('resize', onWindowResize, false);
+    window.addEventListener("resize", onWindowResize, false);
 
     stats = new Stats();
     stats.showPanel(0);
@@ -36,26 +32,27 @@ function initGame()
     {
         ResourceLoader.initModels(function()
         {
+            MouseUtil.init();
             Tiles.init();
             Materials.init();
             GameRenderer.init();
+            GUIS.init();
             Controls.init();
             GamePadControls.init();
-            GUIS.init();
 
             ResourceLoader.loadMapInfo(function(data)
             {
-                MapManager.initMap(data["size"], data["size"], data["timeDay"], data["durationDay"], data["seedColor"]);
-                var chunkAmount = MapManager.mapWidth * MapManager.mapLength;
+                World.initMap(data["size"], data["size"], data["timeDay"], data["durationDay"], data["seedColor"]);
+                var chunkAmount = World.mapWidth * World.mapLength;
                 var loadedChunk = 0;
 
-                for(var x = 0; x < MapManager.mapWidth; x++)
+                for(var x = 0; x < World.mapWidth; x++)
                 {
-                    for(var z = 0; z < MapManager.mapLength; z++)
+                    for(var z = 0; z < World.mapLength; z++)
                     {
                         ResourceLoader.loadChunkAt(x, z, function(chunkData)
                         {
-                            MapManager.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = ResourceLoader.uncompress(chunkData["tiles"]);
+                            World.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = ResourceLoader.uncompress(chunkData["tiles"]);
                             loadedChunk++;
 
                             if(loadedChunk >= chunkAmount)
@@ -96,7 +93,7 @@ function finalizeGame()
     GUIS.INGAME_GUI.open();
     GUIS.CHAT_GUI.open();
     ChatManager.init();
-    MapManager.applyQueue();
+    World.applyQueue();
 
     // On effectue le rendu de la scène
     requestAnimationFrame(loopGame);
@@ -107,12 +104,13 @@ function loopGame(time)
     stats.begin();
 
     TimeManager.calculateTime(time);
+    ContainerManager.updatePos();
     Controls.update();
     GamePadControls.update();
 
     while(TimeManager.shallTick())
     {
-        MapManager.update();
+        World.update();
         Entities.updateEntities();
 
         if(!offlineMode && thePlayer.hasMoved())

@@ -53,7 +53,7 @@ function SkyRenderer()
     this.update =
     function update()
     {
-        var time = (MapManager.time % MapManager.dayDuration) / MapManager.dayDuration;
+        var time = (World.time % World.dayDuration) / World.dayDuration;
         var lightAmount = Math.max(Math.min((Math.cos(time * Math.PI * 2 - Math.PI) + 0.5), 1), 0);
 
         //Sky gradient
@@ -77,7 +77,7 @@ function SkyRenderer()
         scene.fog.color = SkyDomeShader.uniforms.bottomColor.value;
 
         //Stars
-        var starFieldAngle = (MapManager.time % (MapManager.dayDuration * starCycleDuration)) / (MapManager.dayDuration * starCycleDuration);
+        var starFieldAngle = (World.time % (World.dayDuration * starCycleDuration)) / (World.dayDuration * starCycleDuration);
         for(var i = 0; i < this.starFields.length; i++)
         {
             this.starFields[i].position.set(camera.position.x, camera.position.y, camera.position.z);
