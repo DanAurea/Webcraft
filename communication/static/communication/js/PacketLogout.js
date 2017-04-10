@@ -6,10 +6,8 @@ function PacketLogout()
     this.handler =
     function handler()
     {
-        console.log("Player logout !");
         var entity = Entities.getPlayerByUsername(this.username);
 
-        console.log(entity);
         if(entity != null)
         {
             entity.despawn();

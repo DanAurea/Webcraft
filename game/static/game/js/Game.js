@@ -1,5 +1,4 @@
-var offlineMode = true;
-
+var offlineMode = window.location.pathname.endsWith("debug.html");
 //Cross browser compatibility
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
