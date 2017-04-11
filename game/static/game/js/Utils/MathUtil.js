@@ -11,6 +11,12 @@ function MathUtil()
     {
         return pX >= x && pX < x + width && pY >= y && pY < y + height;
     }
+
+    this.lerp =
+    function lerp(x1, x2, f)
+    {
+        return (x2 - x1) * f + x1;
+    }
 }
 
 var MathUtil = new MathUtil();

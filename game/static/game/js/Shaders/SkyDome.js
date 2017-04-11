@@ -1,6 +1,7 @@
 var topSkyColor = new THREE.Color(0x2299FF);
 var bottomSkyColor = new THREE.Color(0xDDDDFF);
-var blackSkyColor = new THREE.Color(0x000000);
+var topBlackSkyColor = new THREE.Color(0x000000);
+var bottomBlackSkyColor = new THREE.Color(0x020205);
 var orangeSkyColor = new THREE.Color(0xFFB046);
 
 var SkyDomeShader = {

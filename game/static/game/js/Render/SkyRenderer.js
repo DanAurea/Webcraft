@@ -31,7 +31,7 @@ function SkyRenderer()
 
 
         //World light
-        scene.add(new THREE.AmbientLight(0x111111));
+        scene.add(new THREE.AmbientLight(0x0f0f33));
         this.sunLight = new THREE.DirectionalLight(0xFFFFFF, 1);
 		this.sunLight.color.setHSL(0.1, 1, 0.95);
 		this.sunLight.position.set(0, 300, 0);
@@ -60,11 +60,11 @@ function SkyRenderer()
         this.skyDome.position.set(camera.position.x, camera.position.y, camera.position.z);
         this.sunLight.intensity = lightAmount;
         this.hemiLight.intensity = lightAmount;
-        SkyDomeShader.uniforms.topColor.value = blackSkyColor.lerpRGB(topSkyColor, lightAmount);
+        SkyDomeShader.uniforms.topColor.value = topBlackSkyColor.lerpRGB(topSkyColor, lightAmount);
 
         if(lightAmount <= 0.10)
         {
-            SkyDomeShader.uniforms.bottomColor.value = blackSkyColor.lerpRGB(orangeSkyColor, lightAmount * 10);
+            SkyDomeShader.uniforms.bottomColor.value = bottomBlackSkyColor.lerpRGB(orangeSkyColor, lightAmount * 10);
         }
         else if(lightAmount <= 0.25)
         {
@@ -81,6 +81,7 @@ function SkyRenderer()
         for(var i = 0; i < this.starFields.length; i++)
         {
             this.starFields[i].position.set(camera.position.x, camera.position.y, camera.position.z);
+            this.starFields[i].rotation.y = starFieldAngle;
             this.starFields[i].rotation.z = starFieldAngle;
             this.starFields[i].material.opacity = 1 - lightAmount;
         }
@@ -94,30 +95,27 @@ function SkyRenderer()
         {
             var starsGeometry = new THREE.Geometry();
             var amount = 1000 - 400 * size;
+            var colors = [];
             for (var i = 0; i <= amount; i++)
             {
             	var star = new THREE.Vector3();
 
                 var phi = Math.random() * 2 * Math.PI;
-                var theta = Math.random() * Math.PI;
+                var theta = (1 - Math.random()) * Math.PI;
 
                 star.x = radius * Math.cos(phi) * Math.sin(theta);
                 star.y = radius * Math.sin(phi) * Math.sin(theta);
                 star.z = radius * Math.cos(theta);
             	starsGeometry.vertices.push(star);
+                starsGeometry.colors.push(new THREE.Color(Math.random() * 0.1 + 0.3, Math.random() * 0.2 + 0.3, Math.random() * 0.5 + 0.5));
             }
 
-            var starsMaterial = new THREE.PointsMaterial({color: Math.random() <= 0.5 ? 0x777777 : 0xBBBBBB, size: size, sizeAttenuation: false, transparent: true, fog: false});
+            var starsMaterial = new THREE.PointsMaterial({size: size, sizeAttenuation: false, transparent: true, fog: false, vertexColors: THREE.VertexColors});
             this.starFields.push(new THREE.Points(starsGeometry, starsMaterial));
+            this.starFields[size].rotation.x = MathUtil.toRadians(90);
 
             scene.add(this.starFields[size]);
         }
-    }
-
-    this.lerp =
-    function lerp(x1, x2, f)
-    {
-        return (x2 - x1) * f + x1;
     }
 }
 
