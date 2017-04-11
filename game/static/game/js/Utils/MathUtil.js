@@ -17,6 +17,13 @@ function MathUtil()
     {
         return (x2 - x1) * f + x1;
     }
+
+    this.lessDecimal =
+    function lessDecimal(value, decimal)
+    {
+        var power = decimal * 10;
+        return Math.round(value * power) / power;
+    }
 }
 
 var MathUtil = new MathUtil();

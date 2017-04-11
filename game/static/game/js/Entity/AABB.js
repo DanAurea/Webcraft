@@ -33,9 +33,9 @@ function AABB(x, y, z, x2, y2, z2)
 
         var sub = endVector.sub(startVec);
         var intersect = startVec.add(sub.multiplyScalar(clipReturn[1]));
-        intersect.x = intersect.x.toFixed(6);
-        intersect.y = intersect.y.toFixed(6);
-        intersect.z = intersect.z.toFixed(6);
+        intersect.x = MathUtil.lessDecimal(intersect.x, 6);
+        intersect.y = MathUtil.lessDecimal(intersect.y, 6);
+        intersect.z = MathUtil.lessDecimal(intersect.z, 6);
         output.intersect = intersect;
 
         if(intersect.y == this.y)
@@ -127,12 +127,12 @@ function AABB(x, y, z, x2, y2, z2)
         var sY = this.y2 - this.y;
         var sZ = (this.z2 - this.z) / 2;
 
-        this.x = x - sX;
+        this.x = MathUtil.lessDecimal(x - sX, 6);
         this.y = y;
-        this.z = z - sZ;
-        this.x2 = x + sX;
+        this.z = MathUtil.lessDecimal(z - sZ, 6);
+        this.x2 = MathUtil.lessDecimal(x + sX, 6);
         this.y2 = y + sY;
-        this.z2 = z + sZ;
+        this.z2 = MathUtil.lessDecimal(z + sZ, 6);
     }
 
     this.move =
