@@ -10,11 +10,11 @@ function PacketPlaceTile(x, y, z, tileId)
     {
         if(mapIsReady)
         {
-            MapManager.setTileAt(this.tileId, this.x, this.y, this.z);
+            World.setTileAt(this.tileId, this.x, this.y, this.z);
         }
         else
         {
-            MapManager.queueTile(this.x, this.y, this.z, this.tileId);
+            World.queueTile(this.x, this.y, this.z, this.tileId);
         }
     }
 

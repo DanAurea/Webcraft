@@ -28,13 +28,14 @@ function MouseUtil()
     	};
 
         document.addEventListener("mousemove", function(e)
-        {
+        {   
+
             if(!GamePadControls.gamepadEnabled)
             {
                 if(!MouseUtil.isLocked)
                 {
-                    MouseUtil.mouseX = e.x;
-                    MouseUtil.mouseY = height - e.y;
+                    MouseUtil.mouseX = e.clientX;
+                    MouseUtil.mouseY = height - e.clientY;
                 }
                 else
                 {

@@ -19,7 +19,7 @@
                 <div class="wrapper">
                 	<div class="container">
                         <div class="gui_center">
-                            <img src="./img/ripple.svg">
+                            <img src="{% static 'game/img/ripple.svg' %}">
                             <p id="loadingTitle">Loading</p>
                             <p id="loadingDesc"></p>
                         </div>
@@ -152,6 +152,7 @@
 
             <!-- Utils -->
             <script src="{% static 'game/js/Utils/MathUtil.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/Utils/MouseUtil.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/Utils/TimeManager.js' %}" charset="utf-8"></script>
 
 
