@@ -3,7 +3,7 @@ var offlineMode = window.location.pathname.endsWith("debug.html");
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 //Constants
-var VERSION = "0.3A";
+var VERSION = "0.3.1A";
 
 //Properties
 var width;

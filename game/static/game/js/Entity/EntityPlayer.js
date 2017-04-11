@@ -55,7 +55,8 @@ function EntityPlayer()
         var newX = this.totalMotionX;
         var newY = this.totalMotionY;
         var newZ = this.totalMotionZ;
-        var offsetY = 0;
+        var stepHeightX = 0;
+        var stepHeightZ = 0;
 
         if(!this.noClip)
         {
@@ -69,36 +70,35 @@ function EntityPlayer()
                 var nPos = null;
                 for(var i = 0; i < tileAmount; i++)
                 {
-                    nPos = tiles[i].clipX(this.collision, newX);
+                    nPos = tiles[i].clipX(this.collision, newX, this.onGround);
                     newX = nPos[0];
 
-                    if(nPos[1] > offsetY && this.onGround)
+                    if(nPos[1] > stepHeightX)
                     {
-                        offsetY = nPos[1];
+                        stepHeightX = nPos[1];
                     }
                 }
-                newY += offsetY;
-                this.collision.move(newX, offsetY, 0);
-                offsetY = 0;
+                this.collision.move(newX, stepHeightX, 0);
+                stepHeightZ = stepHeightX;
 
                 for(var i = 0; i < tileAmount; i++)
                 {
-                    nPos = tiles[i].clipZ(this.collision, newZ);
+                    nPos = tiles[i].clipZ(this.collision, newZ, this.onGround);
                     newZ = nPos[0];
 
-                    if(nPos[1] > offsetY && this.onGround)
+                    if(nPos[1] > stepHeightZ)
                     {
-                        offsetY = nPos[1];
+                        stepHeightZ = nPos[1];
                     }
                 }
-                newY += offsetY;
-                this.collision.move(0, offsetY, newZ);
+                this.collision.move(0, stepHeightZ > stepHeightX ? stepHeightZ - stepHeightX : 0, newZ);
 
                 for(var i = 0; i < tileAmount; i++)
                 {
                     newY = tiles[i].clipY(this.collision, newY);
                 }
                 this.collision.move(0, newY, 0);
+                newY += stepHeightZ;
             }
 
             this.onGround = newY != this.totalMotionY && this.totalMotionY <= 0;

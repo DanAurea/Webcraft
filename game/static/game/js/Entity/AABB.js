@@ -193,11 +193,12 @@ function AABB(x, y, z, x2, y2, z2)
         var bY2 = Math.ceil(this.y2);
         var bZ2 = Math.ceil(this.z2);
         var tile;
+        var columnAabb;
         for(x = bX; x < bX2; x++)
         {
             for(z = bZ; z < bZ2; z++)
             {
-                var columnAabb = null;
+                columnAabb = null;
                 for(y = bY; y < bY2; y++)
                 {
                     tileId = World.getTileAt(x, y, z);
@@ -214,17 +215,23 @@ function AABB(x, y, z, x2, y2, z2)
                             }
                             else if(aabb != null && columnAabb != null)
                             {
-                                columnAabb = columnAabb.expandBox(0, aabb.y2 - aabb.y, 0);
+                                columnAabb.y2 += aabb.y2 - aabb.y;
                             }
                             else if(aabb == null && columnAabb != null)
                             {
                                 tiles.push(columnAabb);
+                                columnAabb = null;
                             }
                         }
                         else
                         {
                             tiles.push([tile, x, y, z]);
                         }
+                    }
+                    else if(columnAabb != null)
+                    {
+                        tiles.push(columnAabb);
+                        columnAabb = null;
                     }
                 }
 
@@ -258,42 +265,45 @@ function AABB(x, y, z, x2, y2, z2)
     }
 
     this.clipX =
-    function clipX(hitbox, posX)
+    function clipX(hitbox, motX, useStepAssist)
     {
         if (hitbox.y >= this.y2 || hitbox.y2 <= this.y || hitbox.z >= this.z2 || hitbox.z2 <= this.z)
 		{
-			return [posX, -1];
+			return [motX, -1];
 		}
-		else if (posX > 0 && hitbox.x2 <= this.x)
+		else if (motX > 0 && hitbox.x2 <= this.x)
 		{
-            var offsetY = this.y2 - hitbox.y;
+            var stepHeight = this.y2 - hitbox.y;
             var distance = this.x - hitbox.x2;
-            var nX = distance < posX ? distance : posX;
+            var nX = distance < motX ? distance : motX;
 
-            if(offsetY <= 1.0 && offsetY >= 0.0)
+            if(useStepAssist && stepHeight <= 1.0 && stepHeight >= 0.0)
             {
-    			return [nX, offsetY + 0.3];
+                var newPos = new AABB(hitbox.x + motX, hitbox.y + stepHeight, hitbox.z, hitbox.x2 + motX + 0.001, hitbox.y2 + stepHeight, hitbox.z2);
+                if(!newPos.intersectList(newPos.tilesInBox(true)))
+                {
+                    return [motX, stepHeight];
+                }
             }
-            else
-            {
-                return [nX, -1];
-            }
+            return [nX, 0];
 		}
-		else if (posX < 0 && hitbox.x >= this.x2)
+		else if (motX < 0 && hitbox.x >= this.x2)
 		{
-            var offsetY = this.y2 - hitbox.y;
+            var stepHeight = this.y2 - hitbox.y;
             var distance = this.x2 - hitbox.x;
-            var nX = distance > posX ? distance : posX;
-            if(offsetY <= 1.0 && offsetY >= 0.0)
+            var nX = distance > motX ? distance : motX;
+
+            if(useStepAssist && stepHeight <= 1.0 && stepHeight >= 0.0)
             {
-                 return [nX, offsetY + 0.3];
+                var newPos = new AABB(hitbox.x + motX - 0.001, hitbox.y + stepHeight, hitbox.z, hitbox.x2 + motX, hitbox.y2 + stepHeight, hitbox.z2);
+                if(!newPos.intersectList(newPos.tilesInBox(true)))
+                {
+                    return [motX, stepHeight];
+                }
             }
-            else
-            {
-                return [nX, -1];
-            }
+            return [nX, 0];
 		}
-		return [posX, -1];
+		return [motX, 0];
     }
 
     this.clipY =
@@ -318,41 +328,57 @@ function AABB(x, y, z, x2, y2, z2)
     }
 
     this.clipZ =
-    function clipZ(hitbox, posZ)
+    function clipZ(hitbox, motZ, useStepAssist)
     {
         if (hitbox.y >= this.y2 || hitbox.y2 <= this.y || hitbox.x >= this.x2 || hitbox.x2 <= this.x)
 		{
-			return [posZ, 0];
+			return [motZ, 0];
 		}
-        else if (posZ > 0 && hitbox.z2 <= this.z)
+        else if (motZ > 0 && hitbox.z2 <= this.z)
 		{
-            var offsetY = this.y2 - hitbox.y;
+            var stepHeight = this.y2 - hitbox.y;
             var distance = this.z - hitbox.z2;
-            var nZ = distance < posZ ? distance : posZ;
+            var nZ = distance < motZ ? distance : motZ;
 
-            if(offsetY <= 1.0 && offsetY >= 0.0)
+            if(useStepAssist && stepHeight <= 1.0 && stepHeight >= 0.0)
             {
-    			return [nZ, offsetY + 0.3];
+                var newPos = new AABB(hitbox.x, hitbox.y + stepHeight, hitbox.z + motZ, hitbox.x2, hitbox.y2 + stepHeight, hitbox.z2 + motZ + 0.001);
+                if(!newPos.intersectList(newPos.tilesInBox(true)))
+                {
+                    return [motZ, stepHeight];
+                }
             }
-            else
-            {
-                return [nZ, -1];
-            }
+            return [nZ, 0];
 		}
-		else if (posZ < 0 && hitbox.z >= this.z2)
+		else if (motZ < 0 && hitbox.z >= this.z2)
 		{
-            var offsetY = this.y2 - hitbox.y;
+            var stepHeight = this.y2 - hitbox.y;
             var distance = this.z2 - hitbox.z;
-            var nZ = distance > posZ ? distance : posZ;
-            if(offsetY <= 1.0 && offsetY >= 0.0)
+            var nZ = distance > motZ ? distance : motZ;
+
+            if(useStepAssist && stepHeight <= 1.0 && stepHeight >= 0.0)
             {
-                 return [nZ, offsetY + 0.3];
+                var newPos = new AABB(hitbox.x, hitbox.y + stepHeight, hitbox.z + motZ - 0.001, hitbox.x2, hitbox.y2 + stepHeight, hitbox.z2 + motZ);
+                if(!newPos.intersectList(newPos.tilesInBox(true)))
+                {
+                    return [motZ, stepHeight];
+                }
             }
-            else
-            {
-                return [nZ, -1];
-            }
+            return [nZ, 0];
 		}
-		return [posZ, -1];
+		return [motZ, 0];
+    }
+
+    this.intersectList =
+    function intersectList(aabbs)
+    {
+        for(var i = 0, length = aabbs.length; i < length; i++)
+        {
+            if(this.intersect(aabbs[i]))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
