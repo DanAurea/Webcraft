@@ -13,7 +13,32 @@
     </head>
     <body>
 
-        <div id="gameContainer">
+        <div id="gameContainer"></div>
+        <div id="gameOverlay">
+            <div id="loadingPage">
+                <div class="wrapper">
+                	<div class="container">
+                        <div class="gui_center">
+                            <img src="./img/ripple.svg">
+                            <p id="loadingTitle">Loading</p>
+                            <p id="loadingDesc"></p>
+                        </div>
+                    </div>
+                    <ul class="bg-bubbles">
+                		<li></li>
+                		<li></li>
+                		<li></li>
+                		<li></li>
+                		<li></li>
+                		<li></li>
+                		<li></li>
+                		<li></li>
+                		<li></li>
+                		<li></li>
+                	</ul>
+                </div>
+            </div>
+            
             {% include "chat/window.html" %}
 
             <div class="gui" id="debugGui">
@@ -132,6 +157,7 @@
 
             <!-- Starting script -->
             <script src="{% static 'game/js/Game.js' %}" charset="utf-8"></script>
+            <script src="{% static 'game/js/LoadingPage.js' %}" charset="utf-8"></script>
             <script src="{% static 'game/js/GameLoader.js' %}" charset="utf-8"></script>
         {% endcompress %}
 

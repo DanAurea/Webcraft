@@ -12,7 +12,9 @@ function onDownloadFinished(duration)
  */
 function onDownloadUpdate(downloadedAmount, totalAmount)
 {
-    console.log("Downloaded file : " + downloadedAmount + " / " + totalAmount + "(" + parseInt((downloadedAmount / totalAmount) * 100) + "%)");
+    var status = "Downloaded file : " + downloadedAmount + " / " + totalAmount + "(" + parseInt((downloadedAmount / totalAmount) * 100) + "%)";
+    console.log(status);
+    LoadingPage.setText(status);
 }
 
 /*
@@ -29,8 +31,9 @@ function onDownloadError(error)
 // Game Start
 $(function()
 {
+    LoadingPage.init();
+    LoadingPage.setText("Initializing game...");
     console.log("Game Starting...");
     console.log("Download game resources...");
-    //ResourceLoader.downloadGameResources(onDownloadFinished, onDownloadUpdate, onDownloadError);
-    initGame();
+    ResourceLoader.downloadGameResources(onDownloadFinished, onDownloadUpdate, onDownloadError);
 });

@@ -27,8 +27,10 @@ function initGame()
     width = window.innerWidth;
     height = window.innerHeight;
 
+    LoadingPage.setText("Initializing textures...");
     textures = ResourceLoader.initTextures(function()
     {
+        LoadingPage.setText("Initializing models...");
         ResourceLoader.initModels(function()
         {
             MouseUtil.init();
@@ -39,6 +41,7 @@ function initGame()
             Controls.init();
             GamePadControls.init();
 
+            LoadingPage.setText("Downloading world info...");
             ResourceLoader.loadMapInfo(function(data)
             {
                 World.initMap(data["size"], data["size"], data["timeDay"], data["durationDay"], data["seedColor"]);
@@ -49,6 +52,7 @@ function initGame()
                 {
                     for(var z = 0; z < World.mapLength; z++)
                     {
+                        LoadingPage.setText("Downloading world chunks...");
                         ResourceLoader.loadChunkAt(x, z, function(chunkData)
                         {
                             World.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = ResourceLoader.uncompress(chunkData["tiles"]);
@@ -93,9 +97,13 @@ function finalizeGame()
     GUIS.CHAT_GUI.open();
     ChatManager.init();
     World.applyQueue();
+    World.renderChunksTimed(function()
+    {
+        LoadingPage.hide();
 
-    // On effectue le rendu de la scène
-    requestAnimationFrame(loopGame);
+        // On effectue le rendu de la scène
+        requestAnimationFrame(loopGame);
+    });
 }
 
 function loopGame(time)

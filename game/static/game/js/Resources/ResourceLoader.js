@@ -232,11 +232,11 @@ function ResourceLoader()
 
         // RLE decompressing
         for (i=0; i< chunk.length; i++)
-        {   
+        {
             // Delaying work avoid running out of memory
             (function(i){
                 setTimeout(function(){
-                
+
                     data  = chunk[i].split(":");
 
                     // Decoding single / multiples values in sequences

@@ -16,6 +16,7 @@ function World()
         for(var x = 0, length = this.chunks.length; x < length; x++)
         {
             var chunk = this.chunks[x];
+
             if(chunk.isDirty && loadedAmount < 3)
             {
                 chunk.isDirty = false;
@@ -23,6 +24,28 @@ function World()
                 loadedAmount++;
             }
         }
+    }
+
+    this.renderChunksTimed =
+    function renderChunksTimed(callback)
+    {
+        var index = 0;
+        var funcClosure = function()
+        {
+            if(index < World.chunks.length)
+            {
+                LoadingPage.setText("Rendering chunks (" + (index + 1) + "/" + World.chunks.length + ")");
+                var chunk = World.chunks[index++];
+                chunk.isDirty = false;
+                chunk.prepareChunkRender();
+                setTimeout(funcClosure, 10);
+            }
+            else
+            {
+                callback();
+            }
+        }
+        funcClosure();
     }
 
     this.initMap =
