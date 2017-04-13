@@ -1,5 +1,5 @@
 var debugGui = {
-    onDebugGuiUpdate: function(gui)
+    onDebugGuiUpdate: function()
     {
         var debugGui = gui.find("#debugGuiInternal")
         debugGui.text("V: " + VERSION);

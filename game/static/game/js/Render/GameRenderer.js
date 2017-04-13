@@ -104,9 +104,6 @@ function GameRenderer()
 		depthRenderTarget.setSize(newWidth, newHeight);
 		effectComposer.setSize(newWidth, newHeight);
 
-        width = newWidth;
-        height = newHeight;
-
         uiCamera.top = height;
         uiCamera.right = width;
         uiCamera.updateProjectionMatrix();

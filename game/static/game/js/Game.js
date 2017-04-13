@@ -3,7 +3,7 @@ var offlineMode = window.location.pathname.endsWith("debug.html");
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
 //Constants
-var VERSION = "0.3.1A";
+var VERSION = "0.3.2A";
 
 //Properties
 var width;
@@ -136,6 +136,9 @@ function loopGame(time)
 
 function onWindowResize()
 {
+    var oldWidth = width;
+    var oldHeight = height;
+
     width = window.innerWidth;
     height = window.innerHeight;
 
@@ -145,4 +148,5 @@ function onWindowResize()
 	renderer.setSize(width, height);
 
     GameRenderer.onResize();
+    GUIS.resizeAllGuis(oldWidth, oldHeight);
 }

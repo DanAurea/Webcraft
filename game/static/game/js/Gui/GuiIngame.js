@@ -4,20 +4,23 @@ var ingameGui =
     barCursor: null,
     container: null,
 
-    ingameGuiOpen: function()
+    ingameGuiOpen: function(firstOpen)
     {
+        Gui3DHelper.clearUI("ingame");
         Gui3DHelper.setUIName("ingame");
         Gui3DHelper.initLight();
 
+        ContainerManager.close(ingameGui.container);
         ingameGui.container = new Container(width / 2, 27, 468, 54);
         for(var i = 0; i < 10; i++)
         {
             ingameGui.container.slots.push(new SlotHotbar(null, width / 2 - 198 + i * 44, 22, i));
         }
-        ingameGui.gamepadCursor = Gui3DHelper.renderQuad(40, 40, -1, 16, 16, textures["gamepad_pointer"], 0, 0, 16, 16);
-        var cross = Gui3DHelper.renderQuad(width / 2, height / 2, -999, 16, 16, textures["cross"], 0, 0, 32, 32);
-        var slotsBar = Gui3DHelper.renderQuad(width / 2, 27, -999, 468, 54, textures["inventory"], 0, 0, 234, 27);
-        this.barCursor = Gui3DHelper.renderQuad(width / 2 - 198, 49, -998, 14, 8, textures["inventory"], 0, 27, 7, 31);
+
+        ingameGui.gamepadCursor = Gui3DHelper.renderQuad(width / 2, height / 2, 1, 16, 16, textures["gamepad_pointer"], 0, 0, 16, 16);
+        Gui3DHelper.renderQuad(width / 2, height / 2, -999, 16, 16, textures["cross"], 0, 0, 32, 32);
+        Gui3DHelper.renderQuad(width / 2, 0, -999, 468, 54, textures["inventory"], 0, 0, 234, 27, Anchors.CENTER_BOTTOM, Anchors.CENTER_BOTTOM);
+        ingameGui.barCursor = Gui3DHelper.renderQuad(width / 2 - 198, 47, -998, 14, 8, textures["inventory"], 0, 27, 7, 31, Anchors.CENTER_BOTTOM, Anchors.CENTER_BOTTOM);
     },
 
     ingameGuiUpdate: function()
@@ -28,7 +31,7 @@ var ingameGui =
         }
         else
         {
-            ingameGui.gamepadCursor.position.set(0,0,-1);
+            ingameGui.gamepadCursor.position.set(0,0,1);
         }
 
         for(var i = 0; i < 10; i++)
@@ -37,11 +40,11 @@ var ingameGui =
         }
         Gui3DHelper.setUIName("ingame");
         ingameGui.container.render();
-        this.barCursor.position.x = width / 2 - 198 + thePlayer.handIndex * 44;
+        ingameGui.barCursor.position.x = width / 2 - 198 + thePlayer.handIndex * 44;
     },
 
     ingameGuiClose: function()
     {
         Gui3DHelper.clearUI("ingame");
-    }
+    },
 };

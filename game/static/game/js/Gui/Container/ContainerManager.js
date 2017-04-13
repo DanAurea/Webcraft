@@ -35,10 +35,6 @@ function ContainerManager()
         {
             ContainerManager.openContainers.splice(id, 1);
         }
-        else
-        {
-            console.error("Container is not open !");
-        }
     }
 
     this.take =

@@ -1,16 +1,17 @@
 var inventoryGui = {
     container: null,
 
-    inventoryGuiOpen: function()
+    inventoryGuiOpen: function(firstOpen)
     {
         MouseUtil.releasePointer();
-        MouseUtil.centerGamepadPointer();
+        Gui3DHelper.clearUI("inventory");
         Gui3DHelper.setUIName("inventory");
         Gui3DHelper.renderBackground();
 
         var placableTiles = Tiles.placableTiles;
         var column = parseInt(placableTiles.length / 10) + 1;
 
+        ContainerManager.close(inventoryGui.container);
         inventoryGui.container = new Container(width / 2, height / 2, 530, column * 50 + 32);
         ContainerManager.open(inventoryGui.container);
         ContainerManager.open(ingameGui.container);
@@ -39,5 +40,5 @@ var inventoryGui = {
         ContainerManager.close(inventoryGui.container);
         ContainerManager.close(ingameGui.container);
         MouseUtil.attachPointer();
-    }
+    },
 };
