@@ -74,7 +74,7 @@ function GUIS()
             {
                 if(this.guiList[i].updateCallback != null)
                 {
-                    this.guiList[i].updateCallback();
+                    this.guiList[i].updateCallback($(this.guiList[i].domId));
                 }
             }
         }

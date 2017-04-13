@@ -1,5 +1,5 @@
 var playerListGui = {
-    onPlayerListGuiUpdate: function()
+    onPlayerListGuiUpdate: function(gui)
     {
         var playerList = gui.find("#playerListGui_playerList");
         playerList.text("");
