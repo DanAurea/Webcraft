@@ -24,11 +24,11 @@ class TreeGenerator:
 
 						if(world.getBiomeAt(x, z) != Biomes.SNOW):
 							#Apple
-							if(i== height - 3 and i != x and k != z):
+							if(i== height - 3 and j != x and k != z):
 								if(random.randint(1, 40) == 1):
 									world.setTileAt(Tiles.APPLE, j, y + i - 1, k)
 							#Mushrooms
-							if(height == 6 and i != x and k != z and random.randint(1, 50) == 1):
+							if(height == 6 and j != x and k != z and random.randint(1, 50) == 1):
 								a = random.randint(0, 1)
 								world.setTileAt(TreeGenerator.MUSHROOMS[a], j, world.getSurfaceAt(j, k), k)
 

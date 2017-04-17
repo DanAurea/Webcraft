@@ -47,5 +47,6 @@ class Chunk:
 	#  - x: X coordiante to translate
 	#  - y: Y coordiante to translate
 	#  - z: Z coordiante to translate
-	def getIndexForCoords(self, x, y, z):
+	@staticmethod
+	def getIndexForCoords(x, y, z):
 		return y << 8 | x << 4 | z

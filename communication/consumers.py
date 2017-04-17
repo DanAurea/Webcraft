@@ -155,15 +155,15 @@ def getLastChatMessage():
 ## Place a tile on every client at position specified by user
 def placeTileHandler(tX, tY, tZ, tileID):
 
-	cX, cZ = int(tX / MapInfo.chunkSize), int(tZ / MapInfo.chunkSize)
-	posInChunkX = int(tX % 16)
-	posInChunkZ = int(tZ % 16)
+	cX, cZ = int(tX / Chunk.CHUNK_SIZE), int(tZ / Chunk.CHUNK_SIZE)
+	posInChunkX = int(tX % Chunk.CHUNK_SIZE)
+	posInChunkZ = int(tZ % Chunk.CHUNK_SIZE)
 
-	indexSubdiv = int(Chunk.getIndex4Coords(posInChunkX, tY, posInChunkZ) / Runtime.sizeChunk)
+	indexSubdiv = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ) / Runtime.clusterSize)
 
-	key = "".join(["map_", str(cX), "_", str(cZ), "_", str(indexSubdiv)])
+	key = "".join(["cluster_", str(cX), "_", str(cZ), "_", str(indexSubdiv)])
 
-	indexTile = int(Chunk.getIndex4Coords(posInChunkX, tY, posInChunkZ) % Runtime.sizeChunk)
+	indexTile = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ) % Runtime.clusterSize)
 
 	chunk = cache.get(key)
 	chunk[indexTile] = tileID

@@ -28,13 +28,13 @@ class ChunkGenerator:
 				chunk.heightMap[cX][cZ] = height
 
 				for y in range(height):
-					chunk.setTileAt(self.getTileForDepth(cX, y, cZ, height, biome), cZ, y, cZ)
+					chunk.setTileAt(self.getTileForDepth(y, height, biome), cX, y, cZ)
 
 		chunk.biome = biome
 		chunk.biome.generate(self.world, chunk)
 
 
-	def getTileForDepth(self, cX, cY, cZ, surface, biome):
+	def getTileForDepth(self, cY, surface, biome):
 		depth = surface - cY
 
 		if(cY == 0):
