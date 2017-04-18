@@ -101,6 +101,9 @@ def compressChunk(tiles):
 	## Compressing loop with RLE encoding
 	index = 0
 	for tile in tiles:
+		if(index == 0):
+			index += 1;
+			continue
 
 		if(index == size):
 

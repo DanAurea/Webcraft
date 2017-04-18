@@ -21,10 +21,15 @@ class ChunkGenerator:
 			rX = cX + chunk.x * Chunk.CHUNK_SIZE
 
 			for cZ in range(Chunk.CHUNK_SIZE):
-				rZ= cZ + chunk.z * Chunk.CHUNK_SIZE
+				rZ = cZ + chunk.z * Chunk.CHUNK_SIZE
 
-				biome = self.getBiomeAt(rX, rZ)
-				height = self.getHeightAt(rX, rZ);
+				smX = rX / 120
+				smZ = rZ / 120
+				smX2 = rX / 200
+				smZ2 = rZ / 200
+
+				biome = self.getBiomeAt(smX, smZ)
+				height = self.getHeightAt(smX2, smZ2);
 				chunk.heightMap[cX][cZ] = height
 
 				for y in range(height):
@@ -47,7 +52,7 @@ class ChunkGenerator:
 			return biome.floorTile
 
 	def getHeightAt(self, x, z):
-		return int((self.genNoiseElev.noise2d(x / 200, z / 200) / 2.0 + 0.5) * 30)
+		return int((self.genNoiseElev.noise2d(x, z) / 2.0 + 0.5) * 30)
 
 	def getMoistAt(self, x, z):
 		return self.genNoiseMoist.noise2d(x, z) / 2.0 + 0.5
@@ -56,8 +61,6 @@ class ChunkGenerator:
 		return self.genNoiseTemp.noise2d(x, z) / 2.0 + 0.5
 
 	def getBiomeAt(self, x, z):
-		x /= 120
-		z /= 120
 		moist = self.getMoistAt(x, z)
 		temperature = self.getTemperatureAt(x, z)
 		return Biomes.getBiomeForClimate(moist, temperature)

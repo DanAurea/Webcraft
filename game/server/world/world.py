@@ -17,9 +17,10 @@ class World:
 		#Fill chunk array
 		for x in range(sizeX):
 			for z in range(sizeZ):
-				chunk = Chunk(x, z)
-				self.generator.genChunk(chunk)
-				self.chunks[x * sizeX + z] = chunk
+				self.chunks[x * sizeX + z] = Chunk(x, z)
+
+		for chunk in self.chunks:
+			self.generator.genChunk(chunk)
 
 
 	# Returns the chunk at x,z in chunk pos [0 -> sizeX / sizeZ]
