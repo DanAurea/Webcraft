@@ -9,12 +9,12 @@ from communication.ComAPI.packetLogout import PacketLogout
 from communication.ComAPI.packetMove import PacketMove
 from django.core.cache import cache
 from game.utils import getToken
-from game.mapGenerator import Chunk
+from game.server.world.chunk import Chunk
 from game.models import *
 from chat.models import ChatMessage
 from django.utils.html import strip_tags
 import game.runtime as Runtime
-import game.mapGenerator as MapInfo
+import game.server.world.world as World
 
 ## Initliaze packet managers class
 packet = Packet()
@@ -29,7 +29,7 @@ MESSAGE_NUMBER = 10
 # Consumer for chat connection using
 # session for keeping token and
 # using group for broadcast purpose
-# 
+#
 # Copy http session from django into channel session
 # for retrieving each session key of current user
 # when communicating with server.
@@ -48,19 +48,19 @@ def ws_connect(message):
 # Consumer for chat message received using
 # session for keeping token and
 # using group for broadcast purpose
-# 
+#
 # Filter packets and handle them
 @channel_session_user
 def ws_receive(data):
 
 	binaryData = data.content["bytes"]
 
-	## Received binary datas from channel and check if trusted 
+	## Received binary datas from channel and check if trusted
 	## (+2 bytes because data size coded on 2 bytes + data are required )
 	if(data.content["bytes"] and len(binaryData) >= packet.CLIENT_HEADER_SIZE):
 
 		header = packet.decode(binaryData)
-		
+
 		## Check if it's a trusted user by checking token
 		user    = data.user
 		hashedToken = getToken(user.username)
@@ -72,7 +72,7 @@ def ws_receive(data):
 		## Packet chat
 		if(packet.packetID == 1):
 			message = packetChat.decode(binaryData)
-			
+
 			## Problem with decoding, not trusted datas sent
 			if message == False:
 				ws_close(data)
@@ -97,7 +97,7 @@ def ws_receive(data):
 ## Send a close message to client websocket
 def ws_close(data):
 	data.reply_channel.send({"close": True})
-	
+
 # Consumer for chat disconnection using
 # session for keeping token and
 # using group for broadcast purpose
@@ -105,12 +105,12 @@ def ws_close(data):
 def ws_disconnect(message):
 
 	username = message.user.username
-	
+
 	cache.delete("user_" + username)
 	Group('game').send({
 		'bytes': packetLogout.encode(username=username)
 	})
-	
+
 	Group('chat').discard(message.reply_channel)
 	Group('game').discard(message.reply_channel)
 
@@ -155,16 +155,16 @@ def getLastChatMessage():
 ## Place a tile on every client at position specified by user
 def placeTileHandler(tX, tY, tZ, tileID):
 
-	cX, cZ = int(tX / MapInfo.chunkSize), int(tZ / MapInfo.chunkSize)
-	posInChunkX = int(tX % 16)
-	posInChunkZ = int(tZ % 16)
+	cX, cZ = int(tX / Chunk.CHUNK_SIZE), int(tZ / Chunk.CHUNK_SIZE)
+	posInChunkX = int(tX % Chunk.CHUNK_SIZE)
+	posInChunkZ = int(tZ % Chunk.CHUNK_SIZE)
 
-	indexSubdiv = int(Chunk.getIndex4Coords(posInChunkX, tY, posInChunkZ) / Runtime.sizeChunk)
-	
-	key = "".join(["map_", str(cX), "_", str(cZ), "_", str(indexSubdiv)])
+	indexSubdiv = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ) / Runtime.clusterSize)
 
-	indexTile = int(Chunk.getIndex4Coords(posInChunkX, tY, posInChunkZ) % Runtime.sizeChunk)
-	
+	key = "".join(["cluster_", str(cX), "_", str(cZ), "_", str(indexSubdiv)])
+
+	indexTile = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ) % Runtime.clusterSize)
+
 	chunk = cache.get(key)
 	chunk[indexTile] = tileID
 	cache.set(key, chunk, timeout=None)
@@ -188,8 +188,8 @@ def loginHandler(channel, user):
 			x, y , z = map(int, tmp.player.position.split(","))
 
 			avatar = avatarInfos.avatar_id.name
-	
-			## Send users already connected to user who logged in 
+
+			## Send users already connected to user who logged in
 			channel.send({
 				'bytes': packetLogin.encode(tmp.username, avatar, [x,y,z])
 			})
@@ -202,12 +202,12 @@ def loginHandler(channel, user):
 	## Say
 	Group('chat').send({
 		'bytes': packetChat.encode(user.username + " s'est connecte", "Server")
-	})	
+	})
 
 	Group('game').send({
 		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
 	})
-	
+
 	## Set a new user in redis cache
 	cache.set("user_" + user.username, user.username, timeout=None)
 
@@ -215,14 +215,14 @@ def moveHandler(**kwargs):
 
 	user = kwargs.get("user", None)
 	username = user.username
-	
+
 	x     = kwargs.get("x", None)
 	y     = kwargs.get("y", None)
 	z     = kwargs.get("z", None)
-	
+
 	pitch = kwargs.get("pitch", None)
 	yaw   = kwargs.get("yaw", None)
-	
+
 	motionX = kwargs.get("motionX", None)
 	motionY = kwargs.get("motionY", None)
 	motionZ = kwargs.get("motionZ", None)

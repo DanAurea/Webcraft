@@ -8,6 +8,7 @@
             {% compress css %}
                 <link rel="stylesheet" href="{% static 'game/css/style.css' %}">
                 <link rel="stylesheet" href="{% static 'chat/css/style.css' %}">
+                <link rel="stylesheet" href="{% static 'user/css/background.css' %}">
             {% endcompress %}
             <link rel="stylesheet" href="{% static 'game/css/mCustomScrollbar.min.css' %}">
     </head>
@@ -38,7 +39,7 @@
                 	</ul>
                 </div>
             </div>
-            
+
             {% include "chat/window.html" %}
 
             <div class="gui" id="debugGui">

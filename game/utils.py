@@ -2,10 +2,10 @@ from hashlib import md5
 from django.contrib.auth.models import User
 from communication.ComAPI.packetChat import PacketChat
 from django.http import JsonResponse
-from game.mapGenerator import MapGenerator
 from django.core.cache import cache
 import game.runtime as Runtime
-import game.mapGenerator as MapInfo
+from game.server.world.world import World
+
 
 def getToken(username):
 	""" Generate a new token
@@ -27,7 +27,7 @@ def getToken(username):
 	return hashedToken.digest()
 
 def getInfoMap(request):
-	"""Ajax request sending informations about map and status infos 
+	"""Ajax request sending informations about map and status infos
 		size map
 		time day
 		duration day
@@ -37,7 +37,7 @@ def getInfoMap(request):
 	data = {"timeDay": Runtime.timeDay,
 			"durationDay": Runtime.durationDay,
 			"size": Runtime.size,
-			"seedColor": MapGenerator.seedColor}
+			"seedColor": Runtime.seed}
 	return JsonResponse(data)
 
 
@@ -46,10 +46,10 @@ def getChunk(request):
 	x = int(request.GET.get("x", None))
 	z = int(request.GET.get("z", None))
 
-	## Get chunk from subdivision stored 
+	## Get chunk from subdivision stored
 	## in redis.
-	chunk           = Runtime.reassemble(x, z)
-	compressedChunk = MapInfo._compress(chunk)
+	tiles           = Runtime.reassemble(x, z)
+	compressedChunk = Runtime.compressChunk(tiles)
 
 	## TODO: Exception if bad request
 	data = {"tiles" : compressedChunk,
