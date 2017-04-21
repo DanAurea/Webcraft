@@ -8,6 +8,8 @@ build creative constructions by your own hands.
 
 It's a school project made during last year of bachelor's computer science from "Université du Maine" in France for "Web architecture" class.
 
+It's still in development so be free to signal any issues with demo on github.
+
 
 ![screengit](https://cloud.githubusercontent.com/assets/15633085/24589764/66176b4a-17e0-11e7-8d2b-a723c2accf7a.png)
 ![maison](https://cloud.githubusercontent.com/assets/15633085/24629799/a071c7ba-18ba-11e7-9073-06a30a203574.png)
