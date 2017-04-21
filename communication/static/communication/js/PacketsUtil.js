@@ -3,27 +3,32 @@ function PacketsUtil()
     this.defval =
     function defval(value, defValue)
     {
-        return (typeof value === "undefined") ? defValue : value;
+        return (typeof value === "undefined") ? defValue : unescape(encodeURIComponent(value));
     }
 
     this.encodeString =
     function encodeString(dv, begin, str)
-    {
-        for(var i = 0; i < str.length; i++)
-        {
+    {   
+        for (var i = 0; i < str.length; i++) {
             dv.setUint8(begin + i, str.charCodeAt(i));
         }
     }
 
-    this.decodeString =
+     this.decodeString =
     function decodeString(dv, begin, size)
-    {
-        var strOut = "";
+    {   
+        
+        var uIntArray = [];
+        
         for(var i = 0; i < size; i++)
         {
-            strOut += String.fromCharCode(dv.getUint8(begin + i));
+            uIntArray.push(dv.getUint8(begin + i));
         }
-        return strOut;
+
+        var encodedString = String.fromCharCode.apply(null, uIntArray),
+        decodedString = decodeURIComponent(escape(encodedString));
+        
+        return decodedString;
     }
 
     this.sendPacket =

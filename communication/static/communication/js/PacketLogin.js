@@ -46,17 +46,17 @@ function PacketLogin()
         this.username     = PacketsUtil.decodeString(dv, offset, this.usernameSize);
         offset            += this.usernameSize;
         
-        this.avatarSize        = dv.getUint8(offset);
+        this.avatarSize   = dv.getUint8(offset);
         offset            += 1;
-
+        
         
         this.avatar       = PacketsUtil.decodeString(dv, offset, this.avatarSize);
         offset            += this.avatarSize;
-
+        
         
         this.x            = dv.getFloat32(offset);
         offset            += 4;
-
+        
         this.y            = dv.getFloat32(offset);
         offset            += 4;
         

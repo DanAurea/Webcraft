@@ -33,8 +33,8 @@ class PacketChat(Packet):
 		if(getTimestamp is True):
 			self.timestamp = super().getTimestamp()
 
-		timestamp64  = super().encodeTimestamp64(self.timestamp)
-		bContainer 		= bContainer.__add__(timestamp64)
+		timestamp64 = super().encodeTimestamp64(self.timestamp)
+		bContainer  = bContainer.__add__(timestamp64)
 
 		## Add username size to bytes and encode it
 		## TODO: Be aware of byte order from client for portable version
@@ -43,7 +43,7 @@ class PacketChat(Packet):
 
 		## Add message size to bytes and encode it
 		## TODO: Be aware of byte order from client for portable version
-		bContainer = bContainer.__add__(pack(">H" , len(message)))
+		bContainer = bContainer.__add__(pack(">H" , len(message.encode())))
 		bContainer = bContainer.__add__(message.encode())
 		
 		return bContainer		
@@ -65,5 +65,3 @@ class PacketChat(Packet):
 
 		## Finally return message sent by client
 		return data[39:39 + messageSize].decode()
-
-
