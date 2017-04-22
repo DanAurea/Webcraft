@@ -190,29 +190,16 @@ function ResourceLoader()
         $.get(url, success).fail(error);
     }
 
-    this.loadMapInfo =
-    function loadMapInfo(finishCallback, error)
+    this.loadWorld =
+    function loadWorld(finishCallback, error)
     {
         if(!offlineMode)
         {
-            $.get("/DRPG/game/getInfoMap", finishCallback).fail(error);
+            $.get("/DRPG/game/getWorld", finishCallback).fail(error);
         }
         else
-        {
+        {   
             finishCallback({"size": 5, "timeDay": 600, "durationDay": 2400, "seedColor": 40000});
-        }
-    }
-
-    this.loadChunkAt =
-    function loadChunkAt(x, z, finishCallback, error)
-    {
-        if(!offlineMode)
-        {
-            $.get("/DRPG/game/getChunk", {"x": x, "z": z}, finishCallback).fail(error);
-        }
-        else
-        {
-            finishCallback({"x": x, "z": z, "tiles": World.getChunkAtChunkCoords(x, z).map});
         }
     }
 

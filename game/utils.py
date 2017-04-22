@@ -41,18 +41,15 @@ def getInfoMap(request):
 	return JsonResponse(data)
 
 
-def getChunk(request):
-	"""Ajax request sending chunk status"""
-	x = int(request.GET.get("x", None))
-	z = int(request.GET.get("z", None))
+def getWorld(request):
+	"""Ajax request sending world"""
 
-	## Get chunk from subdivision stored
-	## in redis.
-	tiles           = Runtime.reassemble(x, z)
-	compressedChunk = Runtime.compressChunk(tiles)
+	world = [[Runtime.compressChunk(Runtime.reassemble(row, col)) for col in range(Runtime.size)] for row in range(Runtime.size)]
 
-	## TODO: Exception if bad request
-	data = {"tiles" : compressedChunk,
-			"x" : x,
-			"z": z}
+	data = 	{	"world" : world,
+				"timeDay": Runtime.timeDay,
+				"durationDay": Runtime.durationDay,
+				"size": Runtime.size,
+				"seedColor": Runtime.seed
+			}
 	return JsonResponse(data)

@@ -41,9 +41,8 @@ function initGame()
             Controls.init();
             GamePadControls.init();
 
-            LoadingPage.setText("Downloading world info...");
-            ResourceLoader.loadMapInfo(function(data)
-            {
+            ResourceLoader.loadWorld(function(data)
+            {   
                 World.initMap(data["size"], data["size"], data["timeDay"], data["durationDay"], data["seedColor"]);
                 var chunkAmount = World.mapWidth * World.mapLength;
                 var loadedChunk = 0;
@@ -53,32 +52,27 @@ function initGame()
                     for(var z = 0; z < World.mapLength; z++)
                     {
                         LoadingPage.setText("Downloading world chunks...");
-                        ResourceLoader.loadChunkAt(x, z, function(chunkData)
-                        {
-                            World.getChunkAtChunkCoords(chunkData["x"], chunkData["z"]).map = ResourceLoader.uncompress(chunkData["tiles"]);
-                            loadedChunk++;
+                       
+                        World.getChunkAtChunkCoords(x, z).map = ResourceLoader.uncompress(data["world"][x][z]);
+                        loadedChunk++;
 
-                            if(loadedChunk >= chunkAmount)
+                        if(loadedChunk >= chunkAmount)
+                        {
+                            if(!offlineMode)
                             {
-                                if(!offlineMode)
-                                {
-                                    PacketsUtil.sendPacket(new PacketReady());
-                                }
-                                else
-                                {
-                                    thePlayer = new EntityPlayer();
-                                    thePlayer.setPosition(20, 40, 20);
-                                    thePlayer.onLogin("OffLineUsername", "cat");
-                                    thePlayer.spawn();
-
-                                    finalizeGame();
-                                }
+                                PacketsUtil.sendPacket(new PacketReady());
                             }
-                        }, function(error)
-                        {
-                            alert("Erreur chunk ! Cf console");
-                            console.error(error);
-                        });
+                            else
+                            {
+                                thePlayer = new EntityPlayer();
+                                thePlayer.setPosition(20, 40, 20);
+                                thePlayer.onLogin("OffLineUsername", "cat");
+                                thePlayer.spawn();
+
+                                finalizeGame();
+                            }
+                        }
+
                     }
                 }
 
@@ -87,6 +81,7 @@ function initGame()
                 alert("Erreur map ! Cf console");
                 console.error(error);
             });
+
         });
     });
 }

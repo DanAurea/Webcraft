@@ -10,7 +10,6 @@ function ChatManager()
 		{
 			MouseUtil.releasePointer();
 			$("#id_message").focus();
-			ev.preventDefault();
 		}
 		else if(ChatManager.isOpen && key == "escape")
 		{
@@ -20,7 +19,6 @@ function ChatManager()
 			{
 				MouseUtil.attachPointer();
 			}, 200);
-			ev.preventDefault();
 		}
 	}
 

@@ -28,7 +28,7 @@ function Controls()
 
         Controls.register("f3", function(key, ev){GUIS.DEBUG_GUI.toggle();}, "press", false);
 
-        Controls.register("e", function(key, ev){GUIS.INVENTORY.toggle();}, "press", false);
+        Controls.register("e", function(key, ev){GUIS.INVENTORY.toggle();}, "press", true);
     }
 
     this.init =
