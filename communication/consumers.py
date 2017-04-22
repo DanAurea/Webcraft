@@ -159,15 +159,12 @@ def placeTileHandler(tX, tY, tZ, tileID):
 	posInChunkX = int(tX % Chunk.CHUNK_SIZE)
 	posInChunkZ = int(tZ % Chunk.CHUNK_SIZE)
 
-	indexSubdiv = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ) / Runtime.clusterSize)
-
-	key = "".join(["cluster_", str(cX), "_", str(cZ), "_", str(indexSubdiv)])
-
-	indexTile = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ) % Runtime.clusterSize)
-
-	chunk = cache.get(key)
-	chunk[indexTile] = tileID
-	cache.set(key, chunk, timeout=None)
+	indexTile = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ))
+	key = "".join(["chunk_", str(cX), "_", str(cZ)])
+	
+	chunkInst = cache.get(key)
+	chunkInst.tiles[indexTile] = tileID
+	cache.set(key, chunkInst, timeout=None)
 
 	Group('game').send({
 			"bytes": packetPlaceTile.encode(tX, tY, tZ, tileID)

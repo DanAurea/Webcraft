@@ -44,7 +44,7 @@ def getInfoMap(request):
 def getWorld(request):
 	"""Ajax request sending world"""
 
-	world = [[Runtime.compressChunk(Runtime.reassemble(row, col)) for col in range(Runtime.size)] for row in range(Runtime.size)]
+	world = [[Runtime.compressChunk(cache.get("".join(["chunk_", str(row), "_", str(col)])).tiles) for col in range(Runtime.size)] for row in range(Runtime.size)]
 
 	data = 	{	"world" : world,
 				"timeDay": Runtime.timeDay,

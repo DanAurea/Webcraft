@@ -47,49 +47,19 @@ def saveInFile():
 	for i in range(0, size):
 		for j in range(0, size):
 			chunkInst = Chunk(i, j)
-			chunkInst.chunk = reassemble(i, j)
+			key = "".join(["chunk_", str(i), "_", str(j)])
+			chunkInst.chunk = cache.get(key)
 			world[i][j] = chunkInst
 
 	with open(saveFile, 'wb') as save:
 		pickle.dump(world, save)
 
-def chunks(l, n):
-	"""Yield successive n-sized chunks from l."""
-	for i in range(0, len(l), n):
-		yield l[i:i + n]
-
-def reassemble(x, z):
-	"""	Reassemble clusters to a tile array from redis"""
-
-	nbCluster = int(Chunk.TILES_PER_CHUNKS / clusterSize)
-
-	tiles = []
-
-	for i in range(0, nbCluster):
-		key      = "".join(["cluster_", str(x), "_", str(z), "_", str(i)])
-		cluster = cache.get(key)
-		tiles.append(cluster)
-
-	tiles = [item for sublist in tiles for item in sublist]
-
-	return tiles
-
-def subdivideMap():
-	"""Subdivide world chunks in data chunks for
-		a smoother update in redis cache."""
-	global world
-	for chunk in world.chunks:
-		chunk.tileClusters = list(chunks(chunk.tiles, clusterSize))
-
-
 def saveInRedis():
 	"""Save in Redis all chunks previously subdivided into clusters."""
 
-	nbCluster = int(Chunk.TILES_PER_CHUNKS / clusterSize)
 	for chunk in world.chunks:
-		for clusterIndex in range(0, nbCluster):
-			key = "".join(["cluster_", str(chunk.x), "_", str(chunk.z), "_",str(clusterIndex)])
-			cache.set(key, chunk.tileClusters[clusterIndex], timeout=None)
+			key = "".join(["chunk_", str(chunk.x), "_", str(chunk.z)])
+			cache.set(key, chunk, timeout=None)
 
 def compressChunk(tiles):
 	""" Compress an array of tiles counting sequence of same numbers """
@@ -140,7 +110,6 @@ def loadMap():
 		with open(latestSave, 'rb') as save:
 			world = pickle.load(save)
 
-	subdivideMap()
 	saveInRedis()
 
 	if(not files or settings['generate'] == True):
