@@ -1,6 +1,5 @@
 # Trisdanvalwen
 
-Demo at: http://tales4craft.fr/DRPG/game/home
 
 Trisdanvalwen is a MMORPG made with Django framework, Channels (websocket) and Javascript for client rendering.
 It's a minecraft like game with cute pets, we made all models with Magicavoxel to save time, you can chat with everyone and
