@@ -94,3 +94,7 @@ requirements.txt
 
 # Database
 devDB
+
+# Map saves
+*.map
+*.world

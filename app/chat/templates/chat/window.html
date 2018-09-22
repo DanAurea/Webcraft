@@ -1,0 +1,22 @@
+<div id="gameOverlay">
+    <div class="gui" id="guiChat">
+        <div class="gui_bottom gui_left chat">
+            
+            <div class="mCustomScrollbar" id="messagesContainer">
+         		<ol id="messagesList">
+         		</ol>
+            </div>
+
+            <div class="messageBox">
+            	<div id="channelBox">
+            		<span id="channel">Tous: </span>
+            	</div>
+            	<form id="messageInput" class="gui_element" action="#" method="POST">
+         			{% csrf_token %}
+         			{{ form }}
+         		</form>
+            </div>
+        
+        </div>
+    </div>
+</div>
