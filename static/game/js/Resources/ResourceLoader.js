@@ -216,8 +216,6 @@ function ResourceLoader()
 
         var i;
         var j;
-
-        console.log(chunk);
         
         // RLE decompressing
         for (i=0; i< chunk.length; i++)

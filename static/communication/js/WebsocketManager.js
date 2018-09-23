@@ -1,4 +1,4 @@
-var ws = new WebSocket((window.location.protocol == 'http') ? 'ws://' : 'ws://' +  window.location.host + '/ws')
+var ws = new WebSocket(((window.location.protocol == 'https:') ? 'wss://' : 'ws://') +  window.location.host + '/ws/chat')
 
 ws.binaryType = "arraybuffer";
 Packets.init();

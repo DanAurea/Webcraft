@@ -20,4 +20,5 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 
 # Specify the command to run when the image is run.
-CMD ["/app/run.sh"]
+CMD ["/bin/bash"]
+#CMD ["/app/run.sh"]

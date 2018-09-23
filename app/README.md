@@ -1,8 +1,8 @@
-# Trisdanvalwen
+# webcraft
 
 Demo at: http://tales4craft.fr/DRPG/game/home
 
-Trisdanvalwen is a MMORPG made with Django framework, Channels (websocket) and Javascript for client rendering.
+webcraft is a MMORPG made with Django framework, Channels (websocket) and Javascript for client rendering.
 It's a minecraft like game with cute pets, we made all models with Magicavoxel to save time, you can chat with everyone and
 build creative constructions by your own hands.
 
@@ -17,7 +17,7 @@ It's still in development so be free to signal any issues with demo on github.
 
 ## How it works
 
-Trisdanvalwen make use of Channels for real time part, websocket are used for chatting app and game app currently, we should
+webcraft make use of Channels for real time part, websocket are used for chatting app and game app currently, we should
 update this projet to use WebRTC (UDP packets) as a layer for any packets sent or received by game (excepting chat).
 
 Gunicorn is used as WSGI server because of its lower latency for http requests compared to daphne ASGI server
@@ -39,7 +39,7 @@ Once you have them installed use pip to install any requirements:
 
 > pip install -r requirements.txt
 
-Before starting, set a new database for running this project then make necessary changes in trisdanvalwen/settings.py file.
+Before starting, set a new database for running this project then make necessary changes in webcraft/settings.py file.
 
 Do migrations to create table structure with following command:
 

@@ -1,7 +1,13 @@
-from channels.routing import route
+from channels.routing import ProtocolTypeRouter, URLRouter
+from communication.consumers import ChatConsumer, GameConsumer
+from channels.auth import AuthMiddlewareStack
+from django.conf.urls import url
 
-channel_routing = [
-	route('websocket.connect', "communication.consumers.ws_connect"),
-    route('websocket.receive', "communication.consumers.ws_receive"),
-    route('websocket.disconnect', "communication.consumers.ws_disconnect"),
-]
+application = ProtocolTypeRouter({
+	"websocket": AuthMiddlewareStack(
+		URLRouter([
+			url(r"^ws/chat$", ChatConsumer),
+			url(r"^ws/game$", GameConsumer)
+		])
+	)
+})

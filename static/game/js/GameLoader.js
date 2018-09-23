@@ -13,7 +13,6 @@ function onDownloadFinished(duration)
 function onDownloadUpdate(downloadedAmount, totalAmount)
 {
     var status = "Downloaded file : " + downloadedAmount + " / " + totalAmount + "(" + parseInt((downloadedAmount / totalAmount) * 100) + "%)";
-    console.log(status);
     LoadingPage.setText(status);
 }
 

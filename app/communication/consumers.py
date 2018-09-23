@@ -1,20 +1,19 @@
-from channels import Group
-from channels.sessions import channel_session
-from channels.auth import channel_session_user, channel_session_user_from_http
 from communication.ComAPI.packet import Packet
 from communication.ComAPI.packetChat import PacketChat
 from communication.ComAPI.packetPlaceTile import PacketPlaceTile
 from communication.ComAPI.packetLogin import PacketLogin
 from communication.ComAPI.packetLogout import PacketLogout
 from communication.ComAPI.packetMove import PacketMove
-from django.core.cache import cache
-from game.utils import getToken
-from game.server.world.chunk import Chunk
-from game.models import *
+# from django.core.cache import cache
+# from game.utils import getToken
+# from game.server.world.chunk import Chunk
+# from game.models import *
 from chat.models import ChatMessage
 from django.utils.html import strip_tags
-import game.runtime as Runtime
-import game.server.world.world as World
+# import game.runtime as Runtime
+# import game.server.world.world as World
+
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 ## Initliaze packet managers class
 packet = Packet()
@@ -26,205 +25,251 @@ packetPlaceTile = PacketPlaceTile()
 
 MESSAGE_NUMBER = 10
 
-# Consumer for chat connection using
-# session for keeping token and
-# using group for broadcast purpose
-#
-# Copy http session from django into channel session
-# for retrieving each session key of current user
-# when communicating with server.
-@channel_session_user_from_http
-def ws_connect(message):
-	message.reply_channel.send({
-        'accept': True
-	})
-
-	Group('chat').add(message.reply_channel)
-	Group('game').add(message.reply_channel)
-	getLastChatMessage()
-
-
-
-# Consumer for chat message received using
-# session for keeping token and
-# using group for broadcast purpose
-#
-# Filter packets and handle them
-@channel_session_user
-def ws_receive(data):
-
-	binaryData = data.content["bytes"]
-
-	## Received binary datas from channel and check if trusted
-	## (+2 bytes because data size coded on 2 bytes + data are required )
-	if(data.content["bytes"] and len(binaryData) >= packet.CLIENT_HEADER_SIZE):
-
-		header = packet.decode(binaryData)
-
-		## Check if it's a trusted user by checking token
-		user    = data.user
-		hashedToken = getToken(user.username)
-
-		## Close websocket if untrusted connection detected
-		if(hashedToken.hex() != packet.token):
-			ws_close(data)
-
-		## Packet chat
-		if(packet.packetID == 1):
-			message = packetChat.decode(binaryData)
-
-			## Problem with decoding, not trusted datas sent
-			if message == False:
-				ws_close(data)
-
-			message = strip_tags(message)
-			chatHandler(message, user)
-		## Packet place tile
-		elif(packet.packetID == 2):
-			loginHandler(data.reply_channel,user)
-		elif(packet.packetID == 4):
-			x, y, z, pitch, yaw, motionX, motionY, motionZ = packetMove.decode(binaryData)
-
-			moveHandler(user=user, x=x, y=y, z=z, pitch=pitch, yaw=yaw, motionX=motionX, motionY=motionY, motionZ=motionZ)
-		elif(packet.packetID == 5):
-			tX, tY, tZ, tileID = packetPlaceTile.decode(binaryData)
-
-			placeTileHandler(tX, tY, tZ, tileID)
-		elif(packet.packetID == 6):
-			pass
-
-
-## Send a close message to client websocket
-def ws_close(data):
-	data.reply_channel.send({"close": True})
-
-# Consumer for chat disconnection using
-# session for keeping token and
-# using group for broadcast purpose
-@channel_session_user
-def ws_disconnect(message):
-
-	username = message.user.username
-
-	cache.delete("user_" + username)
-	Group('game').send({
-		'bytes': packetLogout.encode(username=username)
-	})
-
-	Group('chat').discard(message.reply_channel)
-	Group('game').discard(message.reply_channel)
-
-## Handler for chat packet
-## Data persistance enabled
-def chatHandler(message, user):
-
-	player = Player.objects.get(player_id= user.player.player_id)
-
-	Group('').send({
-				'bytes': packetChat.encode(message, user.username),
-	})
-
-	count = ChatMessage.objects.all().count()
-
-	## Delete first entry from chat message table
-	if(count == MESSAGE_NUMBER):
-		ChatMessage.objects.all().order_by("timestamp")[0].delete()
-
-	## Create one entry in database with new message, player id and timestamp
-	ChatMessage.objects.create(player_id = player, message = message, timestamp = packetChat.timestamp)
-
-## Retrieve last chat message from database
-## with number limit set by argument.
-def getLastChatMessage():
-	## Retrieves n last messages
-	queries = ChatMessage.objects.all().order_by("timestamp")
-
-	## Send all retrieved messages on chat
-	for query in queries:
-
-		username       = query.player_id.user.username
-		message        = query.message
-
-		## Set manually timestamp with query timestamp
-		packetChat.timestamp = query.timestamp
-
-		Group('chat').send({
-			'bytes': packetChat.encode(message, username, False),
-		})
-
-## Place a tile on every client at position specified by user
-def placeTileHandler(tX, tY, tZ, tileID):
-
-	cX, cZ = int(tX / Chunk.CHUNK_SIZE), int(tZ / Chunk.CHUNK_SIZE)
-	posInChunkX = int(tX % Chunk.CHUNK_SIZE)
-	posInChunkZ = int(tZ % Chunk.CHUNK_SIZE)
-
-	indexTile = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ))
-	key = "".join(["chunk_", str(cX), "_", str(cZ)])
+class ChatConsumer(AsyncWebsocketConsumer):
 	
-	chunkInst = cache.get(key)
-	chunkInst.tiles[indexTile] = tileID
-	cache.set(key, chunkInst, timeout=None)
+	async def connect(self):
+		"""
+		@brief      Called when the websocket is handshaking as part of initial connection		
+		"""
 
-	Group('game').send({
-			"bytes": packetPlaceTile.encode(tX, tY, tZ, tileID)
-	})
+		# Open websocket only if user is logged in
+		if self.scope["user"].is_anonymous:
+			await self.close()
+		else:
+			await self.accept()
 
-## Broadcast login from user
-def loginHandler(channel, user):
+		await self.channel_layer.group_add("chat", self.channel_name)
+		self.retrieve_last_messages()
+	
+	async def receive(self,text_data=None, bytes_data=None):
+		message = ""
+		header = packet.decode(bytes_data)
 
-	users = cache.get_many(cache.keys("user_*"))
+		if(packet.packetID == 1):
+			message = packetChat.decode(bytes_data)
+			
+			if not message:
+				await self.close()
+				return
+			
+			await self.channel_layer.group_send(
+				"chat",
+				{
+					'bytes': packetChat.encode(message, self.scope["user"].username, False),
+				}
+			)
+	
+	## Retrieve last chat message from database
+	## with number limit set by argument.
+	def retrieve_last_messages(self):
+		
+		## Retrieves n last messages
+		queries = ChatMessage.objects.all().order_by("timestamp")
 
-	for key in users:
+		## Send all retrieved messages on chat
+		for query in queries:
 
-		if(users[key] != user.username):
-			tmp = User.objects.get(username=users[key])
+			username       = query.player_id.user.username
+			message        = query.message
 
-			## Retrieve informations about avatar player
-			avatarInfos = AvatarPlayer.objects.get(player_id=tmp.player.player_id)
-			x, y , z = map(int, tmp.player.position.split(","))
+			## Set manually timestamp with query timestamp
+			packetChat.timestamp = query.timestamp
 
-			avatar = avatarInfos.avatar_id.name
-
-			## Send users already connected to user who logged in
-			channel.send({
-				'bytes': packetLogin.encode(tmp.username, avatar, [x,y,z])
-			})
-
-	## Send info about current logged user to all users connected
-	avatarInfos = AvatarPlayer.objects.get(player_id=user.player.player_id)
-	x, y , z = map(int, user.player.position.split(","))
-	avatar = avatarInfos.avatar_id.name
-
-	## Say
-	Group('chat').send({
-		'bytes': packetChat.encode(user.username + " s'est connecte", "Server")
-	})
-
-	Group('game').send({
-		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
-	})
-
-	## Set a new user in redis cache
-	cache.set("user_" + user.username, user.username, timeout=None)
-
-def moveHandler(**kwargs):
-
-	user = kwargs.get("user", None)
-	username = user.username
-
-	x     = kwargs.get("x", None)
-	y     = kwargs.get("y", None)
-	z     = kwargs.get("z", None)
-
-	pitch = kwargs.get("pitch", None)
-	yaw   = kwargs.get("yaw", None)
-
-	motionX = kwargs.get("motionX", None)
-	motionY = kwargs.get("motionY", None)
-	motionZ = kwargs.get("motionZ", None)
+			self.channel_layer.group_send(
+				"chat",
+				{
+					'bytes': packetChat.encode(message, username, False),
+				}
+			)
+		
+	async def disconnect(self, close_code):
+		await self.close()
 
 
-	Group('game').send({
-		'bytes': packetMove.encode(username=username, x=x, y=y, z=z, pitch=pitch, yaw=yaw, motionX=motionX, motionY=motionY, motionZ=motionZ)
-	})
+class GameConsumer(AsyncWebsocketConsumer):
+
+	async def connect(self):
+		"""
+		@brief      Called when the websocket is handshaking as part of initial connection		
+		"""
+
+		# Open websocket only if user is logged in
+		if self.scope["user"].is_anonymous:
+			await self.close()
+		else:
+			await self.accept()
+
+		await self.channel_layer.group_add("game", self.channel_name)
+
+	async def receive(self,text_data=None, bytes_data=None):
+		pass
+
+	async def disconnect(self, close_code):
+		await self.close()
+
+
+# # Consumer for chat message received using
+# # session for keeping token and
+# # using group for broadcast purpose
+# #
+# # Filter packets and handle them
+# @channel_session_user
+# def ws_receive(data):
+
+# 	binaryData = data.content["bytes"]
+
+# 	## Received binary datas from channel and check if trusted
+# 	## (+2 bytes because data size coded on 2 bytes + data are required )
+# 	if(data.content["bytes"] and len(binaryData) >= packet.CLIENT_HEADER_SIZE):
+
+# 		header = packet.decode(binaryData)
+
+# 		## Check if it's a trusted user by checking token
+# 		user    = data.user
+# 		hashedToken = getToken(user.username)
+
+# 		## Close websocket if untrusted connection detected
+# 		if(hashedToken.hex() != packet.token):
+# 			ws_close(data)
+
+# 		## Packet chat
+# 		if(packet.packetID == 1):
+# 			message = packetChat.decode(binaryData)
+
+# 			## Problem with decoding, not trusted datas sent
+# 			if message == False:
+# 				ws_close(data)
+
+# 			message = strip_tags(message)
+# 			chatHandler(message, user)
+# 		## Packet place tile
+# 		elif(packet.packetID == 2):
+# 			loginHandler(data.reply_channel,user)
+# 		elif(packet.packetID == 4):
+# 			x, y, z, pitch, yaw, motionX, motionY, motionZ = packetMove.decode(binaryData)
+
+# 			moveHandler(user=user, x=x, y=y, z=z, pitch=pitch, yaw=yaw, motionX=motionX, motionY=motionY, motionZ=motionZ)
+# 		elif(packet.packetID == 5):
+# 			tX, tY, tZ, tileID = packetPlaceTile.decode(binaryData)
+
+# 			placeTileHandler(tX, tY, tZ, tileID)
+# 		elif(packet.packetID == 6):
+# 			pass
+
+
+# ## Send a close message to client websocket
+# def ws_close(data):
+# 	data.reply_channel.send({"close": True})
+
+# # Consumer for chat disconnection using
+# # session for keeping token and
+# # using group for broadcast purpose
+# @channel_session_user
+# def ws_disconnect(message):
+
+# 	username = message.user.username
+
+# 	cache.delete("user_" + username)
+# 	Group('game').send({
+# 		'bytes': packetLogout.encode(username=username)
+# 	})
+
+# 	Group('chat').discard(message.reply_channel)
+# 	Group('game').discard(message.reply_channel)
+
+# ## Handler for chat packet
+# ## Data persistance enabled
+# def chatHandler(message, user):
+
+# 	player = Player.objects.get(player_id= user.player.player_id)
+
+# 	Group('').send({
+# 				'bytes': packetChat.encode(message, user.username),
+# 	})
+
+# 	count = ChatMessage.objects.all().count()
+
+# 	## Delete first entry from chat message table
+# 	if(count == MESSAGE_NUMBER):
+# 		ChatMessage.objects.all().order_by("timestamp")[0].delete()
+
+# 	## Create one entry in database with new message, player id and timestamp
+# 	ChatMessage.objects.create(player_id = player, message = message, timestamp = packetChat.timestamp)
+
+
+# ## Place a tile on every client at position specified by user
+# def placeTileHandler(tX, tY, tZ, tileID):
+
+# 	cX, cZ = int(tX / Chunk.CHUNK_SIZE), int(tZ / Chunk.CHUNK_SIZE)
+# 	posInChunkX = int(tX % Chunk.CHUNK_SIZE)
+# 	posInChunkZ = int(tZ % Chunk.CHUNK_SIZE)
+
+# 	indexTile = int(Chunk.getIndexForCoords(posInChunkX, tY, posInChunkZ))
+# 	key = "".join(["chunk_", str(cX), "_", str(cZ)])
+	
+# 	chunkInst = cache.get(key)
+# 	chunkInst.tiles[indexTile] = tileID
+# 	cache.set(key, chunkInst, timeout=None)
+
+# 	Group('game').send({
+# 			"bytes": packetPlaceTile.encode(tX, tY, tZ, tileID)
+# 	})
+
+# ## Broadcast login from user
+# def loginHandler(channel, user):
+
+# 	users = cache.get_many(cache.keys("user_*"))
+
+# 	for key in users:
+
+# 		if(users[key] != user.username):
+# 			tmp = User.objects.get(username=users[key])
+
+# 			## Retrieve informations about avatar player
+# 			avatarInfos = AvatarPlayer.objects.get(player_id=tmp.player.player_id)
+# 			x, y , z = map(int, tmp.player.position.split(","))
+
+# 			avatar = avatarInfos.avatar_id.name
+
+# 			## Send users already connected to user who logged in
+# 			channel.send({
+# 				'bytes': packetLogin.encode(tmp.username, avatar, [x,y,z])
+# 			})
+
+# 	## Send info about current logged user to all users connected
+# 	avatarInfos = AvatarPlayer.objects.get(player_id=user.player.player_id)
+# 	x, y , z = map(int, user.player.position.split(","))
+# 	avatar = avatarInfos.avatar_id.name
+
+# 	## Say
+# 	Group('chat').send({
+# 		'bytes': packetChat.encode(user.username + " s'est connecte", "Server")
+# 	})
+
+# 	Group('game').send({
+# 		'bytes': packetLogin.encode(user.username, avatar, [x,y,z])
+# 	})
+
+# 	## Set a new user in redis cache
+# 	cache.set("user_" + user.username, user.username, timeout=None)
+
+# def moveHandler(**kwargs):
+
+# 	user = kwargs.get("user", None)
+# 	username = user.username
+
+# 	x     = kwargs.get("x", None)
+# 	y     = kwargs.get("y", None)
+# 	z     = kwargs.get("z", None)
+
+# 	pitch = kwargs.get("pitch", None)
+# 	yaw   = kwargs.get("yaw", None)
+
+# 	motionX = kwargs.get("motionX", None)
+# 	motionY = kwargs.get("motionY", None)
+# 	motionZ = kwargs.get("motionZ", None)
+
+
+# 	Group('game').send({
+# 		'bytes': packetMove.encode(username=username, x=x, y=y, z=z, pitch=pitch, yaw=yaw, motionX=motionX, motionY=motionY, motionZ=motionZ)
+# 	})

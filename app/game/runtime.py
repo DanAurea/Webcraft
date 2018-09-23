@@ -1,14 +1,31 @@
+from datetime import datetime
+from django.core.cache import cache
 from game.server.world.world import World
 from game.server.world.chunk import Chunk
 from game.server.gen.chunkGenerator import ChunkGenerator
-from datetime import datetime
+from glob import glob
 from os import path, remove
 from random import randint
-import random
-from glob import glob
-from django.core.cache import cache
 import json
 import pickle
+import random
+
+class SaveManager(object):
+	pass
+
+class RedisManager(object):
+	pass
+
+class Runtime(object):
+
+	def __init__(self):
+		pass
+
+	def save_state(self):
+		pass
+
+
+
 
 def getSettings(key, defaultValue):
 	if(key in settings):

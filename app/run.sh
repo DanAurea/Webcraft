@@ -35,13 +35,12 @@ nbCpu="$(grep -c ^processor /proc/cpuinfo)"
 nbWorkers="$(($nbCpu * 2 + 1))"
 
 ## Launch server using game's runtime
-python manage.py startServer --size=4
-daphne -b 0.0.0.0 -p 8001 trisdanvalwen.asgi:channel_layer&
+daphne -b 0.0.0.0 -p 8001 webcraft.asgi:application&
 
 ## Launch websocket workers
 for (( i=0; i< $nbWorkers; i++ ))
 do
-	python manage.py runworker --only-channels=websocket.* &
+	python manage.py runworker channels websocket &
 done
 
-gunicorn trisdanvalwen.wsgi -c ./conf/gunicorn.py 
+gunicorn webcraft.wsgi -c ./conf/gunicorn.py 
